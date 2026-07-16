@@ -133,7 +133,7 @@ export default function Hero() {
           className="ac-display ac-fade-up w-full text-center select-none"
           style={{
             color: '#ffffff',
-            fontSize: 'clamp(5rem, 23vw, 24rem)',
+            fontSize: 'clamp(3.5rem, 18vw, 24rem)',
             lineHeight: 0.85,
             letterSpacing: '-0.02em',
             margin: 0,
@@ -161,9 +161,9 @@ export default function Hero() {
           alt={global.name}
           className="ac-slide-up-image absolute left-1/2"
           style={{
-            width: 'clamp(350px, 50vw, 800px)',
+            width: 'clamp(280px, 70vw, 800px)',
             height: 'auto',
-            maxHeight: '85vh',
+            maxHeight: '80vh',
             objectFit: 'contain',
             objectPosition: 'bottom',
             zIndex: 10,

@@ -1,6 +1,7 @@
 import formidable from 'formidable';
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
+import os from 'os';
 dotenv.config();
 
 cloudinary.config({
@@ -20,7 +21,11 @@ export default async function handler(req, res) {
         return res.status(405).json({ message: "Method Not Allowed" });
     }
 
-    const form = formidable({ multiples: false });
+    const form = formidable({ 
+        multiples: false,
+        uploadDir: os.tmpdir(),
+        keepExtensions: true
+    });
 
     return new Promise((resolve) => {
         form.parse(req, async (err, fields, files) => {
@@ -40,7 +45,8 @@ export default async function handler(req, res) {
 
             try {
                 const result = await cloudinary.uploader.upload(file.filepath || file.path, {
-                    folder: 'portfolio_uploads'
+                    folder: 'portfolio_uploads',
+                    resource_type: 'auto'
                 });
                 res.status(200).json({ success: true, url: result.secure_url });
                 return resolve();
