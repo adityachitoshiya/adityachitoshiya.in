@@ -72,6 +72,15 @@ export default function Hero() {
           transition: transform 0.2s ease;
         }
         .ac-icon-btn:hover { transform: scale(1.08); }
+
+        .hero-img-position {
+          bottom: -191px;
+        }
+        @media (max-width: 768px) {
+          .hero-img-position {
+            bottom: -50px;
+          }
+        }
       `}</style>
 
       {/* Nav */}
@@ -186,7 +195,7 @@ export default function Hero() {
       <img
         src={hero.heroImage}
         alt={global.name}
-        className="ac-slide-up-image absolute left-1/2"
+        className="ac-slide-up-image absolute left-1/2 hero-img-position"
         style={{
           width: 'clamp(280px, 70vw, 800px)',
           height: 'auto',
@@ -195,7 +204,6 @@ export default function Hero() {
           objectPosition: 'center bottom',
           zIndex: 33,
           animationDelay: '0.1s',
-          bottom: '-191px',
           transform: 'translateX(-50%)',
         }}
       />
