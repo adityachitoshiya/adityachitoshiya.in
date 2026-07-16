@@ -138,7 +138,8 @@ export default function Hero() {
           AC.
         </span>
 
-        <div className="hidden md:flex items-center gap-10">
+        {/* Center Nav Links - Absolute Position for perfect centering */}
+        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-10">
           {navLinks.map((link) => (
             <a key={link.label} href={link.href} className="ac-nav-link ac-body text-sm tracking-wide">
               {link.label}
