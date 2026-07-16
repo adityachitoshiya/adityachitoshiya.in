@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Dancing+Script:wght@400..700&family=Inter:wght@100..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-primary font-body antialiased;
+  }
+}
+
+/* Custom rounded utility for pill images */
+@layer utilities {
+  .pill-shape {
+    border-radius: 9999px; /* Very large border radius */
+  }
+}
