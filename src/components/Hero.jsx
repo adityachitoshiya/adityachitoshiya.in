@@ -167,18 +167,18 @@ export default function Hero() {
 
       </div>
 
-      {/* Tagline + Presented By */}
-      <div className="relative z-20 flex flex-col md:flex-row items-center md:items-end justify-between gap-2 px-6 md:px-14 pb-6 text-center md:text-left mt-8 md:mt-0">
-        <p className="ac-body text-sm md:text-base" style={{ color: 'rgba(255,255,255,0.75)' }}>
+      {/* --- DESKTOP Tagline + Presented By --- */}
+      <div className="hidden md:flex relative z-20 flex-row items-end justify-between gap-2 px-14 pb-6 text-left mt-0 w-full">
+        <p className="ac-body text-base" style={{ color: 'rgba(255,255,255,0.75)' }}>
           {hero.tagline}
         </p>
-        <p className="ac-body text-sm md:text-base" style={{ color: 'rgba(255,255,255,0.75)' }}>
+        <p className="ac-body text-base" style={{ color: 'rgba(255,255,255,0.75)' }}>
           {hero.presentedBy}
         </p>
       </div>
 
-      {/* Footer row: icons + website */}
-      <div className="relative z-20 flex items-center justify-between px-6 md:px-14 pb-6 md:pb-10">
+      {/* --- DESKTOP Footer row: icons + website --- */}
+      <div className="hidden md:flex relative z-20 items-center justify-between px-14 pb-10 w-full">
         <div className="flex items-center gap-3">
           <button className="ac-icon-btn" aria-label="Search">
             <Search size={16} />
@@ -187,9 +187,28 @@ export default function Hero() {
             <Play size={14} fill="#0a0a0a" />
           </button>
         </div>
-        <p className="ac-body text-xs md:text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>
+        <p className="ac-body text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>
           {global.website}
         </p>
+      </div>
+
+      {/* --- MOBILE Bottom Content --- */}
+      <div className="md:hidden absolute bottom-0 left-0 w-full z-40 flex flex-col items-center pb-6 pt-32 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/90 to-transparent gap-2 px-6">
+        <p className="ac-body text-sm text-center drop-shadow-md" style={{ color: 'rgba(255,255,255,0.9)' }}>
+          {hero.tagline}
+        </p>
+        <p className="ac-body text-sm text-center drop-shadow-md" style={{ color: '#f5a623' }}>
+          {hero.presentedBy}
+        </p>
+        <div className="flex w-full items-center justify-between mt-4">
+          <div className="flex items-center gap-3">
+            <button className="ac-icon-btn" aria-label="Search"><Search size={16} /></button>
+            <button className="ac-icon-btn" aria-label="Play showreel"><Play size={14} fill="#0a0a0a" /></button>
+          </div>
+          <p className="ac-body text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
+            {global.website}
+          </p>
+        </div>
       </div>
 
       <img
