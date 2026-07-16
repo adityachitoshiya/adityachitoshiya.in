@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Play, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { usePortfolio } from '../context/PortfolioContext';
 
 const navLinks = [
@@ -168,20 +169,28 @@ export default function Hero() {
         </div>
       </nav>
 
-      {menuOpen && (
-        <div className="md:hidden relative z-30 flex flex-col gap-4 px-6 pb-6 ac-body">
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="text-white text-sm"
-              onClick={() => setMenuOpen(false)}
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-      )}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, height: 0 }}
+            animate={{ opacity: 1, y: 0, height: 'auto' }}
+            exit={{ opacity: 0, y: -20, height: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="md:hidden relative z-30 flex flex-col gap-4 px-6 pb-6 ac-body overflow-hidden"
+          >
+            {navLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-white text-sm py-2 border-b border-white/5 last:border-0"
+                onClick={() => setMenuOpen(false)}
+              >
+                {link.label}
+              </a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Headline block */}
       <div className="relative flex-1 flex items-center justify-center px-4">
