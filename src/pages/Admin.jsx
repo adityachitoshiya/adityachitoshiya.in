@@ -9,9 +9,43 @@ const Admin = () => {
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
 
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+    const [loginError, setLoginError] = useState('');
+    const [loggingIn, setLoggingIn] = useState(false);
+
     useEffect(() => {
+        if (sessionStorage.getItem('adminAuth') === 'true') {
+            setIsAuthenticated(true);
+        }
         fetchData();
     }, []);
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setLoggingIn(true);
+        setLoginError('');
+
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(loginForm)
+            });
+            const result = await res.json();
+            
+            if (result.success) {
+                setIsAuthenticated(true);
+                sessionStorage.setItem('adminAuth', 'true');
+            } else {
+                setLoginError(result.message || 'Invalid credentials');
+            }
+        } catch (err) {
+            setLoginError('Server error, please try again.');
+        } finally {
+            setLoggingIn(false);
+        }
+    };
 
     const fetchData = async () => {
         try {
@@ -24,6 +58,65 @@ const Admin = () => {
             setLoading(false);
         }
     };
+
+    if (loading) {
+        return <div className="min-h-screen bg-background text-accent flex items-center justify-center font-heading text-2xl uppercase tracking-widest">Loading...</div>;
+    }
+
+    if (!isAuthenticated) {
+        return (
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white/5 border border-white/10 p-8 rounded-2xl w-full max-w-md"
+                >
+                    <div className="text-center mb-8">
+                        <h1 className="text-3xl font-heading text-accent uppercase tracking-widest mb-2">Admin Login</h1>
+                        <p className="text-muted text-sm">Enter your credentials to access the dashboard</p>
+                    </div>
+
+                    <form onSubmit={handleLogin} className="flex flex-col gap-4">
+                        <div>
+                            <label className="block text-white text-sm mb-2">Username</label>
+                            <input 
+                                type="text" 
+                                required
+                                value={loginForm.username} 
+                                onChange={(e) => setLoginForm({...loginForm, username: e.target.value})} 
+                                className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" 
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-white text-sm mb-2">Password</label>
+                            <input 
+                                type="password" 
+                                required
+                                value={loginForm.password} 
+                                onChange={(e) => setLoginForm({...loginForm, password: e.target.value})} 
+                                className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" 
+                            />
+                        </div>
+                        
+                        {loginError && <p className="text-red-500 text-sm">{loginError}</p>}
+
+                        <button 
+                            type="submit" 
+                            disabled={loggingIn}
+                            className="w-full bg-accent text-background font-bold uppercase tracking-widest p-4 rounded-lg mt-4 flex justify-center items-center gap-2 hover:bg-accent/90 transition-colors disabled:opacity-50"
+                        >
+                            {loggingIn ? <Loader2 className="animate-spin" size={18} /> : null}
+                            {loggingIn ? 'Authenticating...' : 'Login'}
+                        </button>
+                        
+                        <Link to="/" className="text-center text-muted text-sm mt-4 hover:text-white transition-colors">
+                            Return to Website
+                        </Link>
+                    </form>
+                </motion.div>
+            </div>
+        );
+    }
 
     const handleSave = async () => {
         setSaving(true);
