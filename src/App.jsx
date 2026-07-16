@@ -10,6 +10,7 @@ import ProjectGallery from './components/ProjectGallery';
 import LatestProject from './components/LatestProject';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import BackToTop from './components/BackToTop';
 
 import { PortfolioProvider } from './context/PortfolioContext';
 import Admin from './pages/Admin';
@@ -28,6 +29,7 @@ const Portfolio = () => (
         <Contact />
       </main>
       <Footer />
+      <BackToTop />
     </>
 );
 
