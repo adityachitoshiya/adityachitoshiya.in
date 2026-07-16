@@ -190,12 +190,12 @@ export default function Hero() {
         style={{
           width: 'clamp(280px, 70vw, 800px)',
           height: 'auto',
-          maxHeight: '80vh',
+          maxHeight: '95vh',
           objectFit: 'contain',
-          objectPosition: 'bottom',
-          zIndex: 10,
+          objectPosition: 'center bottom',
+          zIndex: 33,
           animationDelay: '0.1s',
-          bottom: 0,
+          bottom: '-191px',
           transform: 'translateX(-50%)',
         }}
       />
