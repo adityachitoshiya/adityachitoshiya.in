@@ -116,6 +116,36 @@ const Admin = () => {
                     </div>
                 )}
 
+                {/* Section: Global Settings */}
+                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h2 className="text-2xl font-heading text-accent mb-2 uppercase tracking-wider">Availability Status</h2>
+                            <p className="text-muted text-sm">Toggle whether you are currently taking on new projects.</p>
+                        </div>
+                        <button
+                            onClick={() => handleTextChange({ target: { value: !data.global?.availableForWork } }, 'global', 'availableForWork')}
+                            className="relative flex items-center rounded-full transition-colors"
+                            style={{ 
+                                width: 52, height: 28, 
+                                background: data.global?.availableForWork ? '#f5a623' : '#333', 
+                                padding: '4px' 
+                            }}
+                        >
+                            <span
+                                style={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 9999,
+                                    background: '#0a0a0a',
+                                    transform: data.global?.availableForWork ? 'translateX(24px)' : 'translateX(0px)',
+                                    transition: 'transform 0.25s ease',
+                                }}
+                            />
+                        </button>
+                    </div>
+                </section>
+
                 {/* Section: Hero */}
                 <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
                     <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Hero Section</h2>

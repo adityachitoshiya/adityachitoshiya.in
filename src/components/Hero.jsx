@@ -14,7 +14,6 @@ export default function Hero() {
   const global = portfolioData?.global || {};
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [toggled, setToggled] = useState(true);
 
   return (
     <section
@@ -93,23 +92,15 @@ export default function Hero() {
         </div>
 
         <div className="flex items-center gap-4">
-          <button
-            aria-label="Toggle theme"
-            onClick={() => setToggled((t) => !t)}
-            className="ac-toggle hidden md:flex items-center rounded-full"
-            style={{ width: 52, height: 28, background: '#f5a623', padding: '4px' }}
-          >
-            <span
-              style={{
-                width: 20,
-                height: 20,
-                borderRadius: 9999,
-                background: '#0a0a0a',
-                transform: toggled ? 'translateX(24px)' : 'translateX(0px)',
-                transition: 'transform 0.25s ease',
-              }}
-            />
-          </button>
+          {/* Availability Status Badge */}
+          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5">
+            <span 
+              className={`w-2 h-2 rounded-full ${global.availableForWork ? 'bg-[#f5a623] shadow-[0_0_8px_#f5a623]' : 'bg-gray-500'}`}
+            ></span>
+            <span className="ac-body text-xs text-white/80 tracking-wide uppercase">
+              {global.availableForWork ? 'Available for Projects' : 'Currently Booked'}
+            </span>
+          </div>
 
           <button
             aria-label="Open menu"
