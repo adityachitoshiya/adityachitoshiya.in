@@ -156,6 +156,22 @@ export default function Hero() {
           {hero.accentWord}
         </span>
 
+        <img
+          src={hero.heroImage}
+          alt={global.name}
+          className="ac-slide-up-image absolute left-1/2"
+          style={{
+            width: 'clamp(350px, 50vw, 800px)',
+            height: 'auto',
+            maxHeight: '85vh',
+            objectFit: 'contain',
+            objectPosition: 'bottom',
+            zIndex: 10,
+            animationDelay: '0.1s',
+            bottom: 0,
+            transform: 'translateX(-50%)',
+          }}
+        />
       </div>
 
       {/* Tagline + Presented By */}
@@ -183,21 +199,6 @@ export default function Hero() {
         </p>
       </div>
 
-      <img
-        src={hero.heroImage}
-        alt={global.name}
-        className="ac-slide-up-image absolute left-1/2"
-        style={{
-          width: 'clamp(350px, 50vw, 800px)',
-          height: 'auto',
-          maxHeight: '92vh',
-          objectFit: 'contain',
-          objectPosition: 'bottom',
-          zIndex: 10,
-          animationDelay: '0.1s',
-          bottom: '-15vh',
-        }}
-      />
     </section>
   );
 }
