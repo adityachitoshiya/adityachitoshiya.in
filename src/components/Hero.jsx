@@ -81,7 +81,53 @@ export default function Hero() {
             bottom: -50px;
           }
         }
+
+        .bg-grid-pattern {
+          background-size: 40px 40px;
+          background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+          mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+        }
+
+        .ac-marquee {
+          white-space: nowrap;
+          overflow: hidden;
+          position: absolute;
+          top: 45%;
+          left: 0;
+          width: 100vw;
+          transform: translateY(-50%) rotate(-2deg);
+          pointer-events: none;
+          z-index: 5;
+          opacity: 0.03;
+        }
+
+        .ac-marquee span {
+          display: inline-block;
+          padding-left: 2rem;
+          font-family: 'Anton', sans-serif;
+          font-size: clamp(8rem, 25vw, 30rem);
+          color: transparent;
+          -webkit-text-stroke: 2px #ffffff;
+          animation: marquee 40s linear infinite;
+        }
+
+        @keyframes marquee {
+          0% { transform: translate(0, 0); }
+          100% { transform: translate(-50%, 0); }
+        }
       `}</style>
+
+      {/* --- Ambient Background Effects --- */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-grid-pattern opacity-50"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] md:w-[800px] md:h-[800px] bg-[#f5a623] rounded-full blur-[120px] md:blur-[180px] opacity-[0.15] md:opacity-10 mix-blend-screen"></div>
+      </div>
+
+      {/* --- Marquee Text Background --- */}
+      <div className="ac-marquee">
+        <span>{hero.headline} {hero.headline} {hero.headline} {hero.headline} {hero.headline} {hero.headline}</span>
+      </div>
 
       {/* Nav */}
       <nav className="relative z-30 flex items-center justify-between px-6 md:px-14 py-6 md:py-8">
