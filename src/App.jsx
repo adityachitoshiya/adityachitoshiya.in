@@ -16,6 +16,7 @@ import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import Admin from './pages/Admin';
 import CreativesPage from './pages/CreativesPage';
 import ProjectDetail from './pages/ProjectDetail';
+import AboutPage from './pages/AboutPage';
 
 const CreativesRoute = () => {
   const { portfolioData } = usePortfolio();
@@ -80,6 +81,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Portfolio />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/creatives" element={<CreativesRoute />} />
             <Route path="/work/:slug" element={<ProjectRoute />} />
             <Route path="/admin" element={<Admin />} />

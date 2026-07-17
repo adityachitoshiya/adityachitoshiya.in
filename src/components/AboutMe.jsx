@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { usePortfolio } from '../context/PortfolioContext';
+import { Link } from 'react-router-dom';
 import Button from './Button';
 
 const AboutMe = () => {
@@ -25,7 +26,9 @@ const AboutMe = () => {
           <p className="text-muted text-lg md:text-xl leading-relaxed mb-10 font-light">
             {aboutMe.text}
           </p>
-          <Button>Learn More</Button>
+          <Link to="/about">
+            <Button>Learn More</Button>
+          </Link>
         </motion.div>
 
         {/* Right Column - Large Image */}
