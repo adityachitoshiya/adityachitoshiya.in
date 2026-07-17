@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Save, Loader2, ArrowLeft } from 'lucide-react';
+import { Upload, Save, Loader2, ArrowLeft, Plus, Trash2, X as XIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Admin = () => {
@@ -180,6 +180,96 @@ const Admin = () => {
         }));
     };
 
+    const handleProjectChange = (index, field, value) => {
+        setData(prev => {
+            const newProjects = [...(prev.projectPortfolio?.projects || [])];
+            newProjects[index] = { ...newProjects[index], [field]: value };
+            if (field === 'name') {
+                newProjects[index].slug = value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+            }
+            return {
+                ...prev,
+                projectPortfolio: { ...prev.projectPortfolio, projects: newProjects }
+            };
+        });
+    };
+
+    const handleAddProject = () => {
+        setData(prev => {
+            const newProject = {
+                name: "New Project",
+                slug: "new-project",
+                type: "Category",
+                description: "",
+                year: new Date().getFullYear().toString(),
+                role: "",
+                coverImage: "https://placehold.co/800x1000/0a0a0a/f5a623?text=New+Project",
+                gallery: []
+            };
+            const currentProjects = prev.projectPortfolio?.projects || [];
+            return {
+                ...prev,
+                projectPortfolio: {
+                    ...prev.projectPortfolio,
+                    projects: [newProject, ...currentProjects]
+                }
+            };
+        });
+    };
+
+    const handleDeleteProject = (index) => {
+        if (!window.confirm('Are you sure you want to delete this project?')) return;
+        setData(prev => {
+            const newProjects = prev.projectPortfolio.projects.filter((_, i) => i !== index);
+            return {
+                ...prev,
+                projectPortfolio: { ...prev.projectPortfolio, projects: newProjects }
+            };
+        });
+    };
+
+    const handleProjectFileUpload = async (e, index, isCover, galleryIndex = null) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploading(true);
+        const formData = new FormData();
+        formData.append('media', file);
+
+        try {
+            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+            const result = await res.json();
+            
+            if (result.success) {
+                setData(prev => {
+                    const newProjects = [...prev.projectPortfolio.projects];
+                    if (isCover) {
+                        newProjects[index].coverImage = result.url;
+                    } else if (galleryIndex !== null) {
+                        newProjects[index].gallery[galleryIndex] = result.url;
+                    } else {
+                        if (!newProjects[index].gallery) newProjects[index].gallery = [];
+                        newProjects[index].gallery.push(result.url);
+                    }
+                    return { ...prev, projectPortfolio: { ...prev.projectPortfolio, projects: newProjects } };
+                });
+            }
+        } catch (err) {
+            console.error("Upload failed:", err);
+            alert("File upload failed.");
+        } finally {
+            setUploading(false);
+        }
+    };
+    
+    const handleRemoveGalleryImage = (projectIndex, galleryIndex) => {
+        setData(prev => {
+            const newProjects = [...prev.projectPortfolio.projects];
+            newProjects[projectIndex].gallery = newProjects[projectIndex].gallery.filter((_, i) => i !== galleryIndex);
+            return { ...prev, projectPortfolio: { ...prev.projectPortfolio, projects: newProjects } };
+        });
+    };
+
     if (loading) return <div className="min-h-screen flex items-center justify-center bg-background text-primary"><Loader2 className="animate-spin" size={48} /></div>;
     if (!data) return <div className="text-white">Error loading data.</div>;
 
@@ -282,6 +372,79 @@ const Admin = () => {
                                 <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'welcome', 'image2')} accept="image/*,video/*" />
                             </label>
                         </div>
+                    </div>
+                </section>
+
+                {/* Section: Project Portfolio (Creatives) */}
+                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">Creatives (Projects)</h2>
+                        <button onClick={handleAddProject} className="bg-accent text-background px-4 py-2 rounded-full font-bold uppercase tracking-wider flex items-center gap-2 hover:scale-105 transition-all text-sm">
+                            <Plus size={16} /> Add Project
+                        </button>
+                    </div>
+                    
+                    <div className="flex flex-col gap-8">
+                        {data.projectPortfolio?.projects?.map((project, pIdx) => (
+                            <div key={pIdx} className="bg-background border border-white/10 p-6 rounded-xl relative group">
+                                <button onClick={() => handleDeleteProject(pIdx)} className="absolute top-4 right-4 text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-2 bg-white/5 rounded-lg">
+                                    <Trash2 size={18} />
+                                </button>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label className="block text-muted text-sm mb-2">Project Name</label>
+                                        <input value={project.name || ''} onChange={(e) => handleProjectChange(pIdx, 'name', e.target.value)} className="w-full bg-white/5 border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-muted text-sm mb-2">Type / Category</label>
+                                        <input value={project.type || ''} onChange={(e) => handleProjectChange(pIdx, 'type', e.target.value)} className="w-full bg-white/5 border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <label className="block text-muted text-sm mb-2">Description</label>
+                                        <textarea value={project.description || ''} onChange={(e) => handleProjectChange(pIdx, 'description', e.target.value)} className="w-full bg-white/5 border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none h-24 resize-none" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-muted text-sm mb-2">Year</label>
+                                        <input value={project.year || ''} onChange={(e) => handleProjectChange(pIdx, 'year', e.target.value)} className="w-full bg-white/5 border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-muted text-sm mb-2">Role</label>
+                                        <input value={project.role || ''} onChange={(e) => handleProjectChange(pIdx, 'role', e.target.value)} className="w-full bg-white/5 border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                                    </div>
+                                </div>
+                                
+                                <div className="mb-6">
+                                    <label className="block text-muted text-sm mb-2">Cover Image</label>
+                                    <div className="flex items-center gap-4">
+                                        <img src={project.coverImage} alt="Cover" className="w-32 h-32 object-cover rounded-lg" />
+                                        <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                                            <Upload size={16} /> Replace Cover
+                                            <input type="file" className="hidden" onChange={(e) => handleProjectFileUpload(e, pIdx, true)} accept="image/*,video/*" />
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-muted text-sm mb-2">Gallery Images</label>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        {project.gallery?.map((img, gIdx) => (
+                                            <div key={gIdx} className="relative group/gal">
+                                                <img src={img} alt={`Gallery ${gIdx}`} className="w-full h-24 object-cover rounded-lg" />
+                                                <button onClick={() => handleRemoveGalleryImage(pIdx, gIdx)} className="absolute top-2 right-2 bg-red-500/80 hover:bg-red-500 text-white p-1 rounded-md opacity-0 group-hover/gal:opacity-100 transition-opacity">
+                                                    <XIcon size={14} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                        <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center h-24 transition-colors">
+                                            <Plus size={20} className="text-white/50 mb-1" />
+                                            <span className="text-xs text-white/50">Add Image</span>
+                                            <input type="file" className="hidden" onChange={(e) => handleProjectFileUpload(e, pIdx, false)} accept="image/*,video/*" />
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </section>
 
