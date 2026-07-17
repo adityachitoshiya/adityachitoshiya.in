@@ -9,6 +9,7 @@ const Admin = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [activeTab, setActiveTab] = useState('global');
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loginForm, setLoginForm] = useState({ username: '', password: '' });
@@ -300,7 +301,23 @@ const Admin = () => {
                     </div>
                 )}
 
+                {/* Tab Navigation */}
+                <div className="flex flex-wrap gap-4 mb-8 border-b border-white/10 pb-4">
+                    {['global', 'hero', 'welcome', 'creatives', 'gallery'].map(tab => (
+                        <button
+                            key={tab}
+                            onClick={() => setActiveTab(tab)}
+                            className={`px-4 py-2 rounded-full uppercase tracking-wider font-heading text-sm transition-colors ${
+                                activeTab === tab ? 'bg-accent text-background' : 'bg-white/5 text-muted hover:bg-white/10 hover:text-white'
+                            }`}
+                        >
+                            {tab === 'creatives' ? 'Projects' : tab}
+                        </button>
+                    ))}
+                </div>
+
                 {/* Section: Global Settings */}
+                {activeTab === 'global' && (
                 <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
                     <div className="flex items-center justify-between">
                         <div>
@@ -329,8 +346,10 @@ const Admin = () => {
                         </button>
                     </div>
                 </section>
+                )}
 
                 {/* Section: Hero */}
+                {activeTab === 'hero' && (
                 <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
                     <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Hero Section</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -352,8 +371,10 @@ const Admin = () => {
                         </div>
                     </div>
                 </section>
+                )}
 
                 {/* Section: Welcome */}
+                {activeTab === 'welcome' && (
                 <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
                     <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Welcome Section</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -375,8 +396,10 @@ const Admin = () => {
                         </div>
                     </div>
                 </section>
+                )}
 
                 {/* Section: Project Portfolio (Creatives) */}
+                {activeTab === 'creatives' && (
                 <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">Creatives (Projects)</h2>
@@ -448,8 +471,10 @@ const Admin = () => {
                         ))}
                     </div>
                 </section>
+                )}
 
                 {/* Section: Project Gallery Images */}
+                {activeTab === 'gallery' && (
                 <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
                     <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Gallery Images</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -464,6 +489,7 @@ const Admin = () => {
                         ))}
                     </div>
                 </section>
+                )}
 
                 {/* Notice */}
                 <p className="text-muted text-center italic mt-12 mb-8">
