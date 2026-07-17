@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import SimpleFooter from '../components/SimpleFooter';
 import BackToTop from '../components/BackToTop';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
@@ -144,7 +144,7 @@ export default function ProjectDetail({ project, allProjects, global, onBack, on
         </div>
       </main>
 
-      <Footer />
+      <SimpleFooter />
       <BackToTop />
     </div>
   );

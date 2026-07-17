@@ -68,6 +68,7 @@ const Portfolio = () => (
         <LatestProject />
         <Contact />
       </main>
+      <Footer />
       <BackToTop />
     </>
 );

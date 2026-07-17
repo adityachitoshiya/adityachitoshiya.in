@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import SimpleFooter from '../components/SimpleFooter';
 import BackToTop from '../components/BackToTop';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
@@ -64,7 +64,7 @@ export default function CreativesPage({ projects, global, onSelectProject }) {
         </div>
       </main>
 
-      <Footer />
+      <SimpleFooter />
       <BackToTop />
     </div>
   );
