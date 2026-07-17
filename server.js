@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
@@ -74,6 +75,21 @@ app.post('/api/portfolio', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Server Error", details: err.message });
+    }
+});
+
+// POST for login
+app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
+    
+    // Check against environment variables
+    const validUsername = process.env.ADMIN_USERNAME || 'admin';
+    const validPassword = process.env.ADMIN_PASSWORD || 'password';
+
+    if (username === validUsername && password === validPassword) {
+        res.json({ success: true });
+    } else {
+        res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 });
 
