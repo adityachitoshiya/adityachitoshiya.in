@@ -5,9 +5,6 @@ import BackToTop from '../components/BackToTop';
 import { motion } from 'framer-motion';
 import { Download } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
-import Education from '../components/Education';
-import WorkExperience from '../components/WorkExperience';
-
 export default function AboutPage() {
   const { portfolioData } = usePortfolio();
   const { aboutMe, global } = portfolioData;
@@ -19,6 +16,16 @@ export default function AboutPage() {
   const skills = [
     'Brand Identity', 'Motion Graphics', 'UI/UX Design', 'Video Editing', 
     'Post Production', '3D Design', 'Thumbnails', 'Generative AI'
+  ];
+
+  const currentFocusItems = [
+    { title: "Product Design", desc: "Crafting intuitive product designs tailored for new startups and emerging brands." },
+    { title: "Brand Guidelines", desc: "Developing cohesive and impactful brand identity and guideline designs." },
+    { title: "Typography Making", desc: "Designing custom typography and expressive letterforms." },
+    { title: "Influencer Marketing", desc: "Managing influencer campaigns and handling celebrity communications." },
+    { title: "Film & Short Movies", desc: "Contributing to creative direction and production in filmmaking." },
+    { title: "Storytelling", desc: "Weaving compelling narratives that connect brands with their audiences." },
+    { title: "Content Writing", desc: "Drafting engaging, purposeful copy across digital platforms." }
   ];
 
   return (
@@ -92,11 +99,32 @@ export default function AboutPage() {
             </div>
         </section>
 
-        {/* Work Experience Component (re-used) */}
-        <WorkExperience />
-
-        {/* Education Component (re-used) */}
-        <Education />
+        {/* What I Do Currently Section */}
+        <section className="px-6 md:px-14 mb-20 max-w-[1440px] mx-auto border-t border-white/10 pt-20 mt-20">
+            <motion.h2 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-4xl md:text-5xl font-heading uppercase tracking-wider mb-12 text-white"
+            >
+                What I Do Currently
+            </motion.h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {currentFocusItems.map((item, idx) => (
+                    <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: idx * 0.1 }}
+                        className="bg-white/5 border border-white/10 p-8 rounded-2xl hover:border-white/30 transition-colors"
+                    >
+                        <h3 className="text-[#f5a623] font-heading text-2xl tracking-wide mb-4 uppercase">{item.title}</h3>
+                        <p className="text-white/70 ac-body text-sm leading-relaxed">{item.desc}</p>
+                    </motion.div>
+                ))}
+            </div>
+        </section>
 
       </main>
 
