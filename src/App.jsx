@@ -12,6 +12,7 @@ import LatestProject from './components/LatestProject';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
+import ThemeProvider from './components/ThemeProvider';
 
 import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import Admin from './pages/Admin';
@@ -80,15 +81,17 @@ function App() {
   return (
     <div className="bg-background min-h-screen text-primary selection:bg-accent selection:text-background overflow-x-hidden">
       <PortfolioProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Portfolio />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/creatives" element={<CreativesRoute />} />
-            <Route path="/work/:slug" element={<ProjectRoute />} />
-            <Route path="/admin" element={<Admin />} />
-          </Routes>
-        </Router>
+        <ThemeProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Portfolio />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/creatives" element={<CreativesRoute />} />
+              <Route path="/work/:slug" element={<ProjectRoute />} />
+              <Route path="/admin" element={<Admin />} />
+            </Routes>
+          </Router>
+        </ThemeProvider>
       </PortfolioProvider>
     </div>
   );

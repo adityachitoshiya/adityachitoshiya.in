@@ -7,15 +7,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#0A0A0A',
-        primary: '#FFFFFF',
-        muted: '#B3B3B3',
-        accent: '#F5A623',
+        background: 'var(--color-background, #0A0A0A)',
+        primary: 'var(--color-primary, #FFFFFF)',
+        muted: 'var(--color-muted, #B3B3B3)',
+        accent: 'var(--color-accent, #F5A623)',
       },
       fontFamily: {
-        heading: ['Anton', 'sans-serif'],
-        body: ['Inter', 'sans-serif'],
-        script: ['Dancing Script', 'cursive'],
+        heading: ['var(--font-heading, "Anton")', 'sans-serif'],
+        body: ['var(--font-body, "Inter")', 'sans-serif'],
+        script: ['var(--font-script, "Dancing Script")', 'cursive'],
       },
     },
   },

@@ -319,7 +319,9 @@ const Admin = () => {
                 {/* Section: Global Settings */}
                 {activeTab === 'global' && (
                 <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <div className="flex items-center justify-between">
+                    
+                    {/* Availability Toggle */}
+                    <div className="flex items-center justify-between mb-12 border-b border-white/10 pb-8">
                         <div>
                             <h2 className="text-2xl font-heading text-accent mb-2 uppercase tracking-wider">Availability Status</h2>
                             <p className="text-muted text-sm">Toggle whether you are currently taking on new projects.</p>
@@ -344,6 +346,94 @@ const Admin = () => {
                                 }}
                             />
                         </button>
+                    </div>
+
+                    {/* Theme Editor */}
+                    <div>
+                        <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Theme Controls</h2>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            {/* Colors */}
+                            <div>
+                                <h3 className="text-sm uppercase tracking-widest text-white/50 mb-4 font-semibold">Colors</h3>
+                                <div className="space-y-4">
+                                    {[
+                                        { key: 'background', label: 'Background Color', default: '#0A0A0A' },
+                                        { key: 'primary', label: 'Primary Text', default: '#FFFFFF' },
+                                        { key: 'muted', label: 'Muted Text', default: '#B3B3B3' },
+                                        { key: 'accent', label: 'Accent Color', default: '#F5A623' }
+                                    ].map(color => (
+                                        <div key={color.key} className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
+                                            <label className="text-white text-sm">{color.label}</label>
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-xs text-muted uppercase font-mono">{data.global?.theme?.colors?.[color.key] || color.default}</span>
+                                                <input 
+                                                    type="color" 
+                                                    value={data.global?.theme?.colors?.[color.key] || color.default} 
+                                                    onChange={(e) => {
+                                                        setData(prev => ({
+                                                            ...prev,
+                                                            global: {
+                                                                ...prev.global,
+                                                                theme: {
+                                                                    ...prev.global?.theme,
+                                                                    colors: {
+                                                                        ...(prev.global?.theme?.colors || {}),
+                                                                        [color.key]: e.target.value
+                                                                    }
+                                                                }
+                                                            }
+                                                        }));
+                                                    }}
+                                                    className="w-8 h-8 rounded cursor-pointer border-none p-0 bg-transparent"
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Fonts */}
+                            <div>
+                                <h3 className="text-sm uppercase tracking-widest text-white/50 mb-4 font-semibold">Fonts (Google Fonts)</h3>
+                                <div className="space-y-4">
+                                    {[
+                                        { key: 'heading', label: 'Heading Font', default: 'Anton' },
+                                        { key: 'body', label: 'Body Font', default: 'Inter' },
+                                        { key: 'script', label: 'Script Font', default: 'Dancing Script' }
+                                    ].map(font => (
+                                        <div key={font.key}>
+                                            <label className="block text-white text-sm mb-2">{font.label}</label>
+                                            <input 
+                                                type="text" 
+                                                value={data.global?.theme?.fonts?.[font.key] || font.default} 
+                                                onChange={(e) => {
+                                                    setData(prev => ({
+                                                        ...prev,
+                                                        global: {
+                                                            ...prev.global,
+                                                            theme: {
+                                                                ...prev.global?.theme,
+                                                                fonts: {
+                                                                    ...(prev.global?.theme?.fonts || {}),
+                                                                    [font.key]: e.target.value
+                                                                }
+                                                            }
+                                                        }
+                                                    }));
+                                                }}
+                                                className="w-full bg-white/5 border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none font-mono text-sm" 
+                                                placeholder="e.g. Roboto"
+                                            />
+                                        </div>
+                                    ))}
+                                    <p className="text-xs text-muted italic mt-2">
+                                        Note: Font names must exactly match Google Fonts (e.g., 'Playfair Display'). The system will automatically load them.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </section>
                 )}
