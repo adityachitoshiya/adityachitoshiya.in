@@ -32,7 +32,7 @@ const Navbar = () => {
     >
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 flex justify-between items-center">
         {/* Logo */}
-        <a href="#home" className="text-accent font-heading text-2xl tracking-widest uppercase">
+        <a href="/#home" className="text-accent font-heading text-2xl tracking-widest uppercase">
           {portfolioData.global.name.split(' ')[0]}
         </a>
 
