@@ -1,7 +1,7 @@
-import formidable from 'formidable';
+import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import dotenv from 'dotenv';
-import os from 'os';
 dotenv.config();
 
 cloudinary.config({
@@ -16,45 +16,33 @@ export const config = {
     },
 };
 
-export default async function handler(req, res) {
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'portfolio_uploads',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'webp', 'mp4', 'mov'],
+  },
+});
+
+const upload = multer({ storage: storage });
+
+export default function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: "Method Not Allowed" });
     }
 
-    const form = formidable({ 
-        multiples: false,
-        uploadDir: os.tmpdir(),
-        keepExtensions: true
-    });
+    upload.single('media')(req, res, (err) => {
+        if (err) {
+            console.error("Multer Error:", err);
+            return res.status(500).json({ success: false, message: 'Upload failed', details: err.message });
+        }
 
-    return new Promise((resolve) => {
-        form.parse(req, async (err, fields, files) => {
-            if (err) {
-                console.error("Formidable Error:", err);
-                res.status(500).json({ success: false, message: 'Upload parsing failed', details: err.message });
-                return resolve();
-            }
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'No file uploaded' });
+        }
 
-            const fileArray = Array.isArray(files.media) ? files.media : [files.media];
-            const file = fileArray[0];
-
-            if (!file) {
-                res.status(400).json({ success: false, message: 'No file uploaded' });
-                return resolve();
-            }
-
-            try {
-                const result = await cloudinary.uploader.upload(file.filepath || file.path, {
-                    folder: 'portfolio_uploads',
-                    resource_type: 'auto'
-                });
-                res.status(200).json({ success: true, url: result.secure_url });
-                return resolve();
-            } catch (uploadErr) {
-                console.error("Cloudinary Upload Error:", uploadErr);
-                res.status(500).json({ success: false, message: 'Cloudinary upload failed', details: uploadErr.message });
-                return resolve();
-            }
-        });
+        // Cloudinary automatically adds 'path' (secure_url) to req.file
+        const fileUrl = req.file.path;
+        return res.status(200).json({ success: true, url: fileUrl });
     });
 }
