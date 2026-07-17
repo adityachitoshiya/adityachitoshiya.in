@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, Save, Loader2, ArrowLeft, Plus, Trash2, X as XIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import LoadingScreen from '../components/LoadingScreen';
 
 const Admin = () => {
     const [data, setData] = useState(null);
@@ -60,7 +61,7 @@ const Admin = () => {
     };
 
     if (loading) {
-        return <div className="min-h-screen bg-background text-accent flex items-center justify-center font-heading text-2xl uppercase tracking-widest">Loading...</div>;
+        return <LoadingScreen />;
     }
 
     if (!isAuthenticated) {
@@ -270,7 +271,7 @@ const Admin = () => {
         });
     };
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center bg-background text-primary"><Loader2 className="animate-spin" size={48} /></div>;
+    if (loading) return <LoadingScreen />;
     if (!data) return <div className="text-white">Error loading data.</div>;
 
     return (

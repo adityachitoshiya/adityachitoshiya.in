@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import LoadingScreen from '../components/LoadingScreen';
 
 const PortfolioContext = createContext();
 
@@ -22,7 +23,7 @@ export const PortfolioProvider = ({ children }) => {
     }, []);
 
     if (loading) {
-        return <div className="min-h-screen bg-background flex items-center justify-center text-accent font-heading text-2xl tracking-widest uppercase">Loading...</div>;
+        return <LoadingScreen />;
     }
 
     if (!data) {

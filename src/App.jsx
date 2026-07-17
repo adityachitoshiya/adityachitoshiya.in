@@ -5,6 +5,8 @@ import WelcomeBanner from './components/WelcomeBanner';
 import Introduction from './components/Introduction';
 import AboutMe from './components/AboutMe';
 import CurrentFocus from './components/CurrentFocus';
+import Education from './components/Education';
+import WorkExperience from './components/WorkExperience';
 import ProjectGallery from './components/ProjectGallery';
 import LatestProject from './components/LatestProject';
 import Contact from './components/Contact';
@@ -63,6 +65,8 @@ const Portfolio = () => (
         <Introduction />
         <AboutMe />
         <CurrentFocus />
+        <WorkExperience />
+        <Education />
         <ProjectGallery />
         <LatestProject />
         <Contact />
