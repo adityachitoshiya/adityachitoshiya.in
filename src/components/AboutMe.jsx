@@ -23,9 +23,11 @@ const AboutMe = () => {
           <h2 className="font-heading text-5xl md:text-7xl mb-8 leading-[0.9] uppercase text-primary">
             {aboutMe.headline}
           </h2>
-          <p className="text-muted text-lg md:text-xl leading-relaxed mb-10 font-light">
-            {aboutMe.text}
-          </p>
+          <div className="text-muted text-lg md:text-xl leading-relaxed mb-10 font-light space-y-4">
+            {aboutMe.text?.split('\n').map((paragraph, index) => (
+              paragraph.trim() && <p key={index}>{paragraph}</p>
+            ))}
+          </div>
           <Link to="/about">
             <Button>Learn More</Button>
           </Link>

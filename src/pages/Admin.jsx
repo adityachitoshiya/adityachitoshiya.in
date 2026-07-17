@@ -303,7 +303,7 @@ const Admin = () => {
 
                 {/* Tab Navigation */}
                 <div className="flex flex-wrap gap-4 mb-8 border-b border-white/10 pb-4">
-                    {['global', 'hero', 'welcome', 'creatives', 'gallery', 'slideshow'].map(tab => (
+                    {['global', 'hero', 'welcome', 'about', 'creatives', 'gallery', 'slideshow', 'contact'].map(tab => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
@@ -311,7 +311,7 @@ const Admin = () => {
                                 activeTab === tab ? 'bg-accent text-background' : 'bg-white/5 text-muted hover:bg-white/10 hover:text-white'
                             }`}
                         >
-                            {tab === 'creatives' ? 'Projects' : tab === 'slideshow' ? 'Slideshow' : tab}
+                            {tab === 'creatives' ? 'Projects' : tab === 'slideshow' ? 'Slideshow' : tab === 'about' ? 'About Us' : tab === 'contact' ? 'Contact' : tab}
                         </button>
                     ))}
                 </div>
@@ -488,6 +488,35 @@ const Admin = () => {
                 </section>
                 )}
 
+                {/* Section: About Us */}
+                {activeTab === 'about' && (
+                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">About Me Section</h2>
+                    <div className="grid grid-cols-1 gap-6">
+                        <div>
+                            <label className="block text-muted text-sm mb-2">Headline</label>
+                            <input value={data.aboutMe?.headline || ''} onChange={(e) => handleTextChange(e, 'aboutMe', 'headline')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                        </div>
+                        <div>
+                            <label className="block text-muted text-sm mb-2">Biography (New lines create paragraphs)</label>
+                            <textarea 
+                                value={data.aboutMe?.text || ''} 
+                                onChange={(e) => handleTextChange(e, 'aboutMe', 'text')} 
+                                className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none h-48 resize-y" 
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-muted text-sm mb-2">Portrait Image</label>
+                            <img src={data.aboutMe?.image} alt="About Me" className="w-48 h-48 object-cover rounded-xl mb-3" />
+                            <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg inline-flex items-center justify-center gap-2 transition-colors">
+                                <Upload size={16} /> Upload New Portrait
+                                <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'aboutMe', 'image')} accept="image/*,video/*" />
+                            </label>
+                        </div>
+                    </div>
+                </section>
+                )}
+
                 {/* Section: Project Portfolio (Creatives) */}
                 {activeTab === 'creatives' && (
                 <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
@@ -629,6 +658,52 @@ const Admin = () => {
                                 }
                             }} accept="image/*,video/*" />
                         </label>
+                    </div>
+                </section>
+                )}
+
+                {/* Section: Contact */}
+                {activeTab === 'contact' && (
+                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Contact Section</h2>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <label className="block text-muted text-sm mb-2">Headline</label>
+                            <input value={data.contact?.headline || ''} onChange={(e) => handleTextChange(e, 'contact', 'headline')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                        </div>
+                        <div className="md:row-span-2">
+                            <label className="block text-muted text-sm mb-2">Contact Portrait</label>
+                            <img src={data.contact?.image} alt="Contact" className="w-full h-48 object-cover rounded-xl mb-3" />
+                            <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                                <Upload size={16} /> Upload New Portrait
+                                <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'contact', 'image')} accept="image/*,video/*" />
+                            </label>
+                        </div>
+                        <div>
+                            <label className="block text-muted text-sm mb-2">Text / Description</label>
+                            <textarea value={data.contact?.text || ''} onChange={(e) => handleTextChange(e, 'contact', 'text')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none h-32 resize-y" />
+                        </div>
+                    </div>
+
+                    <h3 className="text-lg font-heading text-white mb-4 uppercase tracking-wider border-b border-white/10 pb-2">Global Contact Info</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-muted text-sm mb-2">Email Address</label>
+                            <input value={data.global?.email || ''} onChange={(e) => handleTextChange(e, 'global', 'email')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                        </div>
+                        <div>
+                            <label className="block text-muted text-sm mb-2">Social Media Handle (e.g. @username)</label>
+                            <input value={data.global?.social || ''} onChange={(e) => handleTextChange(e, 'global', 'social')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                        </div>
+                        <div>
+                            <label className="block text-muted text-sm mb-2">Website URL</label>
+                            <input value={data.global?.website || ''} onChange={(e) => handleTextChange(e, 'global', 'website')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                        </div>
+                        <div>
+                            <label className="block text-muted text-sm mb-2">Phone Number</label>
+                            <input value={data.global?.phone || ''} onChange={(e) => handleTextChange(e, 'global', 'phone')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                        </div>
                     </div>
                 </section>
                 )}
