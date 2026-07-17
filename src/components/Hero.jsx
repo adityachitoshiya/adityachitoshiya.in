@@ -3,6 +3,7 @@ import { Search, Play, Pause, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { usePortfolio } from '../context/PortfolioContext';
+import SearchOverlay from './SearchOverlay';
 
 const navLinks = [
   { label: 'Home', href: '/#home' },
@@ -17,6 +18,7 @@ export default function Hero() {
   const global = portfolioData?.global || {};
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
 
@@ -286,7 +288,7 @@ export default function Hero() {
       {/* --- DESKTOP Footer row: icons + website --- */}
       <div className="hidden md:flex relative z-20 items-center justify-between px-14 pb-10 w-full">
         <div className="flex items-center gap-3">
-          <button className="ac-icon-btn" aria-label="Search">
+          <button className="ac-icon-btn" aria-label="Search" onClick={() => setIsSearchOpen(true)}>
             <Search size={16} />
           </button>
           <button className="ac-icon-btn" aria-label="Toggle background music" onClick={toggleAudio}>
@@ -308,7 +310,7 @@ export default function Hero() {
         </p>
         <div className="flex w-full items-center justify-between mt-4">
           <div className="flex items-center gap-3">
-            <button className="ac-icon-btn" aria-label="Search"><Search size={16} /></button>
+            <button className="ac-icon-btn" aria-label="Search" onClick={() => setIsSearchOpen(true)}><Search size={16} /></button>
             <button className="ac-icon-btn" aria-label="Toggle background music" onClick={toggleAudio}>
               {isPlaying ? <Pause size={14} fill="#0a0a0a" /> : <Play size={14} fill="#0a0a0a" />}
             </button>
@@ -334,6 +336,8 @@ export default function Hero() {
           transform: 'translateX(-50%)',
         }}
       />
+      
+      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </section>
   );
 }
