@@ -28,9 +28,9 @@ const AboutMe = () => {
               paragraph.trim() && <p key={index}>{paragraph}</p>
             ))}
           </div>
-          <Link to="/about">
+          <a href="/#contact">
             <Button>Learn More</Button>
-          </Link>
+          </a>
         </motion.div>
 
         {/* Right Column - Large Image */}
