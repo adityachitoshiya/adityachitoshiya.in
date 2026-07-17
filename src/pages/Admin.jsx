@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Save, Loader2, ArrowLeft, Plus, Trash2, X as XIcon } from 'lucide-react';
+import { Upload, Save, Loader2, ArrowLeft, Plus, Trash2, X as XIcon, Music } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import LoadingScreen from '../components/LoadingScreen';
 
@@ -346,6 +346,28 @@ const Admin = () => {
                                 }}
                             />
                         </button>
+                    </div>
+
+                    {/* Background Music */}
+                    <div className="mb-12 border-b border-white/10 pb-8">
+                        <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Background Music</h2>
+                        <div className="bg-white/5 p-4 rounded-lg border border-white/10 flex items-center justify-between gap-4">
+                            <div className="flex-1 min-w-0">
+                                <label className="block text-muted text-sm mb-2">Current Audio Track</label>
+                                {data.global?.backgroundMusic ? (
+                                    <div className="flex items-center gap-3 bg-background p-3 rounded-lg border border-white/20">
+                                        <Music size={18} className="text-accent flex-shrink-0" />
+                                        <span className="text-white text-sm truncate">{data.global.backgroundMusic.split('/').pop()}</span>
+                                    </div>
+                                ) : (
+                                    <div className="text-white/50 text-sm p-3">No background music uploaded yet.</div>
+                                )}
+                            </div>
+                            <label className="cursor-pointer flex-shrink-0 bg-accent text-background hover:bg-accent/90 px-4 py-3 rounded-lg flex items-center justify-center gap-2 transition-colors font-bold uppercase tracking-wider text-sm mt-6">
+                                <Upload size={16} /> Upload Audio
+                                <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'global', 'backgroundMusic')} accept="audio/*" />
+                            </label>
+                        </div>
                     </div>
 
                     {/* Theme Editor */}

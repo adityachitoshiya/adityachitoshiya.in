@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, Play, Menu, X } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Search, Play, Pause, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { usePortfolio } from '../context/PortfolioContext';
@@ -17,6 +17,32 @@ export default function Hero() {
   const global = portfolioData?.global || {};
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  const toggleAudio = () => {
+    if (!audioRef.current || !global.backgroundMusic) {
+      if (!global.backgroundMusic) alert('No background music uploaded. Please upload a track in the Admin panel.');
+      return;
+    }
+    
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch(err => console.error("Audio playback failed:", err));
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  // Handle when audio ends naturally
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    
+    const handleEnded = () => setIsPlaying(false);
+    audio.addEventListener('ended', handleEnded);
+    return () => audio.removeEventListener('ended', handleEnded);
+  }, []);
 
   return (
     <section
@@ -126,6 +152,11 @@ export default function Hero() {
         <div className="absolute inset-0 bg-grid-pattern opacity-50"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] md:w-[800px] md:h-[800px] bg-[#f5a623] rounded-full blur-[120px] md:blur-[180px] opacity-[0.15] md:opacity-10 mix-blend-screen"></div>
       </div>
+
+      {/* Ambient Audio Element */}
+      {global.backgroundMusic && (
+        <audio ref={audioRef} src={global.backgroundMusic} preload="auto" loop />
+      )}
 
       {/* --- Marquee Text Background --- */}
       <div className="ac-marquee">
@@ -258,8 +289,8 @@ export default function Hero() {
           <button className="ac-icon-btn" aria-label="Search">
             <Search size={16} />
           </button>
-          <button className="ac-icon-btn" aria-label="Play showreel">
-            <Play size={14} fill="#0a0a0a" />
+          <button className="ac-icon-btn" aria-label="Toggle background music" onClick={toggleAudio}>
+            {isPlaying ? <Pause size={14} fill="#0a0a0a" /> : <Play size={14} fill="#0a0a0a" />}
           </button>
         </div>
         <p className="ac-body text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>
@@ -278,7 +309,9 @@ export default function Hero() {
         <div className="flex w-full items-center justify-between mt-4">
           <div className="flex items-center gap-3">
             <button className="ac-icon-btn" aria-label="Search"><Search size={16} /></button>
-            <button className="ac-icon-btn" aria-label="Play showreel"><Play size={14} fill="#0a0a0a" /></button>
+            <button className="ac-icon-btn" aria-label="Toggle background music" onClick={toggleAudio}>
+              {isPlaying ? <Pause size={14} fill="#0a0a0a" /> : <Play size={14} fill="#0a0a0a" />}
+            </button>
           </div>
           <p className="ac-body text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
             {global.website}

@@ -35,7 +35,8 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'portfolio_uploads',
-    allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'webp', 'mp4', 'mov'],
+    allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'webp', 'mp4', 'mov', 'mp3', 'wav', 'mpeg', 'ogg'],
+    resource_type: 'auto'
   },
 });
 const upload = multer({ storage: storage });
@@ -101,6 +102,16 @@ app.post('/api/upload', upload.single('media'), (req, res) => {
     // Cloudinary automatically adds 'path' (secure_url) to req.file
     const fileUrl = req.file.path;
     res.json({ success: true, url: fileUrl });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error("Global Error Handler:", err);
+    res.status(500).json({ 
+        success: false, 
+        message: err.message || 'Internal Server Error',
+        details: err 
+    });
 });
 
 app.listen(PORT, () => {
