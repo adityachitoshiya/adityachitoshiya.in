@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Search, Play, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { usePortfolio } from '../context/PortfolioContext';
 
 const navLinks = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home', href: '/#home' },
+  { label: 'About', href: '/#about' },
+  { label: 'Creatives', href: '/creatives' },
+  { label: 'Contact', href: '/#contact' },
 ];
 
 export default function Hero() {
@@ -142,9 +144,15 @@ export default function Hero() {
         {/* Center Nav Links - Absolute Position for perfect centering */}
         <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-10">
           {navLinks.map((link) => (
-            <a key={link.label} href={link.href} className="ac-nav-link ac-body text-sm tracking-wide">
-              {link.label}
-            </a>
+            link.href.startsWith('/') && !link.href.includes('#') ? (
+              <Link key={link.label} to={link.href} className="ac-nav-link ac-body text-sm tracking-wide">
+                {link.label}
+              </Link>
+            ) : (
+              <a key={link.label} href={link.href} className="ac-nav-link ac-body text-sm tracking-wide">
+                {link.label}
+              </a>
+            )
           ))}
         </div>
 
@@ -179,14 +187,25 @@ export default function Hero() {
             className="md:hidden relative z-30 flex flex-col gap-4 px-6 pb-6 ac-body overflow-hidden"
           >
             {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="text-white text-sm py-2 border-b border-white/5 last:border-0"
-                onClick={() => setMenuOpen(false)}
-              >
-                {link.label}
-              </a>
+              link.href.startsWith('/') && !link.href.includes('#') ? (
+                <Link
+                  key={link.label}
+                  to={link.href}
+                  className="text-white text-sm py-2 border-b border-white/5 last:border-0"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="text-white text-sm py-2 border-b border-white/5 last:border-0"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {link.label}
+                </a>
+              )
             ))}
           </motion.div>
         )}

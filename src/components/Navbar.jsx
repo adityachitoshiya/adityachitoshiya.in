@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { usePortfolio } from '../context/PortfolioContext';
 
 const Navbar = () => {
@@ -17,9 +18,10 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', href: '/#home' },
+    { name: 'About', href: '/#about' },
+    { name: 'Creatives', href: '/creatives' },
+    { name: 'Contact', href: '/#contact' },
   ];
 
   return (
@@ -37,14 +39,25 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center space-x-8">
           {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-primary hover:text-accent font-medium transition-colors relative group"
-            >
-              {link.name}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
-            </a>
+            link.href.startsWith('/') && !link.href.includes('#') ? (
+              <Link
+                key={link.name}
+                to={link.href}
+                className="text-primary hover:text-accent font-medium transition-colors relative group"
+              >
+                {link.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+            ) : (
+              <a
+                key={link.name}
+                href={link.href}
+                className="text-primary hover:text-accent font-medium transition-colors relative group"
+              >
+                {link.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
+              </a>
+            )
           ))}
         </div>
 
@@ -74,14 +87,25 @@ const Navbar = () => {
             className="absolute top-full left-0 w-full bg-background border-b border-white/10 py-6 px-6 flex flex-col space-y-6 md:hidden shadow-2xl"
           >
             {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-primary text-xl font-heading tracking-wider hover:text-accent transition-colors"
-              >
-                {link.name}
-              </a>
+              link.href.startsWith('/') && !link.href.includes('#') ? (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-primary text-xl font-heading tracking-wider hover:text-accent transition-colors"
+                >
+                  {link.name}
+                </Link>
+              ) : (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-primary text-xl font-heading tracking-wider hover:text-accent transition-colors"
+                >
+                  {link.name}
+                </a>
+              )
             ))}
           </motion.div>
         )}

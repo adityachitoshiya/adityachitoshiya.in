@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, Navigate } from 'react-router-dom';
 import Hero from './components/Hero';
 import WelcomeBanner from './components/WelcomeBanner';
 import Introduction from './components/Introduction';
@@ -12,8 +12,48 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
 
-import { PortfolioProvider } from './context/PortfolioContext';
+import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import Admin from './pages/Admin';
+import CreativesPage from './pages/CreativesPage';
+import ProjectDetail from './pages/ProjectDetail';
+
+const CreativesRoute = () => {
+  const { portfolioData } = usePortfolio();
+  const navigate = useNavigate();
+  if (!portfolioData) return null;
+  return (
+    <CreativesPage
+      projects={portfolioData.projectPortfolio.projects}
+      global={portfolioData.global}
+      onSelectProject={(p) => navigate(`/work/${p.slug}`)}
+    />
+  );
+};
+
+const ProjectRoute = () => {
+  const { portfolioData } = usePortfolio();
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  
+  if (!portfolioData) return null;
+
+  const projects = portfolioData.projectPortfolio.projects || [];
+  const project = projects.find(p => p.slug === slug);
+
+  if (!project) {
+    return <Navigate to="/creatives" replace />;
+  }
+
+  return (
+    <ProjectDetail
+      project={project}
+      allProjects={projects}
+      global={portfolioData.global}
+      onBack={() => navigate('/creatives')}
+      onSelectProject={(p) => navigate(`/work/${p.slug}`)}
+    />
+  );
+};
 
 const Portfolio = () => (
     <>
@@ -40,6 +80,8 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Portfolio />} />
+            <Route path="/creatives" element={<CreativesRoute />} />
+            <Route path="/work/:slug" element={<ProjectRoute />} />
             <Route path="/admin" element={<Admin />} />
           </Routes>
         </Router>
