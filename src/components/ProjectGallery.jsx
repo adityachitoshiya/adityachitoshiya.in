@@ -76,6 +76,16 @@ const ProjectGallery = () => {
             ))}
         </div>
 
+        </div>
+
+        <div className="mt-16 text-center">
+            <a href="/creatives" className="inline-block">
+                <button className="group flex items-center gap-4 bg-accent text-background uppercase font-bold text-sm tracking-wider px-8 py-4 rounded-full transition-all hover:scale-105 hover:filter hover:brightness-110">
+                    View All Projects
+                </button>
+            </a>
+        </div>
+
       </div>
     </section>
   );

@@ -47,7 +47,7 @@ const Introduction = () => {
           <p className="text-muted text-lg md:text-xl leading-relaxed mb-10 font-light">
             {introduction.text}
           </p>
-          <a href="/#contact"><Button>Learn More</Button></a>
+          <a href="/about"><Button>Learn More</Button></a>
         </motion.div>
 
       </div>
