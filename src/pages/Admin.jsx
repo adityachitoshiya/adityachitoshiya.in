@@ -303,7 +303,7 @@ const Admin = () => {
 
                 {/* Tab Navigation */}
                 <div className="flex flex-wrap gap-4 mb-8 border-b border-white/10 pb-4">
-                    {['global', 'hero', 'welcome', 'creatives', 'gallery'].map(tab => (
+                    {['global', 'hero', 'welcome', 'creatives', 'gallery', 'slideshow'].map(tab => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
@@ -311,7 +311,7 @@ const Admin = () => {
                                 activeTab === tab ? 'bg-accent text-background' : 'bg-white/5 text-muted hover:bg-white/10 hover:text-white'
                             }`}
                         >
-                            {tab === 'creatives' ? 'Projects' : tab}
+                            {tab === 'creatives' ? 'Projects' : tab === 'slideshow' ? 'Slideshow' : tab}
                         </button>
                     ))}
                 </div>
@@ -487,6 +487,58 @@ const Admin = () => {
                                 </label>
                             </div>
                         ))}
+                    </div>
+                </section>
+                )}
+
+                {/* Section: Visual Gallery Slideshow */}
+                {activeTab === 'slideshow' && (
+                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">Visual Gallery (Slideshow)</h2>
+                        <p className="text-muted text-sm">Add images that will loop on the About page slideshow.</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        {(data.aboutMe?.slideshowImages || []).map((img, index) => (
+                            <div key={index} className="relative group/slide border border-white/10 rounded-xl overflow-hidden bg-background">
+                                <img src={img} alt={`Slide ${index}`} className="w-full h-32 object-cover" />
+                                <button onClick={() => {
+                                    setData(prev => {
+                                        const newImages = [...(prev.aboutMe?.slideshowImages || [])];
+                                        newImages.splice(index, 1);
+                                        return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: newImages } };
+                                    });
+                                }} className="absolute top-2 right-2 bg-red-500/80 hover:bg-red-500 text-white p-1.5 rounded-md opacity-0 group-hover/slide:opacity-100 transition-opacity">
+                                    <XIcon size={14} />
+                                </button>
+                            </div>
+                        ))}
+                        <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center h-32 transition-colors">
+                            <Plus size={24} className="text-white/50 mb-2" />
+                            <span className="text-sm text-white/50">Add Image</span>
+                            <input type="file" className="hidden" onChange={async (e) => {
+                                const file = e.target.files[0];
+                                if (!file) return;
+                                setUploading(true);
+                                const formData = new FormData();
+                                formData.append('media', file);
+                                try {
+                                    const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                                    const result = await res.json();
+                                    if (result.success) {
+                                        setData(prev => {
+                                            const currentImages = prev.aboutMe?.slideshowImages || [];
+                                            return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: [...currentImages, result.url] } };
+                                        });
+                                    }
+                                } catch (err) {
+                                    alert("File upload failed.");
+                                } finally {
+                                    setUploading(false);
+                                }
+                            }} accept="image/*,video/*" />
+                        </label>
                     </div>
                 </section>
                 )}

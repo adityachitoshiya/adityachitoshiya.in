@@ -6,12 +6,13 @@ import { usePortfolio } from '../context/PortfolioContext';
 const ImageSlideshow = () => {
   const { portfolioData } = usePortfolio();
   
-  // Use project cover images for the slideshow, or fallback to the generic gallery images
+  // Use the dedicated slideshow images from Admin, or fallback to project cover images / generic gallery
+  const adminSlideshowImages = portfolioData?.aboutMe?.slideshowImages || [];
   const projects = portfolioData?.projectPortfolio?.projects || [];
   const projectImages = projects.filter(p => p.coverImage).map(p => p.coverImage);
   const fallbackImages = portfolioData?.projectPortfolio?.images || [];
   
-  const slideImages = projectImages.length > 0 ? projectImages.slice(0, 8) : fallbackImages;
+  const slideImages = adminSlideshowImages.length > 0 ? adminSlideshowImages : (projectImages.length > 0 ? projectImages.slice(0, 8) : fallbackImages);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
