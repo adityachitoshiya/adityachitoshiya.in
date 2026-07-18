@@ -50,7 +50,7 @@ export default function Hero() {
     <section
       id="home"
       style={{ backgroundColor: '#0a0a0a' }}
-      className="relative w-full h-screen flex flex-col z-20"
+      className="relative w-full h-screen flex flex-col z-20 overflow-hidden"
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
@@ -105,11 +105,12 @@ export default function Hero() {
         .ac-icon-btn:hover { transform: scale(1.08); }
 
         .hero-img-position {
-          bottom: -191px;
+          bottom: -100px;
         }
         @media (max-width: 768px) {
           .hero-img-position {
-            bottom: -50px;
+            bottom: 0px;
+            max-height: 70vh !important;
           }
         }
 
