@@ -19,7 +19,7 @@ export default function CreativesPage({ projects, global, onSelectProject }) {
     : projects.filter(project => project.type && project.type.toLowerCase() === selectedCategory.toLowerCase());
 
   return (
-    <div className="bg-[#0a0a0a] min-h-[100svh] text-white font-body relative overflow-hidden">
+    <div className="bg-[#0a0a0a] min-h-screen text-white font-body relative overflow-hidden">
       <Navbar />
 
       <main className="pt-32 pb-20 px-6 md:px-14 relative z-10">

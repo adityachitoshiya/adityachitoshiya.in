@@ -17,7 +17,7 @@ const WorkExperience = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="font-heading text-[clamp(3rem,8vw,5.5rem)] mb-20 leading-[0.9] uppercase text-primary"
+                className="font-heading text-6xl md:text-8xl mb-20 leading-[0.9] uppercase text-primary"
             >
                 {workExperience.headline}
             </motion.h2>

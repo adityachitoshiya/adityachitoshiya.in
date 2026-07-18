@@ -26,7 +26,7 @@ const Contact = () => {
           transition={{ duration: 0.8 }}
           className="max-w-xl"
         >
-          <h2 className="font-heading text-[clamp(2.5rem,8vw,4.5rem)] mb-8 leading-[0.9] uppercase text-primary">
+          <h2 className="font-heading text-5xl md:text-7xl mb-8 leading-[0.9] uppercase text-primary">
             {contact.headline}
           </h2>
           <p className="text-muted text-lg md:text-xl leading-relaxed mb-12 font-light">
@@ -54,7 +54,7 @@ const Contact = () => {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="w-full h-[min(500px,60svh)] md:h-[700px]"
+          className="w-full h-[500px] md:h-[700px]"
         >
           <img 
             src={contact.image} 

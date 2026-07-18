@@ -67,7 +67,7 @@ const Admin = () => {
 
     if (!isAuthenticated) {
         return (
-            <div className="min-h-[100svh] bg-background flex flex-col items-center justify-center p-6">
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -276,7 +276,7 @@ const Admin = () => {
     if (!data) return <div className="text-white">Error loading data.</div>;
 
     return (
-        <div className="min-h-[100svh] bg-background text-primary p-8 font-body">
+        <div className="min-h-screen bg-background text-primary p-8 font-body">
             <div className="max-w-4xl mx-auto">
                 <header className="flex justify-between items-center mb-12 border-b border-white/10 pb-6">
                     <div>

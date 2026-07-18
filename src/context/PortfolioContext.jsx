@@ -27,7 +27,7 @@ export const PortfolioProvider = ({ children }) => {
     }
 
     if (!data) {
-        return <div className="min-h-[100svh] bg-background text-white flex items-center justify-center">Error loading portfolio data.</div>;
+        return <div className="min-h-screen bg-background text-white flex items-center justify-center">Error loading portfolio data.</div>;
     }
 
     return (
