@@ -19,7 +19,7 @@ const WelcomeBanner = () => {
           transition={{ duration: 0.8 }}
           className="max-w-xl"
         >
-          <h2 className="font-heading text-5xl md:text-7xl mb-8 leading-[0.9] uppercase text-primary">
+          <h2 className="font-heading text-[clamp(2.5rem,8vw,4.5rem)] mb-8 leading-[0.9] uppercase text-primary">
             {welcome.headline.split(' ').map((word, i, arr) => (
                 <React.Fragment key={i}>
                     {i === arr.length - 1 ? <span className="text-accent">{word}</span> : word}
@@ -57,8 +57,8 @@ const WelcomeBanner = () => {
         
         {/* Mobile images fallback */}
         <div className="flex flex-col gap-4 md:hidden">
-             <img src={welcome.image1} className="w-full h-[300px] object-cover rounded-[24px] grayscale" alt="Fashion 1" />
-             <img src={welcome.image2} className="w-full h-[300px] object-cover rounded-[24px] grayscale" alt="Fashion 2" />
+             <img src={welcome.image1} className="w-full h-[min(300px,40svh)] object-cover rounded-[24px] grayscale" alt="Fashion 1" />
+             <img src={welcome.image2} className="w-full h-[min(300px,40svh)] object-cover rounded-[24px] grayscale" alt="Fashion 2" />
         </div>
 
       </div>

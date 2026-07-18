@@ -79,7 +79,7 @@ const Portfolio = () => (
 
 function App() {
   return (
-    <div className="bg-background min-h-screen text-primary selection:bg-accent selection:text-background overflow-x-hidden">
+    <div className="bg-background min-h-[100svh] text-primary selection:bg-accent selection:text-background overflow-x-hidden">
       <PortfolioProvider>
         <ThemeProvider>
           <Router>

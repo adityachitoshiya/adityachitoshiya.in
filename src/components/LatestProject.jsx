@@ -18,7 +18,7 @@ const LatestProject = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="lg:col-span-5 h-[500px] md:h-[700px] w-full"
+            className="lg:col-span-5 h-[min(500px,60svh)] md:h-[700px] w-full"
         >
             <img 
                 src={latestProject.mainImage} 
@@ -34,7 +34,7 @@ const LatestProject = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="font-heading text-5xl md:text-7xl leading-[0.9] uppercase text-primary mb-12"
+                className="font-heading text-[clamp(2.5rem,8vw,4.5rem)] leading-[0.9] uppercase text-primary mb-12"
             >
                 {latestProject.headline}
             </motion.h2>

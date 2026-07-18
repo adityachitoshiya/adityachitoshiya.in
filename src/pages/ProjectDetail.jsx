@@ -16,7 +16,7 @@ export default function ProjectDetail({ project, allProjects, global, onBack, on
   const otherProjects = allProjects.filter(p => p.slug !== project.slug).slice(0, 3);
 
   return (
-    <div className="bg-[#0a0a0a] min-h-screen text-white font-body relative overflow-hidden">
+    <div className="bg-[#0a0a0a] min-h-[100svh] text-white font-body relative overflow-hidden">
       <Navbar />
 
       <main className="pt-32 pb-20 px-6 md:px-14 relative z-10">

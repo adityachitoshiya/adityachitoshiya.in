@@ -21,7 +21,7 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="bg-[#0a0a0a] min-h-screen text-white font-body relative overflow-hidden">
+    <div className="bg-[#0a0a0a] min-h-[100svh] text-white font-body relative overflow-hidden">
       <Navbar />
 
       <main className="pt-32 pb-20 relative z-10">

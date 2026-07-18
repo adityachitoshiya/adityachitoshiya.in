@@ -17,7 +17,7 @@ const ProjectGallery = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="font-heading text-6xl md:text-8xl leading-[0.9] uppercase text-primary"
+                className="font-heading text-[clamp(3rem,8vw,5.5rem)] leading-[0.9] uppercase text-primary"
             >
                 {projectPortfolio.headline.split(' ').map((word, i) => (
                     <React.Fragment key={i}>
@@ -45,7 +45,7 @@ const ProjectGallery = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: index * 0.2 }}
-                    className="overflow-hidden rounded-[32px] h-[400px] md:h-[600px] group cursor-pointer"
+                    className="overflow-hidden rounded-[32px] h-[min(400px,50svh)] md:h-[600px] group cursor-pointer"
                 >
                     <img 
                         src={imgUrl} 

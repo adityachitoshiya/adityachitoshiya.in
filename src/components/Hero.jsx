@@ -50,7 +50,7 @@ export default function Hero() {
     <section
       id="home"
       style={{ backgroundColor: '#0a0a0a' }}
-      className="relative w-full h-screen flex flex-col z-20 overflow-hidden"
+      className="relative w-full h-[100svh] flex flex-col z-20 overflow-hidden"
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
@@ -110,7 +110,7 @@ export default function Hero() {
         @media (max-width: 768px) {
           .hero-img-position {
             bottom: 0px;
-            max-height: 70vh !important;
+            max-height: 38svh !important;
           }
         }
 
@@ -119,34 +119,6 @@ export default function Hero() {
           background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
                             linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
           mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
-        }
-
-        .ac-marquee {
-          white-space: nowrap;
-          overflow: hidden;
-          position: absolute;
-          top: 45%;
-          left: 0;
-          width: 100vw;
-          transform: translateY(-50%) rotate(-2deg);
-          pointer-events: none;
-          z-index: 5;
-          opacity: 0.03;
-        }
-
-        .ac-marquee span {
-          display: inline-block;
-          padding-left: 2rem;
-          font-family: 'Anton', sans-serif;
-          font-size: clamp(8rem, 25vw, 30rem);
-          color: transparent;
-          -webkit-text-stroke: 2px #ffffff;
-          animation: marquee 40s linear infinite;
-        }
-
-        @keyframes marquee {
-          0% { transform: translate(0, 0); }
-          100% { transform: translate(-50%, 0); }
         }
       `}</style>
 
@@ -160,11 +132,6 @@ export default function Hero() {
       {global.backgroundMusic && (
         <audio ref={audioRef} src={global.backgroundMusic} preload="auto" loop />
       )}
-
-      {/* --- Marquee Text Background --- */}
-      <div className="ac-marquee">
-        <span>{hero.headline} {hero.headline} {hero.headline} {hero.headline} {hero.headline} {hero.headline}</span>
-      </div>
 
       {/* Nav */}
       <nav className="relative z-30 flex items-center justify-between px-6 md:px-14 py-6 md:py-8">
@@ -246,7 +213,19 @@ export default function Hero() {
       </AnimatePresence>
 
       {/* Headline block */}
-      <div className="relative flex-1 flex items-center justify-center px-4">
+      <div className="relative flex-1 flex flex-col items-center justify-center px-4 pb-20 md:pb-0 gap-[clamp(2rem,8vh,6rem)]">
+        <span
+          className="ac-script ac-fade-up"
+          style={{
+            color: '#f5a623',
+            fontSize: 'clamp(2.5rem, 8vw, 4rem)',
+            transform: 'rotate(-6deg)',
+            animationDelay: '0.15s',
+          }}
+        >
+          {hero.accentWord}
+        </span>
+
         <h1
           className="ac-display ac-fade-up w-full text-center select-none"
           style={{
@@ -259,21 +238,6 @@ export default function Hero() {
         >
           {hero.headline}
         </h1>
-
-        <span
-          className="ac-script ac-fade-up absolute"
-          style={{
-            color: '#f5a623',
-            fontSize: 'clamp(1.75rem, 5vw, 3.5rem)',
-            top: '6%',
-            left: '50%',
-            transform: 'translateX(-46%) rotate(-6deg)',
-            animationDelay: '0.15s',
-          }}
-        >
-          {hero.accentWord}
-        </span>
-
       </div>
 
       {/* --- DESKTOP Tagline + Presented By --- */}

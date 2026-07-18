@@ -17,7 +17,7 @@ const Education = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="font-heading text-6xl md:text-8xl leading-[0.9] uppercase text-primary lg:w-1/3"
+                className="font-heading text-[clamp(3rem,8vw,5.5rem)] leading-[0.9] uppercase text-primary lg:w-1/3"
             >
                 {education.headline}
             </motion.h2>
