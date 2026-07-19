@@ -19,6 +19,7 @@ import Admin from './pages/Admin';
 import CreativesPage from './pages/CreativesPage';
 import ProjectDetail from './pages/ProjectDetail';
 import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
 
 const CreativesRoute = () => {
   const { portfolioData } = usePortfolio();
@@ -70,7 +71,6 @@ const Portfolio = () => (
         <Education />
         <ProjectGallery />
         <LatestProject />
-        <Contact />
       </main>
       <Footer />
       <BackToTop />
@@ -86,6 +86,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Portfolio />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
               <Route path="/creatives" element={<CreativesRoute />} />
               <Route path="/work/:slug" element={<ProjectRoute />} />
               <Route path="/admin" element={<Admin />} />
