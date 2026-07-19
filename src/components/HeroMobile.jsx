@@ -95,13 +95,14 @@ export default function HeroMobile({
             {hero.accentWord}
           </span>
           <h1
-            className="ac-display"
+            className="ac-display w-full break-words"
             style={{
               color: '#ffffff',
-              fontSize: 'clamp(4rem, 22vw, 8rem)',
-              lineHeight: 0.9,
+              fontSize: 'clamp(2.8rem, 14vw, 5rem)',
+              lineHeight: 0.95,
               letterSpacing: '-0.02em',
               margin: 0,
+              overflowWrap: 'break-word'
             }}
           >
             {hero.headline}
@@ -109,7 +110,7 @@ export default function HeroMobile({
         </div>
 
         {/* Hero Image (Normal inline flow, no absolute positioning) */}
-        <div className="w-full max-w-md px-4">
+        <div className="w-full max-w-sm px-4 flex justify-center">
           <img
             src={hero.heroImage}
             alt={global.name}
