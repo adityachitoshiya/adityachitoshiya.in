@@ -11,7 +11,7 @@ export const portfolioData = {
     accentWord: "Creative",
     tagline: "Multidisciplinary Creator | Design × Technology × AI",
     presentedBy: "Presented By: Aditya Chitoshiya",
-    heroImage: "https://placehold.co/1000x1200/0a0a0a/f5a623?text=Hero+Photo",
+    heroImage: "/uploads/1784200561646-765752309-nobg.png"
   },
   welcome: {
     headline: "WELCOME TO MY BRAND",
