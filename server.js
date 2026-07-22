@@ -9,6 +9,9 @@ import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import connectDB from './db/connect.js';
 import Portfolio from './models/Portfolio.js';
+import Project from './models/Project.js';
+import Experience from './models/Experience.js';
+import Education from './models/Education.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,7 +49,26 @@ app.get('/api/portfolio', async (req, res) => {
     try {
         const data = await Portfolio.findOne();
         if (!data) return res.json({});
-        res.json(data);
+        
+        // Convert mongoose document to plain JS object to modify it
+        const responseData = data.toObject();
+
+        // Fetch related collections
+        const projects = await Project.find();
+        const experiences = await Experience.find();
+        const educations = await Education.find();
+
+        // Merge back into the monolithic structure expected by the frontend
+        if (!responseData.projectPortfolio) responseData.projectPortfolio = {};
+        responseData.projectPortfolio.projects = projects;
+
+        if (!responseData.workExperience) responseData.workExperience = {};
+        responseData.workExperience.items = experiences;
+
+        if (!responseData.education) responseData.education = {};
+        responseData.education.items = educations;
+
+        res.json(responseData);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Server Error" });
@@ -58,6 +80,27 @@ app.post('/api/portfolio', async (req, res) => {
     try {
         const newData = req.body;
         
+        // 1. Handle extracted collections
+        if (newData.projectPortfolio && Array.isArray(newData.projectPortfolio.projects)) {
+            await Project.deleteMany({});
+            await Project.insertMany(newData.projectPortfolio.projects);
+            // Remove from the monolith payload so we don't duplicate it
+            delete newData.projectPortfolio.projects;
+        }
+
+        if (newData.workExperience && Array.isArray(newData.workExperience.items)) {
+            await Experience.deleteMany({});
+            await Experience.insertMany(newData.workExperience.items);
+            delete newData.workExperience.items;
+        }
+
+        if (newData.education && Array.isArray(newData.education.items)) {
+            await Education.deleteMany({});
+            await Education.insertMany(newData.education.items);
+            delete newData.education.items;
+        }
+        
+        // 2. Handle monolithic data
         let data = await Portfolio.findOne();
         if (!data) {
             data = new Portfolio(newData);
@@ -72,7 +115,7 @@ app.post('/api/portfolio', async (req, res) => {
 
         await data.save();
         
-        res.json({ success: true, message: 'Portfolio updated successfully' });
+        res.json({ success: true, message: 'Portfolio updated successfully across collections' });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Server Error", details: err.message });
