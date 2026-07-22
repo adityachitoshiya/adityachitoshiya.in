@@ -9,10 +9,26 @@ const ImageSlideshow = () => {
   // Use the dedicated slideshow images from Admin, or fallback to project cover images / generic gallery
   const adminSlideshowImages = portfolioData?.aboutMe?.slideshowImages || [];
   const projects = portfolioData?.projectPortfolio?.projects || [];
-  const projectImages = projects.filter(p => p.coverImage).map(p => p.coverImage);
-  const fallbackImages = portfolioData?.projectPortfolio?.images || [];
   
-  const slideImages = adminSlideshowImages.length > 0 ? adminSlideshowImages : (projectImages.length > 0 ? projectImages.slice(0, 8) : fallbackImages);
+  // Normalize into { url, title, caption } objects
+  const normalizedAdminImages = adminSlideshowImages.map(item => 
+    typeof item === 'string' ? { url: item, title: '', caption: '' } : item
+  );
+  
+  const projectImages = projects.filter(p => p.coverImage).map(p => ({ 
+    url: p.coverImage, 
+    title: p.name || '', 
+    caption: p.type || '' 
+  }));
+  
+  const fallbackImages = portfolioData?.projectPortfolio?.images || [];
+  const normalizedFallbackImages = fallbackImages.map(item => 
+    typeof item === 'string' ? { url: item, title: '', caption: '' } : item
+  );
+  
+  const slideImages = normalizedAdminImages.length > 0 
+    ? normalizedAdminImages 
+    : (projectImages.length > 0 ? projectImages.slice(0, 8) : normalizedFallbackImages);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -32,6 +48,8 @@ const ImageSlideshow = () => {
   }, [slideImages.length]);
 
   if (!slideImages || slideImages.length === 0) return null;
+
+  const currentSlide = slideImages[currentIndex];
 
   return (
     <section className="py-20 w-full relative border-t border-white/10">
@@ -75,16 +93,38 @@ const ImageSlideshow = () => {
             className="relative w-full h-[400px] md:h-[600px] rounded-3xl overflow-hidden group bg-white/5 border border-white/10"
          >
             <AnimatePresence mode="wait">
-               <motion.img
+               <motion.div
                   key={currentIndex}
-                  src={slideImages[currentIndex]}
                   initial={{ opacity: 0, scale: 1.05 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5, ease: "easeInOut" }}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  alt={`Slide ${currentIndex + 1}`}
-               />
+                  className="absolute inset-0 w-full h-full"
+               >
+                  <img
+                     src={currentSlide.url}
+                     className="w-full h-full object-cover"
+                     alt={currentSlide.title || `Slide ${currentIndex + 1}`}
+                  />
+                  
+                  {/* Overlay for title and caption */}
+                  {(currentSlide.title || currentSlide.caption) && (
+                     <div className="absolute inset-x-0 bottom-0 pt-32 pb-24 px-8 md:px-12 bg-gradient-to-t from-black/90 via-black/40 to-transparent">
+                        <div>
+                           {currentSlide.title && (
+                              <h3 className="text-3xl md:text-5xl font-heading uppercase text-white tracking-widest mb-2 drop-shadow-md">
+                                 {currentSlide.title}
+                              </h3>
+                           )}
+                           {currentSlide.caption && (
+                              <p className="text-[#f5a623] text-sm md:text-base font-bold tracking-widest uppercase drop-shadow-md">
+                                 {currentSlide.caption}
+                              </p>
+                           )}
+                        </div>
+                     </div>
+                  )}
+               </motion.div>
             </AnimatePresence>
             
             {/* Progress Dots */}

@@ -640,22 +640,68 @@ const Admin = () => {
                         <p className="text-muted text-sm">Add images that will loop on the About page slideshow.</p>
                     </div>
                     
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        {(data.aboutMe?.slideshowImages || []).map((img, index) => (
-                            <div key={index} className="relative group/slide border border-white/10 rounded-xl overflow-hidden bg-background">
-                                <img src={img} alt={`Slide ${index}`} className="w-full h-32 object-cover" />
-                                <button onClick={() => {
-                                    setData(prev => {
-                                        const newImages = [...(prev.aboutMe?.slideshowImages || [])];
-                                        newImages.splice(index, 1);
-                                        return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: newImages } };
-                                    });
-                                }} className="absolute top-2 right-2 bg-red-500/80 hover:bg-red-500 text-white p-1.5 rounded-md opacity-0 group-hover/slide:opacity-100 transition-opacity">
-                                    <XIcon size={14} />
-                                </button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {(data.aboutMe?.slideshowImages || []).map((item, index) => {
+                            const isString = typeof item === 'string';
+                            const imgUrl = isString ? item : item.url;
+                            const title = isString ? '' : (item.title || '');
+                            const caption = isString ? '' : (item.caption || '');
+
+                            return (
+                            <div key={index} className="relative group/slide border border-white/10 rounded-xl overflow-hidden bg-background flex flex-col">
+                                <div className="relative h-48 shrink-0">
+                                    <img src={imgUrl} alt={`Slide ${index}`} className="w-full h-full object-cover" />
+                                    <button onClick={() => {
+                                        setData(prev => {
+                                            const newImages = [...(prev.aboutMe?.slideshowImages || [])];
+                                            newImages.splice(index, 1);
+                                            return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: newImages } };
+                                        });
+                                    }} className="absolute top-2 right-2 bg-red-500/80 hover:bg-red-500 text-white p-1.5 rounded-md opacity-0 group-hover/slide:opacity-100 transition-opacity">
+                                        <XIcon size={14} />
+                                    </button>
+                                </div>
+                                <div className="p-4 space-y-3 flex-1 flex flex-col">
+                                    <div>
+                                        <label className="block text-muted text-xs mb-1">Title</label>
+                                        <input 
+                                            value={title} 
+                                            onChange={(e) => {
+                                                setData(prev => {
+                                                    const newImages = [...(prev.aboutMe?.slideshowImages || [])];
+                                                    const current = newImages[index];
+                                                    newImages[index] = typeof current === 'string' 
+                                                        ? { url: current, title: e.target.value, caption: '' }
+                                                        : { ...current, title: e.target.value };
+                                                    return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: newImages } };
+                                                });
+                                            }}
+                                            className="w-full bg-white/5 border border-white/20 rounded-md p-2 text-white focus:border-accent outline-none text-sm" 
+                                            placeholder="Optional title"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-muted text-xs mb-1">Caption</label>
+                                        <input 
+                                            value={caption} 
+                                            onChange={(e) => {
+                                                setData(prev => {
+                                                    const newImages = [...(prev.aboutMe?.slideshowImages || [])];
+                                                    const current = newImages[index];
+                                                    newImages[index] = typeof current === 'string' 
+                                                        ? { url: current, title: '', caption: e.target.value }
+                                                        : { ...current, caption: e.target.value };
+                                                    return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: newImages } };
+                                                });
+                                            }}
+                                            className="w-full bg-white/5 border border-white/20 rounded-md p-2 text-white focus:border-accent outline-none text-sm" 
+                                            placeholder="Optional caption"
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                        ))}
-                        <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center h-32 transition-colors">
+                        )})}
+                        <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center min-h-[250px] transition-colors">
                             <Plus size={24} className="text-white/50 mb-2" />
                             <span className="text-sm text-white/50">Add Image</span>
                             <input type="file" className="hidden" onChange={async (e) => {
@@ -670,7 +716,7 @@ const Admin = () => {
                                     if (result.success) {
                                         setData(prev => {
                                             const currentImages = prev.aboutMe?.slideshowImages || [];
-                                            return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: [...currentImages, result.url] } };
+                                            return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: [...currentImages, { url: result.url, title: '', caption: '' }] } };
                                         });
                                     }
                                 } catch (err) {
