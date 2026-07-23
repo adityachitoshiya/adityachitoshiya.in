@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { Upload, Save, Loader2, ArrowLeft, Plus, Trash2, X as XIcon, Music, Crop } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import LoadingScreen from '../components/LoadingScreen';
-import ImageCropper from '../components/ImageCropper';
+import ImageCropModal from '../components/ImageCropModal';
+import { imageFrameConfigs } from '../utils/imageFrameConfigs';
 
 const Admin = () => {
     const [data, setData] = useState(null);
@@ -26,7 +27,7 @@ const Admin = () => {
         targetIndex: null,
         isCover: false,
         galleryIndex: null,
-        aspect: null // Can set dynamically later if needed
+        configKey: null // Replaced aspect with configKey
     });
 
     useEffect(() => {
@@ -150,7 +151,7 @@ const Admin = () => {
         }
     };
 
-    const handleFileSelect = (e, targetSection, targetKey, targetIndex = null, aspect = null) => {
+    const handleFileSelect = (e, targetSection, targetKey, targetIndex = null, configKey = null) => {
         const file = e.target.files[0];
         if (!file) return;
 
@@ -166,7 +167,7 @@ const Admin = () => {
                     targetIndex,
                     isCover: false,
                     galleryIndex: null,
-                    aspect
+                    configKey
                 });
             };
             reader.readAsDataURL(file);
@@ -176,7 +177,7 @@ const Admin = () => {
         }
     };
 
-    const handleProjectFileSelect = (e, targetIndex, isCover, galleryIndex = null, aspect = null) => {
+    const handleProjectFileSelect = (e, targetIndex, isCover, galleryIndex = null, configKey = null) => {
         const file = e.target.files[0];
         if (!file) return;
 
@@ -191,7 +192,7 @@ const Admin = () => {
                     targetIndex,
                     isCover,
                     galleryIndex,
-                    aspect
+                    configKey
                 });
             };
             reader.readAsDataURL(file);
@@ -270,6 +271,14 @@ const Admin = () => {
         } finally {
             setUploading(false);
             setCropModal({ isOpen: false, imageSrc: null });
+        }
+    };
+
+    const handleCropSave = async (blob) => {
+        if (cropModal.targetSection === 'projectPortfolio' && cropModal.targetKey === 'projects') {
+            await uploadProjectMediaBlob(blob, cropModal.targetIndex, cropModal.isCover, cropModal.galleryIndex);
+        } else {
+            await uploadMediaBlob(blob, cropModal.targetSection, cropModal.targetKey, cropModal.targetIndex);
         }
     };
 
@@ -532,7 +541,7 @@ const Admin = () => {
                             <img src={data.hero.heroImage} alt="Hero" className="w-full h-48 object-cover rounded-xl mb-3" />
                             <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
                                 <Upload size={16} /> Upload New Image
-                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'hero', 'heroImage', null, 21/9)} accept="image/*,video/*" />
+                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'hero', 'heroImage', null, 'heroPhoto')} accept="image/*,video/*" />
                             </label>
                         </div>
                     </div>
@@ -549,7 +558,7 @@ const Admin = () => {
                             <img src={data.welcome.image1} alt="Welcome 1" className="w-full h-48 object-cover rounded-xl mb-3" />
                             <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
                                 <Upload size={16} /> Upload New Image
-                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'welcome', 'image1', null, 3/4)} accept="image/*,video/*" />
+                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'welcome', 'image1', null, 'introImageTall')} accept="image/*,video/*" />
                             </label>
                         </div>
                         <div>
@@ -557,7 +566,7 @@ const Admin = () => {
                             <img src={data.welcome.image2} alt="Welcome 2" className="w-full h-48 object-cover rounded-xl mb-3" />
                             <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
                                 <Upload size={16} /> Upload New Image
-                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'welcome', 'image2', null, 4/3)} accept="image/*,video/*" />
+                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'welcome', 'image2', null, 'introImageShort')} accept="image/*,video/*" />
                             </label>
                         </div>
                     </div>
@@ -586,7 +595,7 @@ const Admin = () => {
                             <img src={data.aboutMe?.image} alt="About Me" className="w-48 h-48 object-cover rounded-xl mb-3" />
                             <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg inline-flex items-center justify-center gap-2 transition-colors">
                                 <Upload size={16} /> Upload New Portrait
-                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'image', null, 1/1)} accept="image/*,video/*" />
+                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'image', null, 'aboutImage')} accept="image/*,video/*" />
                             </label>
                         </div>
                     </div>
@@ -639,7 +648,7 @@ const Admin = () => {
                                         <img src={project.coverImage} alt="Cover" className="w-32 h-32 object-cover rounded-lg" />
                                         <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
                                             <Upload size={16} /> Replace Cover
-                                            <input type="file" className="hidden" onChange={(e) => handleProjectFileSelect(e, pIdx, true, null, 1/1)} accept="image/*,video/*" />
+                                            <input type="file" className="hidden" onChange={(e) => handleProjectFileSelect(e, pIdx, true, null, 'projectCover')} accept="image/*,video/*" />
                                         </label>
                                     </div>
                                 </div>
@@ -658,7 +667,7 @@ const Admin = () => {
                                         <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center h-24 transition-colors">
                                             <Plus size={20} className="text-white/50 mb-1" />
                                             <span className="text-xs text-white/50">Add Image</span>
-                                            <input type="file" className="hidden" onChange={(e) => handleProjectFileSelect(e, pIdx, false, null, 16/9)} accept="image/*,video/*" />
+                                            <input type="file" className="hidden" onChange={(e) => handleProjectFileSelect(e, pIdx, false, null, 'projectGallery')} accept="image/*,video/*" />
                                         </label>
                                     </div>
                                 </div>
@@ -678,7 +687,7 @@ const Admin = () => {
                                 <img src={img} alt={`Gallery ${index}`} className="w-full h-32 object-cover rounded-xl mb-3" />
                                 <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
                                     <Upload size={14} /> Replace
-                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'projectPortfolio', 'images', index, 16/9)} accept="image/*,video/*" />
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'projectPortfolio', 'images', index, 'projectGallery')} accept="image/*,video/*" />
                                 </label>
                             </div>
                         ))}
@@ -758,7 +767,7 @@ const Admin = () => {
                         <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center min-h-[250px] transition-colors">
                             <Plus size={24} className="text-white/50 mb-2" />
                             <span className="text-sm text-white/50">Add Image</span>
-                            <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'slideshowImages', null, 16/9)} accept="image/*,video/*" />
+                            <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'slideshowImages', null, 'slideshowImage')} accept="image/*,video/*" />
                         </label>
                     </div>
                 </section>
@@ -779,7 +788,7 @@ const Admin = () => {
                             <img src={data.contact?.image} alt="Contact" className="w-full h-48 object-cover rounded-xl mb-3" />
                             <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
                                 <Upload size={16} /> Upload New Portrait
-                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'contact', 'image', null, 3/4)} accept="image/*,video/*" />
+                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'contact', 'image', null, 'contactImage')} accept="image/*,video/*" />
                             </label>
                         </div>
                         <div>
@@ -818,11 +827,14 @@ const Admin = () => {
             </div>
 
             {/* Cropper Modal */}
-            {cropModal.isOpen && (
-                <ImageCropper
+            {cropModal.isOpen && cropModal.configKey && imageFrameConfigs[cropModal.configKey] && (
+                <ImageCropModal
                     imageSrc={cropModal.imageSrc}
-                    aspect={cropModal.aspect}
-                    onSave={handleCropSave}
+                    aspectRatio={imageFrameConfigs[cropModal.configKey].aspectRatio}
+                    outputWidth={imageFrameConfigs[cropModal.configKey].outputWidth}
+                    outputHeight={imageFrameConfigs[cropModal.configKey].outputHeight}
+                    frameLabel={imageFrameConfigs[cropModal.configKey].label}
+                    onConfirm={handleCropSave}
                     onCancel={() => setCropModal({ isOpen: false, imageSrc: null })}
                 />
             )}
