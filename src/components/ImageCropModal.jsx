@@ -27,6 +27,7 @@ const ImageCropModal = ({ imageSrc, aspectRatio, outputWidth, outputHeight, fram
         });
         resetCrop();
       };
+      img.crossOrigin = 'anonymous'; // Added for CORS
       img.src = imageSrc;
     }
   }, [imageSrc]);
@@ -118,6 +119,7 @@ const ImageCropModal = ({ imageSrc, aspectRatio, outputWidth, outputHeight, fram
           onConfirm(blob);
         }, 'image/webp', 0.95);
       };
+      img.crossOrigin = 'anonymous'; // Added for CORS
       img.src = imageSrc;
     } catch (e) {
       console.error(e);
@@ -199,6 +201,7 @@ const ImageCropModal = ({ imageSrc, aspectRatio, outputWidth, outputHeight, fram
                 ref={imageRef}
                 src={imageSrc}
                 alt="Crop source"
+                crossOrigin="anonymous"
                 draggable={false}
                 className="max-w-none origin-center cursor-move select-none"
                 style={{
