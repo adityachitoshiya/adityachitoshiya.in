@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Save, Loader2, ArrowLeft, Plus, Trash2, X as XIcon, Music } from 'lucide-react';
+import { Upload, Save, Loader2, ArrowLeft, Plus, Trash2, X as XIcon, Music, Crop } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import LoadingScreen from '../components/LoadingScreen';
+import ImageCropper from '../components/ImageCropper';
 
 const Admin = () => {
     const [data, setData] = useState(null);
@@ -15,6 +16,18 @@ const Admin = () => {
     const [loginForm, setLoginForm] = useState({ username: '', password: '' });
     const [loginError, setLoginError] = useState('');
     const [loggingIn, setLoggingIn] = useState(false);
+
+    // Cropper State
+    const [cropModal, setCropModal] = useState({
+        isOpen: false,
+        imageSrc: null,
+        targetSection: null,
+        targetKey: null,
+        targetIndex: null,
+        isCover: false,
+        galleryIndex: null,
+        aspect: null // Can set dynamically later if needed
+    });
 
     useEffect(() => {
         if (sessionStorage.getItem('adminAuth') === 'true') {
@@ -137,13 +150,62 @@ const Admin = () => {
         }
     };
 
-    const handleFileUpload = async (e, section, key, index = null) => {
+    const handleFileSelect = (e, targetSection, targetKey, targetIndex = null, aspect = null) => {
         const file = e.target.files[0];
         if (!file) return;
 
+        if (file.type.startsWith('image/')) {
+            // Read file as data URL to pass to cropper
+            const reader = new FileReader();
+            reader.onload = () => {
+                setCropModal({
+                    isOpen: true,
+                    imageSrc: reader.result,
+                    targetSection,
+                    targetKey,
+                    targetIndex,
+                    isCover: false,
+                    galleryIndex: null,
+                    aspect
+                });
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // Non-image files (audio/video) bypass cropper
+            uploadMediaBlob(file, targetSection, targetKey, targetIndex);
+        }
+    };
+
+    const handleProjectFileSelect = (e, targetIndex, isCover, galleryIndex = null, aspect = null) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setCropModal({
+                    isOpen: true,
+                    imageSrc: reader.result,
+                    targetSection: 'projectPortfolio',
+                    targetKey: 'projects',
+                    targetIndex,
+                    isCover,
+                    galleryIndex,
+                    aspect
+                });
+            };
+            reader.readAsDataURL(file);
+        } else {
+             // Non-image file bypass
+             uploadProjectMediaBlob(file, targetIndex, isCover, galleryIndex);
+        }
+    };
+
+    const uploadMediaBlob = async (blob, section, key, index = null) => {
         setUploading(true);
         const formData = new FormData();
-        formData.append('media', file);
+        // Append blob as file
+        formData.append('media', blob, 'upload.webp');
 
         try {
             const res = await fetch('/api/upload', {
@@ -153,9 +215,15 @@ const Admin = () => {
             const result = await res.json();
             
             if (result.success) {
-                // Update local state with new URL
                 setData(prev => {
                     const newData = { ...prev };
+                    
+                    if (section === 'aboutMe' && key === 'slideshowImages') {
+                        // Special handling for slideshow images
+                         const currentImages = prev.aboutMe?.slideshowImages || [];
+                         return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: [...currentImages, { url: result.url, title: '', caption: '' }] } };
+                    }
+                    
                     if (index !== null) {
                         newData[section][key][index] = result.url;
                     } else {
@@ -169,6 +237,39 @@ const Admin = () => {
             alert("File upload failed.");
         } finally {
             setUploading(false);
+            setCropModal({ isOpen: false, imageSrc: null }); // Close modal
+        }
+    };
+
+    const uploadProjectMediaBlob = async (blob, index, isCover, galleryIndex = null) => {
+        setUploading(true);
+        const formData = new FormData();
+        formData.append('media', blob, 'upload.webp');
+
+        try {
+            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+            const result = await res.json();
+            
+            if (result.success) {
+                setData(prev => {
+                    const newProjects = [...prev.projectPortfolio.projects];
+                    if (isCover) {
+                        newProjects[index].coverImage = result.url;
+                    } else if (galleryIndex !== null) {
+                        newProjects[index].gallery[galleryIndex] = result.url;
+                    } else {
+                        if (!newProjects[index].gallery) newProjects[index].gallery = [];
+                        newProjects[index].gallery.push(result.url);
+                    }
+                    return { ...prev, projectPortfolio: { ...prev.projectPortfolio, projects: newProjects } };
+                });
+            }
+        } catch (err) {
+            console.error("Upload failed:", err);
+            alert("File upload failed.");
+        } finally {
+            setUploading(false);
+            setCropModal({ isOpen: false, imageSrc: null });
         }
     };
 
@@ -202,68 +303,21 @@ const Admin = () => {
                 name: "New Project",
                 slug: "new-project",
                 type: "Category",
-                description: "",
                 year: new Date().getFullYear().toString(),
-                role: "",
-                coverImage: "https://placehold.co/800x1000/0a0a0a/f5a623?text=New+Project",
+                role: "Role",
+                description: "Project description goes here.",
+                coverImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
                 gallery: []
             };
-            const currentProjects = prev.projectPortfolio?.projects || [];
             return {
                 ...prev,
                 projectPortfolio: {
                     ...prev.projectPortfolio,
-                    projects: [newProject, ...currentProjects]
+                    projects: [newProject, ...prev.projectPortfolio.projects]
                 }
             };
         });
     };
-
-    const handleDeleteProject = (index) => {
-        if (!window.confirm('Are you sure you want to delete this project?')) return;
-        setData(prev => {
-            const newProjects = prev.projectPortfolio.projects.filter((_, i) => i !== index);
-            return {
-                ...prev,
-                projectPortfolio: { ...prev.projectPortfolio, projects: newProjects }
-            };
-        });
-    };
-
-    const handleProjectFileUpload = async (e, index, isCover, galleryIndex = null) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        setUploading(true);
-        const formData = new FormData();
-        formData.append('media', file);
-
-        try {
-            const res = await fetch('/api/upload', { method: 'POST', body: formData });
-            const result = await res.json();
-            
-            if (result.success) {
-                setData(prev => {
-                    const newProjects = [...prev.projectPortfolio.projects];
-                    if (isCover) {
-                        newProjects[index].coverImage = result.url;
-                    } else if (galleryIndex !== null) {
-                        newProjects[index].gallery[galleryIndex] = result.url;
-                    } else {
-                        if (!newProjects[index].gallery) newProjects[index].gallery = [];
-                        newProjects[index].gallery.push(result.url);
-                    }
-                    return { ...prev, projectPortfolio: { ...prev.projectPortfolio, projects: newProjects } };
-                });
-            }
-        } catch (err) {
-            console.error("Upload failed:", err);
-            alert("File upload failed.");
-        } finally {
-            setUploading(false);
-        }
-    };
-    
     const handleRemoveGalleryImage = (projectIndex, galleryIndex) => {
         setData(prev => {
             const newProjects = [...prev.projectPortfolio.projects];
@@ -478,7 +532,7 @@ const Admin = () => {
                             <img src={data.hero.heroImage} alt="Hero" className="w-full h-48 object-cover rounded-xl mb-3" />
                             <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
                                 <Upload size={16} /> Upload New Image
-                                <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'hero', 'heroImage')} accept="image/*,video/*" />
+                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'hero', 'heroImage')} accept="image/*,video/*" />
                             </label>
                         </div>
                     </div>
@@ -495,7 +549,7 @@ const Admin = () => {
                             <img src={data.welcome.image1} alt="Welcome 1" className="w-full h-48 object-cover rounded-xl mb-3" />
                             <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
                                 <Upload size={16} /> Upload New Image
-                                <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'welcome', 'image1')} accept="image/*,video/*" />
+                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'welcome', 'image1')} accept="image/*,video/*" />
                             </label>
                         </div>
                         <div>
@@ -503,7 +557,7 @@ const Admin = () => {
                             <img src={data.welcome.image2} alt="Welcome 2" className="w-full h-48 object-cover rounded-xl mb-3" />
                             <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
                                 <Upload size={16} /> Upload New Image
-                                <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'welcome', 'image2')} accept="image/*,video/*" />
+                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'welcome', 'image2')} accept="image/*,video/*" />
                             </label>
                         </div>
                     </div>
@@ -532,7 +586,7 @@ const Admin = () => {
                             <img src={data.aboutMe?.image} alt="About Me" className="w-48 h-48 object-cover rounded-xl mb-3" />
                             <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg inline-flex items-center justify-center gap-2 transition-colors">
                                 <Upload size={16} /> Upload New Portrait
-                                <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'aboutMe', 'image')} accept="image/*,video/*" />
+                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'image')} accept="image/*,video/*" />
                             </label>
                         </div>
                     </div>
@@ -585,7 +639,7 @@ const Admin = () => {
                                         <img src={project.coverImage} alt="Cover" className="w-32 h-32 object-cover rounded-lg" />
                                         <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
                                             <Upload size={16} /> Replace Cover
-                                            <input type="file" className="hidden" onChange={(e) => handleProjectFileUpload(e, pIdx, true)} accept="image/*,video/*" />
+                                            <input type="file" className="hidden" onChange={(e) => handleProjectFileSelect(e, pIdx, true)} accept="image/*,video/*" />
                                         </label>
                                     </div>
                                 </div>
@@ -604,7 +658,7 @@ const Admin = () => {
                                         <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center h-24 transition-colors">
                                             <Plus size={20} className="text-white/50 mb-1" />
                                             <span className="text-xs text-white/50">Add Image</span>
-                                            <input type="file" className="hidden" onChange={(e) => handleProjectFileUpload(e, pIdx, false)} accept="image/*,video/*" />
+                                            <input type="file" className="hidden" onChange={(e) => handleProjectFileSelect(e, pIdx, false)} accept="image/*,video/*" />
                                         </label>
                                     </div>
                                 </div>
@@ -624,7 +678,7 @@ const Admin = () => {
                                 <img src={img} alt={`Gallery ${index}`} className="w-full h-32 object-cover rounded-xl mb-3" />
                                 <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
                                     <Upload size={14} /> Replace
-                                    <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'projectPortfolio', 'images', index)} accept="image/*,video/*" />
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'projectPortfolio', 'images', index)} accept="image/*,video/*" />
                                 </label>
                             </div>
                         ))}
@@ -704,27 +758,7 @@ const Admin = () => {
                         <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center min-h-[250px] transition-colors">
                             <Plus size={24} className="text-white/50 mb-2" />
                             <span className="text-sm text-white/50">Add Image</span>
-                            <input type="file" className="hidden" onChange={async (e) => {
-                                const file = e.target.files[0];
-                                if (!file) return;
-                                setUploading(true);
-                                const formData = new FormData();
-                                formData.append('media', file);
-                                try {
-                                    const res = await fetch('/api/upload', { method: 'POST', body: formData });
-                                    const result = await res.json();
-                                    if (result.success) {
-                                        setData(prev => {
-                                            const currentImages = prev.aboutMe?.slideshowImages || [];
-                                            return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: [...currentImages, { url: result.url, title: '', caption: '' }] } };
-                                        });
-                                    }
-                                } catch (err) {
-                                    alert("File upload failed.");
-                                } finally {
-                                    setUploading(false);
-                                }
-                            }} accept="image/*,video/*" />
+                            <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'slideshowImages', null, 16/9)} accept="image/*,video/*" />
                         </label>
                     </div>
                 </section>
@@ -745,7 +779,7 @@ const Admin = () => {
                             <img src={data.contact?.image} alt="Contact" className="w-full h-48 object-cover rounded-xl mb-3" />
                             <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
                                 <Upload size={16} /> Upload New Portrait
-                                <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'contact', 'image')} accept="image/*,video/*" />
+                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'contact', 'image')} accept="image/*,video/*" />
                             </label>
                         </div>
                         <div>
@@ -782,6 +816,16 @@ const Admin = () => {
                 </p>
 
             </div>
+
+            {/* Cropper Modal */}
+            {cropModal.isOpen && (
+                <ImageCropper
+                    imageSrc={cropModal.imageSrc}
+                    aspect={cropModal.aspect}
+                    onSave={handleCropSave}
+                    onCancel={() => setCropModal({ isOpen: false, imageSrc: null })}
+                />
+            )}
         </div>
     );
 };

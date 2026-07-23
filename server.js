@@ -36,10 +36,16 @@ cloudinary.config({
 // Multer storage config for Cloudinary
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: 'portfolio_uploads',
-    allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'webp', 'mp4', 'mov', 'mp3', 'wav', 'mpeg', 'ogg'],
-    resource_type: 'auto'
+  params: async (req, file) => {
+    const isImage = file.mimetype.startsWith('image/');
+    return {
+      folder: 'portfolio_uploads',
+      resource_type: 'auto',
+      ...(isImage && {
+        format: 'webp',
+        transformation: [{ quality: 'auto' }]
+      })
+    };
   },
 });
 const upload = multer({ storage: storage });
