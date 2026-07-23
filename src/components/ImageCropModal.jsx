@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, ZoomIn, ZoomOut, RefreshCw } from 'lucide-react';
+import { X, Check, ZoomIn, ZoomOut, RefreshCw, Loader2 } from 'lucide-react';
 
 const ImageCropModal = ({ imageSrc, aspectRatio, outputWidth, outputHeight, frameLabel, onConfirm, onCancel }) => {
   const containerRef = useRef(null);
