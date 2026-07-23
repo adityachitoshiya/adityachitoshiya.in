@@ -53,7 +53,7 @@ const ImageCropper = ({ imageSrc, onSave, onCancel, aspect = null }) => {
               image={imageSrc}
               crop={crop}
               zoom={zoom}
-              aspect={aspect} // e.g. 16/9, 1 (for 1:1), or null for free crop
+              aspect={aspect || 4 / 3} // Fallback to 4:3 if aspect is null to prevent NaN calculation errors
               onCropChange={setCrop}
               onCropComplete={onCropComplete}
               onZoomChange={setZoom}
