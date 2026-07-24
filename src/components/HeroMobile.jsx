@@ -135,7 +135,7 @@ export default function HeroMobile({
         </div>
 
         {/* Hero Image (normal inline flow, no absolute positioning) */}
-        <div className="w-full max-w-sm px-4 flex justify-center">
+        <div className="w-full max-w-[260px] px-4 flex justify-center">
           <img
             ref={photoRef}
             src={hero.heroImage}

@@ -120,10 +120,10 @@ export default function HeroDesktop({
         alt={global.name}
         className="ac-slide-up-image absolute left-1/2"
         style={{
-          bottom: '-100px',
-          width: 'clamp(280px, 70vw, 800px)',
+          bottom: '-50px',
+          width: 'clamp(200px, 45vw, 550px)',
           height: 'auto',
-          maxHeight: '95vh',
+          maxHeight: '80vh',
           objectFit: 'contain',
           objectPosition: 'center bottom',
           zIndex: 33,
