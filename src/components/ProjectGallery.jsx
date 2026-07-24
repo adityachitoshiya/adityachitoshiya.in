@@ -19,7 +19,7 @@ const ProjectGallery = () => {
                 transition={{ duration: 0.8 }}
                 className="font-heading text-6xl md:text-8xl leading-[0.9] uppercase text-primary"
             >
-                {projectPortfolio.headline.split(' ').map((word, i) => (
+                {projectPortfolio.headline?.split(' ')?.map((word, i) => (
                     <React.Fragment key={i}>
                         {word}<br/>
                     </React.Fragment>
@@ -38,7 +38,7 @@ const ProjectGallery = () => {
 
         {/* Gallery Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            {projectPortfolio.images.map((imgUrl, index) => (
+            {projectPortfolio.images?.map((imgUrl, index) => (
                 <motion.div 
                     key={index}
                     initial={{ opacity: 0, y: 50 }}
@@ -58,7 +58,7 @@ const ProjectGallery = () => {
 
         {/* Project List */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projectPortfolio.projects.map((project, index) => (
+            {projectPortfolio.projects?.map((project, index) => (
                 <motion.div 
                     key={index}
                     initial={{ opacity: 0, y: 30 }}

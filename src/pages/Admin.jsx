@@ -177,6 +177,20 @@ const Admin = () => {
         }
     };
 
+    const handleEditImage = (imageUrl, targetSection, targetKey, targetIndex = null, configKey = null, isCover = false, galleryIndex = null) => {
+        if (!imageUrl) return;
+        setCropModal({
+            isOpen: true,
+            imageSrc: imageUrl,
+            targetSection,
+            targetKey,
+            targetIndex,
+            isCover,
+            galleryIndex,
+            configKey
+        });
+    };
+
     const handleProjectFileSelect = (e, targetIndex, isCover, galleryIndex = null, configKey = null) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -221,8 +235,15 @@ const Admin = () => {
                     
                     if (section === 'aboutMe' && key === 'slideshowImages') {
                         // Special handling for slideshow images
-                         const currentImages = prev.aboutMe?.slideshowImages || [];
-                         return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: [...currentImages, { url: result.url, title: '', caption: '' }] } };
+                         const currentImages = [...(prev.aboutMe?.slideshowImages || [])];
+                         if (index !== null) {
+                             currentImages[index] = typeof currentImages[index] === 'string' 
+                                ? { url: result.url, title: '', caption: '' }
+                                : { ...currentImages[index], url: result.url };
+                         } else {
+                             currentImages.push({ url: result.url, title: '', caption: '' });
+                         }
+                         return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: currentImages } };
                     }
                     
                     if (index !== null) {
@@ -539,10 +560,17 @@ const Admin = () => {
                         <div>
                             <label className="block text-muted text-sm mb-2">Hero Image</label>
                             <img src={data.hero.heroImage} alt="Hero" className="w-full h-48 object-cover rounded-xl mb-3" />
-                            <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
-                                <Upload size={16} /> Upload New Image
-                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'hero', 'heroImage', null, 'heroPhoto')} accept="image/*,video/*" />
-                            </label>
+                            <div className="flex gap-2">
+                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                    <Upload size={16} /> Replace
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'hero', 'heroImage', null, 'heroPhoto')} accept="image/*,video/*" />
+                                </label>
+                                {data.hero.heroImage && (
+                                    <button onClick={() => handleEditImage(data.hero.heroImage, 'hero', 'heroImage', null, 'heroPhoto')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                        <Crop size={16} /> Edit
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -556,18 +584,32 @@ const Admin = () => {
                         <div>
                             <label className="block text-muted text-sm mb-2">Image 1 (Tall right)</label>
                             <img src={data.welcome.image1} alt="Welcome 1" className="w-full h-48 object-cover rounded-xl mb-3" />
-                            <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
-                                <Upload size={16} /> Upload New Image
-                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'welcome', 'image1', null, 'introImageTall')} accept="image/*,video/*" />
-                            </label>
+                            <div className="flex gap-2">
+                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                    <Upload size={16} /> Replace
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'welcome', 'image1', null, 'introImageTall')} accept="image/*,video/*" />
+                                </label>
+                                {data.welcome.image1 && (
+                                    <button onClick={() => handleEditImage(data.welcome.image1, 'welcome', 'image1', null, 'introImageTall')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                        <Crop size={16} /> Edit
+                                    </button>
+                                )}
+                            </div>
                         </div>
                         <div>
                             <label className="block text-muted text-sm mb-2">Image 2 (Short left)</label>
                             <img src={data.welcome.image2} alt="Welcome 2" className="w-full h-48 object-cover rounded-xl mb-3" />
-                            <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
-                                <Upload size={16} /> Upload New Image
-                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'welcome', 'image2', null, 'introImageShort')} accept="image/*,video/*" />
-                            </label>
+                            <div className="flex gap-2">
+                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                    <Upload size={16} /> Replace
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'welcome', 'image2', null, 'introImageShort')} accept="image/*,video/*" />
+                                </label>
+                                {data.welcome.image2 && (
+                                    <button onClick={() => handleEditImage(data.welcome.image2, 'welcome', 'image2', null, 'introImageShort')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                        <Crop size={16} /> Edit
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -593,10 +635,17 @@ const Admin = () => {
                         <div>
                             <label className="block text-muted text-sm mb-2">Portrait Image</label>
                             <img src={data.aboutMe?.image} alt="About Me" className="w-48 h-48 object-cover rounded-xl mb-3" />
-                            <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg inline-flex items-center justify-center gap-2 transition-colors">
-                                <Upload size={16} /> Upload New Portrait
-                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'image', null, 'aboutImage')} accept="image/*,video/*" />
-                            </label>
+                            <div className="flex gap-2 w-48">
+                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-2 py-2 rounded-lg flex items-center justify-center gap-1 transition-colors text-xs">
+                                    <Upload size={14} /> Replace
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'image', null, 'aboutImage')} accept="image/*,video/*" />
+                                </label>
+                                {data.aboutMe?.image && (
+                                    <button onClick={() => handleEditImage(data.aboutMe.image, 'aboutMe', 'image', null, 'aboutImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-2 py-2 rounded-lg flex items-center justify-center gap-1 transition-colors text-xs">
+                                        <Crop size={14} /> Edit
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -646,10 +695,17 @@ const Admin = () => {
                                     <label className="block text-muted text-sm mb-2">Cover Image</label>
                                     <div className="flex items-center gap-4">
                                         <img src={project.coverImage} alt="Cover" className="w-32 h-32 object-cover rounded-lg" />
-                                        <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
-                                            <Upload size={16} /> Replace Cover
-                                            <input type="file" className="hidden" onChange={(e) => handleProjectFileSelect(e, pIdx, true, null, 'projectCover')} accept="image/*,video/*" />
-                                        </label>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                                <Upload size={14} /> Replace
+                                                <input type="file" className="hidden" onChange={(e) => handleProjectFileSelect(e, pIdx, true, null, 'projectCover')} accept="image/*,video/*" />
+                                            </label>
+                                            {project.coverImage && (
+                                                <button onClick={() => handleEditImage(project.coverImage, 'projectPortfolio', 'projects', pIdx, 'projectCover', true, null)} className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                                    <Crop size={14} /> Edit
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
 
@@ -659,9 +715,14 @@ const Admin = () => {
                                         {project.gallery?.map((img, gIdx) => (
                                             <div key={gIdx} className="relative group/gal">
                                                 <img src={img} alt={`Gallery ${gIdx}`} className="w-full h-24 object-cover rounded-lg" />
-                                                <button onClick={() => handleRemoveGalleryImage(pIdx, gIdx)} className="absolute top-2 right-2 bg-red-500/80 hover:bg-red-500 text-white p-1 rounded-md opacity-0 group-hover/gal:opacity-100 transition-opacity">
-                                                    <XIcon size={14} />
-                                                </button>
+                                                <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover/gal:opacity-100 transition-opacity">
+                                                    <button onClick={() => handleEditImage(img, 'projectPortfolio', 'projects', pIdx, 'projectGallery', false, gIdx)} className="bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white p-1 rounded-md">
+                                                        <Crop size={12} />
+                                                    </button>
+                                                    <button onClick={() => handleRemoveGalleryImage(pIdx, gIdx)} className="bg-red-500/80 hover:bg-red-500 text-white p-1 rounded-md">
+                                                        <XIcon size={12} />
+                                                    </button>
+                                                </div>
                                             </div>
                                         ))}
                                         <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center h-24 transition-colors">
@@ -682,13 +743,18 @@ const Admin = () => {
                 <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
                     <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Gallery Images</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {data.projectPortfolio.images.map((img, index) => (
+                        {data.projectPortfolio?.images?.map((img, index) => (
                             <div key={index}>
                                 <img src={img} alt={`Gallery ${index}`} className="w-full h-32 object-cover rounded-xl mb-3" />
-                                <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
-                                    <Upload size={14} /> Replace
-                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'projectPortfolio', 'images', index, 'projectGallery')} accept="image/*,video/*" />
-                                </label>
+                                <div className="flex gap-2">
+                                    <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-2 py-2 rounded-lg flex items-center justify-center gap-1 transition-colors text-xs">
+                                        <Upload size={14} /> Replace
+                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'projectPortfolio', 'images', index, 'projectGallery')} accept="image/*,video/*" />
+                                    </label>
+                                    <button onClick={() => handleEditImage(img, 'projectPortfolio', 'images', index, 'projectGallery')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-2 py-2 rounded-lg flex items-center justify-center gap-1 transition-colors text-xs">
+                                        <Crop size={14} /> Edit
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -714,15 +780,20 @@ const Admin = () => {
                             <div key={index} className="relative group/slide border border-white/10 rounded-xl overflow-hidden bg-background flex flex-col">
                                 <div className="relative h-48 shrink-0">
                                     <img src={imgUrl} alt={`Slide ${index}`} className="w-full h-full object-cover" />
-                                    <button onClick={() => {
-                                        setData(prev => {
-                                            const newImages = [...(prev.aboutMe?.slideshowImages || [])];
-                                            newImages.splice(index, 1);
-                                            return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: newImages } };
-                                        });
-                                    }} className="absolute top-2 right-2 bg-red-500/80 hover:bg-red-500 text-white p-1.5 rounded-md opacity-0 group-hover/slide:opacity-100 transition-opacity">
-                                        <XIcon size={14} />
-                                    </button>
+                                    <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover/slide:opacity-100 transition-opacity">
+                                        <button onClick={() => handleEditImage(imgUrl, 'aboutMe', 'slideshowImages', index, 'slideshowImage')} className="bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white p-1.5 rounded-md">
+                                            <Crop size={14} />
+                                        </button>
+                                        <button onClick={() => {
+                                            setData(prev => {
+                                                const newImages = [...(prev.aboutMe?.slideshowImages || [])];
+                                                newImages.splice(index, 1);
+                                                return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: newImages } };
+                                            });
+                                        }} className="bg-red-500/80 hover:bg-red-500 text-white p-1.5 rounded-md">
+                                            <XIcon size={14} />
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className="p-4 space-y-3 flex-1 flex flex-col">
                                     <div>
@@ -786,10 +857,17 @@ const Admin = () => {
                         <div className="md:row-span-2">
                             <label className="block text-muted text-sm mb-2">Contact Portrait</label>
                             <img src={data.contact?.image} alt="Contact" className="w-full h-48 object-cover rounded-xl mb-3" />
-                            <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
-                                <Upload size={16} /> Upload New Portrait
-                                <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'contact', 'image', null, 'contactImage')} accept="image/*,video/*" />
-                            </label>
+                            <div className="flex gap-2">
+                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                    <Upload size={16} /> Replace
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'contact', 'image', null, 'contactImage')} accept="image/*,video/*" />
+                                </label>
+                                {data.contact?.image && (
+                                    <button onClick={() => handleEditImage(data.contact.image, 'contact', 'image', null, 'contactImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                        <Crop size={16} /> Edit
+                                    </button>
+                                )}
+                            </div>
                         </div>
                         <div>
                             <label className="block text-muted text-sm mb-2">Text / Description</label>
