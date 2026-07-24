@@ -38,7 +38,7 @@ const Education = () => {
 
         {/* Timeline Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {education.items.map((item, index) => (
+            {education.items?.map((item, index) => (
                 <motion.div 
                     key={index}
                     initial={{ opacity: 0, y: 30 }}

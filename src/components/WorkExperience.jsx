@@ -24,7 +24,7 @@ const WorkExperience = () => {
 
             {/* Timeline Grid (Similar to Education) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-                {workExperience.items.map((item, index) => (
+                {workExperience.items?.map((item, index) => (
                     <motion.div 
                         key={index}
                         initial={{ opacity: 0, y: 30 }}

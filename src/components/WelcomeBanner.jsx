@@ -20,7 +20,7 @@ const WelcomeBanner = () => {
           className="max-w-xl"
         >
           <h2 className="font-heading text-5xl md:text-7xl mb-8 leading-[0.9] uppercase text-primary">
-            {welcome.headline.split(' ').map((word, i, arr) => (
+            {welcome.headline?.split(' ')?.map((word, i, arr) => (
                 <React.Fragment key={i}>
                     {i === arr.length - 1 ? <span className="text-accent">{word}</span> : word}
                     {i !== arr.length - 1 && ' '}

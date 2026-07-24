@@ -63,7 +63,7 @@ const LatestProject = () => {
 
         {/* Right - Text Writeups */}
         <div className="lg:col-span-3 flex flex-col justify-end h-full gap-12 pt-12 lg:pt-0">
-            {projects.map((project, index) => (
+            {projects?.map((project, index) => (
                 <motion.div 
                     key={index}
                     initial={{ opacity: 0, x: 50 }}
