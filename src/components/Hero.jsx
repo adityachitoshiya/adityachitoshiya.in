@@ -95,7 +95,7 @@ export default function Hero({ photoRef, headlineRef, accentRef }) {
           width: 100vw;
           transform: translateY(-50%) rotate(-2deg);
           pointer-events: none;
-          z-index: 5;
+          z-index: 0;
           opacity: 0.03;
         }
 
