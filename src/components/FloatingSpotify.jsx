@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, ChevronUp, ChevronDown } from 'lucide-react';
+import { Play, Pause, ChevronUp, ChevronDown, Search } from 'lucide-react';
 
 const FloatingSpotify = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,6 +47,10 @@ const FloatingSpotify = () => {
     }
   };
 
+  const handleSearchClick = () => {
+    window.dispatchEvent(new Event('openSearch'));
+  };
+
   return (
     <div className="fixed bottom-6 left-6 md:bottom-10 md:left-14 z-50 flex flex-col items-start gap-4 pointer-events-none">
       
@@ -69,7 +73,16 @@ const FloatingSpotify = () => {
       {/* Control Buttons */}
       <div className="flex items-center gap-3 pointer-events-auto">
         
-        {/* Button 1: Play/Pause with Outer Ring */}
+        {/* Button 1: Search Button */}
+        <button
+          onClick={handleSearchClick}
+          className="w-[34px] h-[34px] rounded-full bg-accent flex items-center justify-center text-background hover:scale-110 transition-transform shadow-lg"
+          aria-label="Open Search"
+        >
+          <Search size={16} strokeWidth={2.5} />
+        </button>
+
+        {/* Button 2: Play/Pause with Outer Ring */}
         <button
           onClick={togglePlay}
           className="w-[42px] h-[42px] rounded-full border-2 border-accent p-[2px] flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
@@ -84,7 +97,7 @@ const FloatingSpotify = () => {
           </div>
         </button>
 
-        {/* Button 2: Toggle Widget (Mirror Effect with ^) - Appears only after interaction starts */}
+        {/* Button 3: Toggle Widget (Mirror Effect with ^) - Appears only after interaction starts */}
         <AnimatePresence>
           {(hasStarted || isPlaying) && (
             <motion.button

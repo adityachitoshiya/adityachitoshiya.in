@@ -19,6 +19,12 @@ export default function Hero({ photoRef, headlineRef, accentRef }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  useEffect(() => {
+    const handleOpenSearch = () => setIsSearchOpen(true);
+    window.addEventListener('openSearch', handleOpenSearch);
+    return () => window.removeEventListener('openSearch', handleOpenSearch);
+  }, []);
+
   return (
     <section id="home" style={{ backgroundColor: '#0a0a0a' }}>
       <style>{`

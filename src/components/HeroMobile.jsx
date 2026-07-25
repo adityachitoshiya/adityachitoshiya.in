@@ -157,13 +157,8 @@ export default function HeroMobile({
 
         <div
           ref={footerRef}
-          className="flex w-full items-center justify-between mt-6 pt-6 border-t border-white/10"
+          className="flex w-full items-center justify-end mt-6 pt-6 border-t border-white/10"
         >
-          <div className="flex items-center gap-4">
-            <button className="ac-icon-btn" aria-label="Search" onClick={() => setIsSearchOpen(true)}>
-              <Search size={16} />
-            </button>
-          </div>
           <p className="ac-body text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
             {global.website}
           </p>
