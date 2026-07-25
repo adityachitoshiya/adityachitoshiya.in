@@ -355,6 +355,38 @@ const Admin = () => {
         });
     };
 
+    const handleAddEducationItem = () => {
+        setData(prev => ({
+            ...prev,
+            education: {
+                ...prev.education,
+                items: [...(prev.education?.items || []), { year: '', institution: '', description: '' }]
+            }
+        }));
+    };
+
+    const handleRemoveEducationItem = (index) => {
+        setData(prev => {
+            const newItems = [...(prev.education?.items || [])];
+            newItems.splice(index, 1);
+            return {
+                ...prev,
+                education: { ...prev.education, items: newItems }
+            };
+        });
+    };
+
+    const handleEducationItemChange = (index, field, value) => {
+        setData(prev => {
+            const newItems = [...(prev.education?.items || [])];
+            newItems[index] = { ...newItems[index], [field]: value };
+            return {
+                ...prev,
+                education: { ...prev.education, items: newItems }
+            };
+        });
+    };
+
     const handleProjectChange = (index, field, value) => {
         setData(prev => {
             const newProjects = [...(prev.projectPortfolio?.projects || [])];
@@ -429,7 +461,7 @@ const Admin = () => {
 
                 {/* Tab Navigation */}
                 <div className="flex flex-wrap gap-4 mb-8 border-b border-white/10 pb-4">
-                    {['global', 'hero', 'welcome', 'about', 'work', 'creatives', 'gallery', 'slideshow', 'contact'].map(tab => (
+                    {['global', 'hero', 'welcome', 'about', 'work', 'education', 'creatives', 'gallery', 'slideshow', 'contact'].map(tab => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
@@ -437,7 +469,7 @@ const Admin = () => {
                                 activeTab === tab ? 'bg-accent text-background' : 'bg-white/5 text-muted hover:bg-white/10 hover:text-white'
                             }`}
                         >
-                            {tab === 'creatives' ? 'Projects' : tab === 'slideshow' ? 'Slideshow' : tab === 'about' ? 'About Us' : tab === 'work' ? 'Work Exp' : tab === 'contact' ? 'Contact' : tab}
+                            {tab === 'creatives' ? 'Projects' : tab === 'slideshow' ? 'Slideshow' : tab === 'about' ? 'About Us' : tab === 'work' ? 'Work Exp' : tab === 'education' ? 'Education' : tab === 'contact' ? 'Contact' : tab}
                         </button>
                     ))}
                 </div>
@@ -743,6 +775,93 @@ const Admin = () => {
                                     </label>
                                     {data.workExperience?.image2 && (
                                         <button onClick={() => handleEditImage(data.workExperience.image2, 'workExperience', 'image2', null, 'experienceImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                            <Crop size={16} /> Edit
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                )}
+
+                {/* Section: Education */}
+                {activeTab === 'education' && (
+                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">Education Section</h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {/* Text Content */}
+                        <div className="flex flex-col gap-6">
+                            <div>
+                                <label className="block text-muted text-sm mb-2">Headline</label>
+                                <input value={data.education?.headline || ''} onChange={(e) => handleTextChange(e, 'education', 'headline')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                            </div>
+
+                            <div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <label className="block text-muted text-sm">Timeline Items</label>
+                                    <button onClick={handleAddEducationItem} className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg flex items-center gap-2 text-sm transition-colors">
+                                        <Plus size={16} /> Add Item
+                                    </button>
+                                </div>
+                                
+                                {data.education?.items?.map((item, index) => (
+                                    <div key={index} className="bg-background border border-white/10 p-4 rounded-xl mb-4 relative group">
+                                        <button 
+                                            onClick={() => handleRemoveEducationItem(index)}
+                                            className="absolute top-2 right-2 text-red-500 hover:text-red-400 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                        
+                                        <div className="grid grid-cols-2 gap-4 mb-4 mt-2">
+                                            <div>
+                                                <label className="block text-white/50 text-xs mb-1">Year(s)</label>
+                                                <input 
+                                                    value={item.year || ''} 
+                                                    onChange={(e) => handleEducationItemChange(index, 'year', e.target.value)}
+                                                    className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                                                    placeholder="e.g. 2018 - 2022"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-white/50 text-xs mb-1">Institution</label>
+                                                <input 
+                                                    value={item.institution || ''} 
+                                                    onChange={(e) => handleEducationItemChange(index, 'institution', e.target.value)}
+                                                    className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                                                    placeholder="e.g. University Name"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-white/50 text-xs mb-1">Description</label>
+                                            <textarea 
+                                                value={item.description || ''} 
+                                                onChange={(e) => handleEducationItemChange(index, 'description', e.target.value)}
+                                                className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white h-20 resize-none"
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Images */}
+                        <div className="flex flex-col gap-6">
+                            <div>
+                                <label className="block text-muted text-sm mb-2">Banner Image</label>
+                                <img src={data.education?.bannerImage} alt="Education Banner" className="w-full h-48 object-cover rounded-xl mb-3" />
+                                <div className="flex gap-2">
+                                    <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                        <Upload size={16} /> Replace
+                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'education', 'bannerImage', null, 'educationBanner')} accept="image/*" />
+                                    </label>
+                                    {data.education?.bannerImage && (
+                                        <button onClick={() => handleEditImage(data.education.bannerImage, 'education', 'bannerImage', null, 'educationBanner')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
                                             <Crop size={16} /> Edit
                                         </button>
                                     )}
