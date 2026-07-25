@@ -52,7 +52,7 @@ const FloatingSpotify = () => {
   };
 
   return (
-    <div className="fixed bottom-6 left-6 md:bottom-10 md:left-14 z-50 flex flex-col items-start gap-4 pointer-events-none">
+    <div className="hidden md:flex fixed bottom-10 left-14 z-50 flex-col items-start gap-4 pointer-events-none">
       
       {/* Expanded Spotify Player in Mirror Effect Container */}
       <motion.div
