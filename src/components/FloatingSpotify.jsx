@@ -31,38 +31,37 @@ const FloatingSpotify = () => {
   }, []);
 
   useEffect(() => {
-    window.onSpotifyIframeApiReady = (IFrameAPI) => {
-      const element = document.getElementById('spotify-iframe');
-      const options = {
-        uri: 'spotify:playlist:37i9dQZF1DXcBWIGoYBM5M',
-        width: '100%',
-        height: '152',
-        theme: '0'
-      };
-      const callback = (EmbedController) => {
-        setPlayerController(EmbedController);
-        EmbedController.addListener('playback_update', e => {
-          setIsPlaying(!e.data.isPaused);
-          if (!e.data.isPaused && !hasStarted) {
-            setHasStarted(true);
-          }
+    const loadSC = () => {
+      const iframeElement = document.getElementById('sc-widget');
+      if (iframeElement && window.SC) {
+        const widget = window.SC.Widget(iframeElement);
+        setPlayerController(widget);
+
+        widget.bind(window.SC.Widget.Events.PLAY, () => {
+          setIsPlaying(true);
+          setHasStarted(true);
         });
-      };
-      IFrameAPI.createController(element, options, callback);
+
+        widget.bind(window.SC.Widget.Events.PAUSE, () => {
+          setIsPlaying(false);
+        });
+      }
     };
 
-    if (!window.SpotifyIframeApiInit) {
+    if (!window.SC) {
       const script = document.createElement('script');
-      script.src = "https://open.spotify.com/embed/iframe-api/v1";
+      script.src = "https://w.soundcloud.com/player/api.js";
       script.async = true;
+      script.onload = loadSC;
       document.body.appendChild(script);
-      window.SpotifyIframeApiInit = true;
+    } else {
+      loadSC();
     }
   }, []);
 
   const togglePlay = () => {
     if (playerController) {
-      playerController.togglePlay();
+      playerController.toggle();
       if (!hasStarted) {
         setHasStarted(true);
       }
@@ -97,7 +96,17 @@ const FloatingSpotify = () => {
         {/* Glossy reflection highlight */}
         <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none rounded-3xl" />
         
-        <div id="spotify-iframe" className="relative z-10" style={{ borderRadius: '20px', overflow: 'hidden' }}></div>
+        <iframe 
+          id="sc-widget" 
+          className="relative z-10" 
+          width="100%" 
+          height="152" 
+          scrolling="no" 
+          frameBorder="no" 
+          allow="autoplay" 
+          src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1250550031&color=%23f5a623&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"
+          style={{ borderRadius: '20px', overflow: 'hidden' }}
+        ></iframe>
       </motion.div>
 
       {/* Control Buttons Container */}
@@ -141,7 +150,7 @@ const FloatingSpotify = () => {
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-10 h-10 rounded-full flex items-center justify-center text-white backdrop-blur-xl bg-white/10 border border-white/20 hover:bg-white/20 hover:scale-110 transition-transform shadow-lg"
-                aria-label="Toggle Spotify Player"
+                aria-label="Toggle Audio Player"
               >
                 {isOpen ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
               </motion.button>
