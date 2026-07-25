@@ -91,7 +91,7 @@ const Portfolio = () => {
           { ref: accentRefs, speed: 1, fade: true },     
         ],
       },
-      600
+      window.innerHeight
     );
     return () => ctx?.revert();
   }, []);
