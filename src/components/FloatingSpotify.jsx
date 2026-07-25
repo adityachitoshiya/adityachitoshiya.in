@@ -7,7 +7,28 @@ const FloatingSpotify = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [playerController, setPlayerController] = useState(null);
-  const [isMobileHidden, setIsMobileHidden] = useState(true);
+  const [isMobileHidden, setIsMobileHidden] = useState(false);
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Auto-hide when scrolling down past top area, auto-show when back at very top
+      if (currentScrollY > 150 && lastScrollY <= 150) {
+        setIsMobileHidden(true);
+        setIsOpen(false);
+      } else if (currentScrollY <= 150 && lastScrollY > 150) {
+        setIsMobileHidden(false);
+      }
+      
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     window.onSpotifyIframeApiReady = (IFrameAPI) => {
@@ -61,7 +82,7 @@ const FloatingSpotify = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-0 md:bottom-10 md:right-auto md:left-14 z-50 flex flex-col items-end md:items-start gap-4 pointer-events-none">
+    <div className="fixed bottom-6 left-0 md:bottom-10 md:left-14 z-50 flex flex-col items-start gap-4 pointer-events-none">
       
       {/* Expanded Spotify Player in Mirror Effect Container */}
       <motion.div
@@ -71,7 +92,7 @@ const FloatingSpotify = () => {
           { opacity: 0, y: 40, scale: 0.8, filter: "blur(10px)", pointerEvents: "none" }
         }
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="w-[calc(100vw-48px)] max-w-[350px] p-2 rounded-3xl backdrop-blur-2xl bg-white/5 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden origin-bottom-right md:origin-bottom-left mr-6 md:mr-0"
+        className="w-[calc(100vw-48px)] max-w-[350px] p-2 rounded-3xl backdrop-blur-2xl bg-white/5 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden origin-bottom-left ml-6 md:ml-0"
       >
         {/* Glossy reflection highlight */}
         <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none rounded-3xl" />
@@ -81,19 +102,10 @@ const FloatingSpotify = () => {
 
       {/* Control Buttons Container */}
       <div 
-        className={`pointer-events-auto flex items-center transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] md:translate-x-0 ${isMobileHidden ? 'translate-x-[calc(100%-28px)]' : 'translate-x-0'} bg-white/10 md:bg-transparent backdrop-blur-xl md:backdrop-blur-none rounded-l-2xl md:rounded-none border border-white/20 md:border-none border-r-0 md:border-transparent shadow-[0_0_15px_rgba(0,0,0,0.5)] md:shadow-none`}
+        className={`pointer-events-auto flex items-center transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] md:translate-x-0 ${isMobileHidden ? '-translate-x-[calc(100%-28px)]' : 'translate-x-0'} bg-white/10 md:bg-transparent backdrop-blur-xl md:backdrop-blur-none rounded-r-2xl md:rounded-none border border-white/20 md:border-none border-l-0 md:border-transparent shadow-[0_0_15px_rgba(0,0,0,0.5)] md:shadow-none`}
       >
-        {/* Mobile Toggle Handle */}
-        <button
-          onClick={handleToggleHide}
-          className="md:hidden flex items-center justify-center w-[28px] h-full min-h-[52px] text-white/80 hover:text-white transition-colors outline-none"
-          aria-label="Toggle Controls"
-        >
-          {isMobileHidden ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
-        </button>
-
         {/* Buttons Panel */}
-        <div className="flex items-center gap-3 py-2 pr-4 pl-1 md:p-0 md:pr-0 md:pl-0">
+        <div className="flex items-center gap-3 py-2 pl-4 pr-1 md:p-0 md:pr-0 md:pl-0">
           
           {/* Button 1: Search Button */}
           <button
@@ -137,6 +149,15 @@ const FloatingSpotify = () => {
           </AnimatePresence>
           
         </div>
+
+        {/* Mobile Toggle Handle */}
+        <button
+          onClick={handleToggleHide}
+          className="md:hidden flex items-center justify-center w-[28px] h-full min-h-[52px] text-white/80 hover:text-white transition-colors outline-none"
+          aria-label="Toggle Controls"
+        >
+          {isMobileHidden ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+        </button>
       </div>
       
     </div>
