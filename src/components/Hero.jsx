@@ -126,12 +126,6 @@ export default function Hero({ photoRef, headlineRef, accentRef }) {
           font-size: clamp(8rem, 25vw, 30rem);
           color: transparent;
           -webkit-text-stroke: 2px #ffffff;
-          animation: marquee 40s linear infinite;
-        }
-
-        @keyframes marquee {
-          0% { transform: translate(0, 0); }
-          100% { transform: translate(-50%, 0); }
         }
       `}</style>
 

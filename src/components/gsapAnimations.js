@@ -8,6 +8,17 @@ export const animateHeroEntrance = (refs) => {
   console.log("GSAP animations triggered on:", refs);
 };
 
+export const animateMarquee = (ref, { speed = 55 } = {}) => {
+  if (!ref.current) return;
+  // If the marquee has children, animate them to scroll infinitely
+  gsap.to(ref.current.children, {
+    xPercent: -50,
+    repeat: -1,
+    duration: speed,
+    ease: "none"
+  });
+};
+
 export const initHeroParallax = ({ heroRef, nextSectionRef, layers }, pinDistance = 600) => {
   const ctx = gsap.context(() => {
     // Pin the hero section

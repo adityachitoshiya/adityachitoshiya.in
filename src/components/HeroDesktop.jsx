@@ -3,6 +3,7 @@ import { Search, Play, Pause } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { animateMarquee } from './gsapAnimations';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,7 +18,15 @@ export default function HeroDesktop({
   headlineRef,
   accentRef
 }) {
-  // We removed internal scroll triggers since they are handled externally
+  const marqueeRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      animateMarquee(marqueeRef, { speed: 55 });
+    });
+    return () => ctx.revert();
+  }, []);
+
   return (
     <div className="relative w-full h-[100svh] flex flex-col z-20 overflow-hidden">
       {/* Ambient Background Effects */}
@@ -27,7 +36,11 @@ export default function HeroDesktop({
       </div>
 
       {/* Marquee Text Background */}
-      <div ref={marqueeRef} className="ac-marquee">
+      <div 
+        ref={marqueeRef} 
+        className="ac-marquee"
+        style={{ top: '2%', opacity: 0.04, zIndex: 0, pointerEvents: 'none' }}
+      >
         <span>{hero.headline} {hero.headline} {hero.headline} {hero.headline} {hero.headline} {hero.headline}</span>
       </div>
 
