@@ -37,7 +37,7 @@ export default function HeroDesktop({
       <div 
         ref={marqueeRef} 
         className="ac-marquee"
-        style={{ top: '2%', opacity: 0.04, zIndex: 0, pointerEvents: 'none' }}
+        style={{ top: '50%', opacity: 0.04, zIndex: 0, pointerEvents: 'none' }}
       >
         <span>{hero.headline} {hero.headline} {hero.headline} {hero.headline} {hero.headline} {hero.headline}</span>
       </div>
