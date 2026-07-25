@@ -3,7 +3,10 @@ import { Search, Play, Pause, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { animateHeroEntrance } from './gsapAnimations';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function HeroMobile({
   hero,
@@ -15,6 +18,7 @@ export default function HeroMobile({
   menuOpen,
   setMenuOpen,
 }) {
+  const containerRef = useRef(null);
   const navRef = useRef(null);
   const badgeRef = useRef(null);
   const accentRef = useRef(null);
@@ -38,13 +42,48 @@ export default function HeroMobile({
         presentedRef,
         footerRef,
       });
+
+      // Mobile Parallax Effects
+      gsap.to(headlineRef.current, {
+        y: 100,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+
+      gsap.to(accentRef.current, {
+        y: 150,
+        rotation: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+
+      gsap.to(photoRef.current, {
+        y: -50,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
     });
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <div className="relative w-full min-h-[100svh] flex flex-col z-20 bg-[#0a0a0a] overflow-hidden">
+    <div ref={containerRef} className="relative w-full min-h-[100svh] flex flex-col z-20 bg-[#0a0a0a] overflow-hidden">
       {/* Nav */}
       <nav ref={navRef} className="relative z-30 flex items-center justify-between px-6 py-6">
         <span className="ac-display text-3xl tracking-wider" style={{ color: '#f5a623' }}>

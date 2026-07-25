@@ -313,6 +313,38 @@ const Admin = () => {
         }));
     };
 
+    const handleAddWorkExperienceItem = () => {
+        setData(prev => ({
+            ...prev,
+            workExperience: {
+                ...prev.workExperience,
+                items: [...(prev.workExperience?.items || []), { year: '', company: '', description: '' }]
+            }
+        }));
+    };
+
+    const handleRemoveWorkExperienceItem = (index) => {
+        setData(prev => {
+            const newItems = [...(prev.workExperience?.items || [])];
+            newItems.splice(index, 1);
+            return {
+                ...prev,
+                workExperience: { ...prev.workExperience, items: newItems }
+            };
+        });
+    };
+
+    const handleWorkExperienceItemChange = (index, field, value) => {
+        setData(prev => {
+            const newItems = [...(prev.workExperience?.items || [])];
+            newItems[index] = { ...newItems[index], [field]: value };
+            return {
+                ...prev,
+                workExperience: { ...prev.workExperience, items: newItems }
+            };
+        });
+    };
+
     const handleProjectChange = (index, field, value) => {
         setData(prev => {
             const newProjects = [...(prev.projectPortfolio?.projects || [])];
@@ -387,7 +419,7 @@ const Admin = () => {
 
                 {/* Tab Navigation */}
                 <div className="flex flex-wrap gap-4 mb-8 border-b border-white/10 pb-4">
-                    {['global', 'hero', 'welcome', 'about', 'creatives', 'gallery', 'slideshow', 'contact'].map(tab => (
+                    {['global', 'hero', 'welcome', 'about', 'work', 'creatives', 'gallery', 'slideshow', 'contact'].map(tab => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
@@ -395,7 +427,7 @@ const Admin = () => {
                                 activeTab === tab ? 'bg-accent text-background' : 'bg-white/5 text-muted hover:bg-white/10 hover:text-white'
                             }`}
                         >
-                            {tab === 'creatives' ? 'Projects' : tab === 'slideshow' ? 'Slideshow' : tab === 'about' ? 'About Us' : tab === 'contact' ? 'Contact' : tab}
+                            {tab === 'creatives' ? 'Projects' : tab === 'slideshow' ? 'Slideshow' : tab === 'about' ? 'About Us' : tab === 'work' ? 'Work Exp' : tab === 'contact' ? 'Contact' : tab}
                         </button>
                     ))}
                 </div>
@@ -609,6 +641,102 @@ const Admin = () => {
                                         <Crop size={16} /> Edit
                                     </button>
                                 )}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                )}
+
+                {/* Section: Work Experience */}
+                {activeTab === 'work' && (
+                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Work Experience Section</h2>
+                    <div className="grid grid-cols-1 gap-6">
+                        <div>
+                            <label className="block text-muted text-sm mb-2">Section Headline</label>
+                            <input value={data.workExperience?.headline || ''} onChange={(e) => handleTextChange(e, 'workExperience', 'headline')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                        </div>
+                        
+                        <div>
+                            <div className="flex items-center justify-between mb-4">
+                                <label className="block text-muted text-sm">Experience Items</label>
+                                <button onClick={handleAddWorkExperienceItem} className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg flex items-center gap-2 text-sm transition-colors">
+                                    <Plus size={14} /> Add Item
+                                </button>
+                            </div>
+                            <div className="space-y-4">
+                                {data.workExperience?.items?.map((item, index) => (
+                                    <div key={index} className="bg-background border border-white/10 p-4 rounded-xl relative group">
+                                        <button 
+                                            onClick={() => handleRemoveWorkExperienceItem(index)}
+                                            className="absolute top-4 right-4 text-white/40 hover:text-red-400 transition-colors"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                            <div>
+                                                <label className="block text-white/50 text-xs mb-1">Year(s)</label>
+                                                <input 
+                                                    value={item.year} 
+                                                    onChange={(e) => handleWorkExperienceItemChange(index, 'year', e.target.value)}
+                                                    placeholder="e.g. 2023 - Present"
+                                                    className="w-full bg-white/5 border border-white/10 rounded-md p-2 text-sm text-white focus:border-accent outline-none"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-white/50 text-xs mb-1">Company / Role</label>
+                                                <input 
+                                                    value={item.company} 
+                                                    onChange={(e) => handleWorkExperienceItemChange(index, 'company', e.target.value)}
+                                                    placeholder="e.g. Lead Designer at Apple"
+                                                    className="w-full bg-white/5 border border-white/10 rounded-md p-2 text-sm text-white focus:border-accent outline-none"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-white/50 text-xs mb-1">Description</label>
+                                            <textarea 
+                                                value={item.description} 
+                                                onChange={(e) => handleWorkExperienceItemChange(index, 'description', e.target.value)}
+                                                placeholder="Describe your role and impact..."
+                                                className="w-full bg-white/5 border border-white/10 rounded-md p-2 text-sm text-white focus:border-accent outline-none h-20 resize-y"
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6 border-t border-white/10 pt-8">
+                            <div>
+                                <label className="block text-muted text-sm mb-2">Image 1 (Top)</label>
+                                <img src={data.workExperience?.image1} alt="Work 1" className="w-full h-48 object-cover rounded-xl mb-3" />
+                                <div className="flex gap-2">
+                                    <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                        <Upload size={16} /> Replace
+                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'workExperience', 'image1', null, 'experienceImage')} accept="image/*" />
+                                    </label>
+                                    {data.workExperience?.image1 && (
+                                        <button onClick={() => handleEditImage(data.workExperience.image1, 'workExperience', 'image1', null, 'experienceImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                            <Crop size={16} /> Edit
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-muted text-sm mb-2">Image 2 (Bottom)</label>
+                                <img src={data.workExperience?.image2} alt="Work 2" className="w-full h-48 object-cover rounded-xl mb-3" />
+                                <div className="flex gap-2">
+                                    <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                        <Upload size={16} /> Replace
+                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'workExperience', 'image2', null, 'experienceImage')} accept="image/*" />
+                                    </label>
+                                    {data.workExperience?.image2 && (
+                                        <button onClick={() => handleEditImage(data.workExperience.image2, 'workExperience', 'image2', null, 'experienceImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                            <Crop size={16} /> Edit
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

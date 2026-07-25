@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Search, Play, Pause } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function HeroDesktop({
   hero,
@@ -10,8 +14,68 @@ export default function HeroDesktop({
   toggleAudio,
   setIsSearchOpen
 }) {
+  const containerRef = useRef(null);
+  const headlineRef = useRef(null);
+  const marqueeRef = useRef(null);
+  const imageRef = useRef(null);
+  const accentRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Background marquee parallax
+      gsap.to(marqueeRef.current, {
+        yPercent: 30,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+
+      // Headline parallax (moves down slower)
+      gsap.to(headlineRef.current, {
+        y: 150,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+
+      // Accent Word parallax
+      gsap.to(accentRef.current, {
+        y: 200,
+        rotation: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+
+      // Hero Image parallax (moves up slightly to create depth)
+      gsap.to(imageRef.current, {
+        yPercent: -15,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+    }, containerRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className="relative w-full h-[100svh] flex flex-col z-20 overflow-hidden">
+    <div ref={containerRef} className="relative w-full h-[100svh] flex flex-col z-20 overflow-hidden">
       {/* Ambient Background Effects */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-grid-pattern opacity-50"></div>
@@ -19,7 +83,7 @@ export default function HeroDesktop({
       </div>
 
       {/* Marquee Text Background */}
-      <div className="ac-marquee">
+      <div ref={marqueeRef} className="ac-marquee">
         <span>{hero.headline} {hero.headline} {hero.headline} {hero.headline} {hero.headline} {hero.headline}</span>
       </div>
 
@@ -63,6 +127,7 @@ export default function HeroDesktop({
       {/* Headline block */}
       <div className="relative flex-1 flex items-center justify-center px-4">
         <h1
+          ref={headlineRef}
           className="ac-display ac-fade-up w-full text-center select-none"
           style={{
             color: '#ffffff',
@@ -76,6 +141,7 @@ export default function HeroDesktop({
         </h1>
 
         <span
+          ref={accentRef}
           className="ac-script ac-fade-up absolute"
           style={{
             color: '#f5a623',
@@ -116,6 +182,7 @@ export default function HeroDesktop({
       </div>
 
       <img
+        ref={imageRef}
         src={hero.heroImage}
         alt={global.name}
         className="ac-slide-up-image absolute left-1/2"
