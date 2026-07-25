@@ -62,7 +62,7 @@ const FloatingSpotify = () => {
           { opacity: 0, y: 40, scale: 0.8, filter: "blur(10px)", pointerEvents: "none" }
         }
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="w-[300px] sm:w-[350px] p-2 rounded-3xl backdrop-blur-2xl bg-white/5 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden origin-bottom-left"
+        className="w-[calc(100vw-48px)] max-w-[350px] p-2 rounded-3xl backdrop-blur-2xl bg-white/5 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden origin-bottom-left"
       >
         {/* Glossy reflection highlight */}
         <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none rounded-3xl" />
