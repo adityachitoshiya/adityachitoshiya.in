@@ -26,6 +26,17 @@ app.use('/uploads', cors(), express.static(path.join(__dirname, 'public', 'uploa
 
 connectDB();
 
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || process.env.ADMIN_PASSWORD || 'secure-admin-token-123';
+
+const requireAuth = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (authHeader === `Bearer ${ADMIN_TOKEN}`) {
+        next();
+    } else {
+        res.status(401).json({ success: false, message: 'Unauthorized API Access' });
+    }
+};
+
 // Cloudinary Configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -82,7 +93,7 @@ app.get('/api/portfolio', async (req, res) => {
 });
 
 // POST to update entire portfolio data
-app.post('/api/portfolio', async (req, res) => {
+app.post('/api/portfolio', requireAuth, async (req, res) => {
     try {
         const newData = req.body;
         
@@ -137,14 +148,14 @@ app.post('/api/login', (req, res) => {
     const validPassword = process.env.ADMIN_PASSWORD || 'password';
 
     if (username === validUsername && password === validPassword) {
-        res.json({ success: true });
+        res.json({ success: true, token: ADMIN_TOKEN });
     } else {
         res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 });
 
 // POST for single file upload to Cloudinary
-app.post('/api/upload', upload.single('media'), (req, res) => {
+app.post('/api/upload', requireAuth, upload.single('media'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ success: false, message: 'No file uploaded' });
     }

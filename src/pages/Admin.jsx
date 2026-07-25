@@ -31,7 +31,7 @@ const Admin = () => {
     });
 
     useEffect(() => {
-        if (sessionStorage.getItem('adminAuth') === 'true') {
+        if (sessionStorage.getItem('adminToken')) {
             setIsAuthenticated(true);
         }
         fetchData();
@@ -52,7 +52,7 @@ const Admin = () => {
             
             if (result.success) {
                 setIsAuthenticated(true);
-                sessionStorage.setItem('adminAuth', 'true');
+                sessionStorage.setItem('adminToken', result.token);
             } else {
                 setLoginError(result.message || 'Invalid credentials');
             }
@@ -139,7 +139,10 @@ const Admin = () => {
         try {
             await fetch('/api/portfolio', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}`
+                },
                 body: JSON.stringify(data)
             });
             alert('Settings saved successfully!');
@@ -225,6 +228,9 @@ const Admin = () => {
         try {
             const res = await fetch('/api/upload', {
                 method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}`
+                },
                 body: formData
             });
             const result = await res.json();
@@ -269,7 +275,11 @@ const Admin = () => {
         formData.append('media', blob, 'upload.webp');
 
         try {
-            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+            const res = await fetch('/api/upload', { 
+                method: 'POST', 
+                headers: { 'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}` },
+                body: formData 
+            });
             const result = await res.json();
             
             if (result.success) {
