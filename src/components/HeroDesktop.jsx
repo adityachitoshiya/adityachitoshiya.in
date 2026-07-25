@@ -12,70 +12,14 @@ export default function HeroDesktop({
   navLinks,
   isPlaying,
   toggleAudio,
-  setIsSearchOpen
+  setIsSearchOpen,
+  photoRef,
+  headlineRef,
+  accentRef
 }) {
-  const containerRef = useRef(null);
-  const headlineRef = useRef(null);
-  const marqueeRef = useRef(null);
-  const imageRef = useRef(null);
-  const accentRef = useRef(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Background marquee parallax
-      gsap.to(marqueeRef.current, {
-        yPercent: 30,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        }
-      });
-
-      // Headline parallax (moves down slower)
-      gsap.to(headlineRef.current, {
-        y: 150,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        }
-      });
-
-      // Accent Word parallax
-      gsap.to(accentRef.current, {
-        y: 200,
-        rotation: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        }
-      });
-
-      // Hero Image parallax (moves up slightly to create depth)
-      gsap.to(imageRef.current, {
-        yPercent: -15,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        }
-      });
-    }, containerRef);
-    return () => ctx.revert();
-  }, []);
-
+  // We removed internal scroll triggers since they are handled externally
   return (
-    <div ref={containerRef} className="relative w-full h-[100svh] flex flex-col z-20 overflow-hidden">
+    <div className="relative w-full h-[100svh] flex flex-col z-20 overflow-hidden">
       {/* Ambient Background Effects */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-grid-pattern opacity-50"></div>
@@ -182,7 +126,7 @@ export default function HeroDesktop({
       </div>
 
       <img
-        ref={imageRef}
+        ref={photoRef}
         src={hero.heroImage}
         alt={global.name}
         className="ac-slide-up-image absolute left-1/2"

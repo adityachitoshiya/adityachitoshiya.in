@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, Navigate } from 'react-router-dom';
 import Hero from './components/Hero';
 import WelcomeBanner from './components/WelcomeBanner';
@@ -13,6 +13,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
 import ThemeProvider from './components/ThemeProvider';
+import { initHeroParallax } from './components/gsapAnimations';
 
 import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import Admin from './pages/Admin';
@@ -59,11 +60,55 @@ const ProjectRoute = () => {
   );
 };
 
-const Portfolio = () => (
+const useMultiRef = () => {
+  const elements = useRef([]);
+  const callbackRef = (el) => {
+    if (el && !elements.current.includes(el)) {
+      elements.current.push(el);
+    }
+  };
+  // Expose current for GSAP
+  callbackRef.current = elements.current;
+  return callbackRef;
+};
+
+const Portfolio = () => {
+  const heroRef = useRef(null);
+  const welcomeRef = useRef(null);
+  
+  const photoRefs = useMultiRef();
+  const headlineRefs = useMultiRef();
+  const accentRefs = useMultiRef();
+
+  useEffect(() => {
+    const ctx = initHeroParallax(
+      {
+        heroRef,
+        nextSectionRef: welcomeRef,
+        layers: [
+          { ref: photoRefs, speed: 0.3 },              
+          { ref: headlineRefs, speed: 0.6, fade: true }, 
+          { ref: accentRefs, speed: 1, fade: true },     
+        ],
+      },
+      600
+    );
+    return () => ctx?.revert();
+  }, []);
+
+  return (
     <>
       <main>
-        <Hero />
-        <WelcomeBanner />
+        <div ref={heroRef}>
+          <Hero 
+            photoRef={photoRefs} 
+            headlineRef={headlineRefs} 
+            accentRef={accentRefs} 
+          />
+        </div>
+        <div ref={welcomeRef} style={{ background: '#0a0a0a' }}>
+          <WelcomeBanner />
+        </div>
         <Introduction />
         <AboutMe />
         <CurrentFocus />
@@ -75,7 +120,8 @@ const Portfolio = () => (
       <Footer />
       <BackToTop />
     </>
-);
+  );
+};
 
 function App() {
   return (

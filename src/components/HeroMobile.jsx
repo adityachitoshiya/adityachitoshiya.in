@@ -17,13 +17,12 @@ export default function HeroMobile({
   setIsSearchOpen,
   menuOpen,
   setMenuOpen,
+  photoRef,
+  headlineRef,
+  accentRef
 }) {
-  const containerRef = useRef(null);
   const navRef = useRef(null);
   const badgeRef = useRef(null);
-  const accentRef = useRef(null);
-  const headlineRef = useRef(null);
-  const photoRef = useRef(null);
   const taglineRef = useRef(null);
   const presentedRef = useRef(null);
   const footerRef = useRef(null);
@@ -42,48 +41,13 @@ export default function HeroMobile({
         presentedRef,
         footerRef,
       });
-
-      // Mobile Parallax Effects
-      gsap.to(headlineRef.current, {
-        y: 100,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        }
-      });
-
-      gsap.to(accentRef.current, {
-        y: 150,
-        rotation: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        }
-      });
-
-      gsap.to(photoRef.current, {
-        y: -50,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        }
-      });
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [accentRef, headlineRef, photoRef]);
 
   return (
-    <div ref={containerRef} className="relative w-full min-h-[100svh] flex flex-col z-20 bg-[#0a0a0a] overflow-hidden">
+    <div className="relative w-full min-h-[100svh] flex flex-col z-20 bg-[#0a0a0a] overflow-hidden">
       {/* Nav */}
       <nav ref={navRef} className="relative z-30 flex items-center justify-between px-6 py-6">
         <span className="ac-display text-3xl tracking-wider" style={{ color: '#f5a623' }}>

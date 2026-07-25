@@ -11,7 +11,7 @@ const navLinks = [
   { label: 'Contact', href: '/contact' },
 ];
 
-export default function Hero() {
+export default function Hero({ photoRef, headlineRef, accentRef }) {
   const { portfolioData } = usePortfolio();
   const hero = portfolioData?.hero || {};
   const global = portfolioData?.global || {};
@@ -152,6 +152,9 @@ export default function Hero() {
           isPlaying={isPlaying}
           toggleAudio={toggleAudio}
           setIsSearchOpen={setIsSearchOpen}
+          photoRef={photoRef}
+          headlineRef={headlineRef}
+          accentRef={accentRef}
         />
       </div>
 
@@ -166,6 +169,9 @@ export default function Hero() {
           setIsSearchOpen={setIsSearchOpen}
           menuOpen={menuOpen}
           setMenuOpen={setMenuOpen}
+          photoRef={photoRef}
+          headlineRef={headlineRef}
+          accentRef={accentRef}
         />
       </div>
     </section>
