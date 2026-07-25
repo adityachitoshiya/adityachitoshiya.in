@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, Navigate, useLocation } from 'react-router-dom';
 import Hero from './components/Hero';
 import WelcomeBanner from './components/WelcomeBanner';
 import Introduction from './components/Introduction';
@@ -13,7 +13,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
 import ThemeProvider from './components/ThemeProvider';
-import { initHeroParallax } from './components/gsapAnimations';
+import { initHeroParallax, initTextHighlight } from './components/gsapAnimations';
 
 import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import Admin from './pages/Admin';
@@ -123,12 +123,34 @@ const Portfolio = () => {
   );
 };
 
+const ScrollEffectsRunner = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    let ctx;
+    // Small timeout to allow DOM to paint on route change
+    const timeoutId = setTimeout(() => {
+      ctx = gsap.context(() => {
+        initTextHighlight();
+      });
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      ctx?.revert();
+    };
+  }, [location.pathname]);
+
+  return null;
+};
+
 function App() {
   return (
     <div className="bg-background min-h-screen text-primary selection:bg-accent selection:text-background overflow-x-hidden">
       <PortfolioProvider>
         <ThemeProvider>
           <Router>
+            <ScrollEffectsRunner />
             <Routes>
               <Route path="/" element={<Portfolio />} />
               <Route path="/about" element={<AboutPage />} />

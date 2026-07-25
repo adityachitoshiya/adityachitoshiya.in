@@ -66,3 +66,34 @@ export const initHeroParallax = ({ heroRef, nextSectionRef, layers }, pinDistanc
   
   return ctx;
 };
+
+export const initTextHighlight = (selector = '[data-text-highlight]', options = {}) => {
+  const { activeColor = '#ffffff', dimColor = 'rgba(255,255,255,0.25)', scrubSpeed = true } = options;
+
+  const elements = gsap.utils.toArray(selector);
+
+  return elements.map((el) => {
+    // Split into words once; guards against double-wrapping on re-render/HMR
+    if (!el.dataset.thSplit) {
+      const words = el.textContent.split(/(\s+)/);
+      el.innerHTML = words
+        .map((w) => (w.trim() ? `<span style="color:${dimColor}">${w}</span>` : w))
+        .join('');
+      el.dataset.thSplit = 'true';
+    }
+
+    const spans = el.querySelectorAll('span');
+
+    return gsap.to(spans, {
+      color: activeColor,
+      stagger: 0.04,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 85%',
+        end: 'bottom 55%',
+        scrub: scrubSpeed,
+      },
+    });
+  });
+};

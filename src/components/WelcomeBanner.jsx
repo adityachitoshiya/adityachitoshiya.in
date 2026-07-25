@@ -27,7 +27,7 @@ const WelcomeBanner = () => {
                 </React.Fragment>
             ))}
           </h2>
-          <p className="text-muted text-lg md:text-xl leading-relaxed mb-10 font-light">
+          <p data-text-highlight className="text-muted text-lg md:text-xl leading-relaxed mb-10 font-light">
             {welcome.introText}
           </p>
           <a href="/about"><Button>Learn More</Button></a>

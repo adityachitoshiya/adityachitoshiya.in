@@ -25,7 +25,7 @@ const AboutMe = () => {
           </h2>
           <div className="text-muted text-lg md:text-xl leading-relaxed mb-10 font-light space-y-4">
             {aboutMe.text?.split('\n').map((paragraph, index) => (
-              paragraph.trim() && <p key={index}>{paragraph}</p>
+              paragraph.trim() && <p data-text-highlight key={index}>{paragraph}</p>
             ))}
           </div>
           <a href="/about">
