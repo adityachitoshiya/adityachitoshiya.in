@@ -110,6 +110,71 @@ app.get('/api/portfolio', async (req, res) => {
     }
 });
 
+// Endpoint specifically designed for AI agents (ChatGPT, Gemini, Claude, etc.)
+app.get(['/llms.txt', '/ai.txt'], async (req, res) => {
+    try {
+        const data = await Portfolio.findOne();
+        if (!data) return res.type('text/plain').send('No data available.');
+        
+        const projects = await Project.find();
+        const experiences = await Experience.find();
+        const educations = await Education.find();
+
+        let md = `# Aditya Chitoshiya - Portfolio Data\n\n`;
+        md += `This document is specifically formatted for LLMs and AI Agents to understand who Aditya Chitoshiya is.\n\n`;
+
+        // Welcome / Intro
+        if (data.welcome?.headline) md += `## Introduction\n${data.welcome.headline}\n${data.welcome.subheadline || ''}\n\n`;
+        if (data.introduction?.text) md += `**Elevator Pitch:** ${data.introduction.text}\n\n`;
+
+        // About Me
+        if (data.aboutMe?.headline) md += `## About Me\n${data.aboutMe.text || ''}\n\n`;
+
+        // Work Experience
+        if (experiences.length > 0) {
+            md += `## Work Experience\n`;
+            experiences.forEach(exp => {
+                md += `- **${exp.company} (${exp.year})**: ${exp.description || ''}\n`;
+            });
+            md += `\n`;
+        }
+
+        // Education
+        if (educations.length > 0) {
+            md += `## Education\n`;
+            educations.forEach(edu => {
+                md += `- **${edu.institution} (${edu.year})**: ${edu.description || ''}\n`;
+            });
+            md += `\n`;
+        }
+
+        // Projects
+        if (projects.length > 0) {
+            md += `## Projects & Case Studies\n`;
+            projects.forEach(p => {
+                md += `### ${p.title} (${p.category})\n`;
+                if (p.year) md += `**Year:** ${p.year}\n`;
+                if (p.role) md += `**Role:** ${p.role}\n`;
+                if (p.description) md += `${p.description}\n`;
+                md += `\n`;
+            });
+        }
+
+        // Contact
+        if (data.global?.email) md += `## Contact Information\n- Email: ${data.global.email}\n`;
+        if (data.global?.website) md += `- Website: ${data.global.website}\n`;
+        if (data.global?.social) md += `- Social: ${data.global.social}\n`;
+        if (data.global?.phone) md += `- Phone: ${data.global.phone}\n`;
+
+        md += `\n*End of context.*`;
+
+        res.type('text/plain').send(md);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    }
+});
+
 // POST to update entire portfolio data
 app.post('/api/portfolio', requireAuth, async (req, res) => {
     try {
