@@ -1,5 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import gsap from 'gsap';
 import Hero from './components/Hero';
 import WelcomeBanner from './components/WelcomeBanner';
 import Introduction from './components/Introduction';
@@ -15,6 +17,7 @@ import BackToTop from './components/BackToTop';
 import ThemeProvider from './components/ThemeProvider';
 import { initHeroParallax, initTextHighlight } from './components/gsapAnimations';
 import FloatingSpotify from './components/FloatingSpotify';
+import Preloader from './components/Preloader';
 
 import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import Admin from './pages/Admin';
@@ -146,8 +149,14 @@ const ScrollEffectsRunner = () => {
 };
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <div className="bg-background min-h-screen text-primary selection:bg-accent selection:text-background overflow-x-hidden">
+      <AnimatePresence mode="wait">
+        {isLoading && <Preloader onComplete={() => setIsLoading(false)} />}
+      </AnimatePresence>
+
       <PortfolioProvider>
         <ThemeProvider>
           <Router>
@@ -163,7 +172,8 @@ function App() {
           </Router>
         </ThemeProvider>
       </PortfolioProvider>
-      <FloatingSpotify />
+      
+      {!isLoading && <FloatingSpotify />}
     </div>
   );
 }
