@@ -17,33 +17,6 @@ export default function Hero({ photoRef, headlineRef, accentRef }) {
   const global = portfolioData?.global || {};
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef(null);
-
-  const toggleAudio = () => {
-    if (!audioRef.current || !global.backgroundMusic) {
-      if (!global.backgroundMusic) alert('No background music uploaded. Please upload a track in the Admin panel.');
-      return;
-    }
-    
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch(err => console.error("Audio playback failed:", err));
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  // Handle when audio ends naturally
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    
-    const handleEnded = () => setIsPlaying(false);
-    audio.addEventListener('ended', handleEnded);
-    return () => audio.removeEventListener('ended', handleEnded);
-  }, []);
 
   return (
     <section id="home" style={{ backgroundColor: '#0a0a0a' }}>
@@ -129,23 +102,12 @@ export default function Hero({ photoRef, headlineRef, accentRef }) {
         }
       `}</style>
 
-      {/* Shared Ambient Audio Element */}
-      {global.backgroundMusic && (
-        <audio ref={audioRef} src={global.backgroundMusic} preload="auto" loop />
-      )}
-
-      {/* Shared Search Overlay */}
-      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-
       {/* Layout Split: Desktop (md and above) */}
       <div className="hidden md:block">
         <HeroDesktop 
           hero={hero}
           global={global}
           navLinks={navLinks}
-          isPlaying={isPlaying}
-          toggleAudio={toggleAudio}
-          setIsSearchOpen={setIsSearchOpen}
           photoRef={photoRef}
           headlineRef={headlineRef}
           accentRef={accentRef}
@@ -158,9 +120,6 @@ export default function Hero({ photoRef, headlineRef, accentRef }) {
           hero={hero}
           global={global}
           navLinks={navLinks}
-          isPlaying={isPlaying}
-          toggleAudio={toggleAudio}
-          setIsSearchOpen={setIsSearchOpen}
           menuOpen={menuOpen}
           setMenuOpen={setMenuOpen}
           photoRef={photoRef}
