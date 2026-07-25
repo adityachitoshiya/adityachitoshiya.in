@@ -17,6 +17,7 @@ export default function Hero({ photoRef, headlineRef, accentRef }) {
   const global = portfolioData?.global || {};
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
     <section id="home" style={{ backgroundColor: '#0a0a0a' }}>
@@ -102,12 +103,16 @@ export default function Hero({ photoRef, headlineRef, accentRef }) {
         }
       `}</style>
 
+      {/* Shared Search Overlay */}
+      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+
       {/* Layout Split: Desktop (md and above) */}
       <div className="hidden md:block">
         <HeroDesktop 
           hero={hero}
           global={global}
           navLinks={navLinks}
+          setIsSearchOpen={setIsSearchOpen}
           photoRef={photoRef}
           headlineRef={headlineRef}
           accentRef={accentRef}
@@ -120,6 +125,7 @@ export default function Hero({ photoRef, headlineRef, accentRef }) {
           hero={hero}
           global={global}
           navLinks={navLinks}
+          setIsSearchOpen={setIsSearchOpen}
           menuOpen={menuOpen}
           setMenuOpen={setMenuOpen}
           photoRef={photoRef}

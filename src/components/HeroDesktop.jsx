@@ -11,6 +11,7 @@ export default function HeroDesktop({
   hero,
   global,
   navLinks,
+  setIsSearchOpen,
   photoRef,
   headlineRef,
   accentRef
@@ -121,8 +122,12 @@ export default function HeroDesktop({
       </div>
 
       {/* Footer row: icons + website */}
-      <div className="relative z-20 flex items-center justify-end px-14 pb-10 w-full">
-
+      <div className="relative z-20 flex items-center justify-between px-14 pb-10 w-full">
+        <div className="flex items-center gap-3">
+          <button className="ac-icon-btn" aria-label="Search" onClick={() => setIsSearchOpen(true)}>
+            <Search size={16} />
+          </button>
+        </div>
         <p className="ac-body text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>
           {global.website}
         </p>
