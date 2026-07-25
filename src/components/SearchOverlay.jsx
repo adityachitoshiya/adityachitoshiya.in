@@ -57,6 +57,7 @@ const SearchOverlay = ({ isOpen, onClose }) => {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[100] flex flex-col items-center justify-start bg-[#0a0a0a]/95 backdrop-blur-md pt-[20vh] px-6"
+          onClick={onClose}
         >
           {/* Close Button */}
           <button 
@@ -73,6 +74,7 @@ const SearchOverlay = ({ isOpen, onClose }) => {
             exit={{ y: -20, opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="w-full max-w-3xl flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="relative w-full flex items-center">
               <Search className="absolute left-6 text-accent" size={28} strokeWidth={2} />
