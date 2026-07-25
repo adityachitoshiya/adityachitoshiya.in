@@ -14,6 +14,7 @@ import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
 import ThemeProvider from './components/ThemeProvider';
 import { initHeroParallax, initTextHighlight } from './components/gsapAnimations';
+import FloatingSpotify from './components/FloatingSpotify';
 
 import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import Admin from './pages/Admin';
@@ -162,6 +163,7 @@ function App() {
           </Router>
         </ThemeProvider>
       </PortfolioProvider>
+      <FloatingSpotify />
     </div>
   );
 }
