@@ -106,16 +106,16 @@ const Portfolio = () => {
             accentRef={accentRefs} 
           />
         </div>
-        <div ref={welcomeRef} style={{ background: '#0a0a0a' }}>
+        <div ref={welcomeRef} style={{ background: '#0a0a0a', position: 'relative', zIndex: 30 }}>
           <WelcomeBanner />
+          <Introduction />
+          <AboutMe />
+          <CurrentFocus />
+          <WorkExperience />
+          <Education />
+          <ProjectGallery />
+          <LatestProject />
         </div>
-        <Introduction />
-        <AboutMe />
-        <CurrentFocus />
-        <WorkExperience />
-        <Education />
-        <ProjectGallery />
-        <LatestProject />
       </main>
       <Footer />
       <BackToTop />
