@@ -61,8 +61,8 @@ const SearchOverlay = ({ isOpen, onClose }) => {
         >
           {/* Close Button */}
           <button 
-            onClick={onClose}
-            className="absolute top-4 right-4 md:top-12 md:right-12 text-white/50 hover:text-white transition-colors p-2"
+            onClick={(e) => { e.stopPropagation(); onClose(); }}
+            className="absolute top-4 right-4 md:top-12 md:right-12 z-50 text-white/50 hover:text-white transition-colors p-2"
           >
             <X className="w-8 h-8 md:w-10 md:h-10" strokeWidth={1.5} />
           </button>
