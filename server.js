@@ -12,6 +12,7 @@ import Portfolio from './models/Portfolio.js';
 import Project from './models/Project.js';
 import Experience from './models/Experience.js';
 import Education from './models/Education.js';
+import { get } from '@vercel/edge-config';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -245,6 +246,17 @@ app.post('/api/upload', requireAuth, upload.single('media'), (req, res) => {
     // Cloudinary automatically adds 'path' (secure_url) to req.file
     const fileUrl = req.file.path;
     res.json({ success: true, url: fileUrl });
+});
+
+// Vercel Edge Config Welcome Route
+app.get('/api/welcome', async (req, res) => {
+    try {
+        const greeting = await get('greeting');
+        res.json({ greeting });
+    } catch (error) {
+        console.error("Edge config error:", error);
+        res.status(500).json({ error: "Failed to fetch edge config" });
+    }
 });
 
 // Error handling middleware
