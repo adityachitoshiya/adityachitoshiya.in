@@ -90,8 +90,7 @@ const Portfolio = () => {
           { ref: headlineRefs, speed: 0.6, fade: true }, 
           { ref: accentRefs, speed: 1, fade: true },     
         ],
-      },
-      600
+      }
     );
     return () => ctx?.revert();
   }, []);
