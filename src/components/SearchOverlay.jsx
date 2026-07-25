@@ -62,9 +62,9 @@ const SearchOverlay = ({ isOpen, onClose }) => {
           {/* Close Button */}
           <button 
             onClick={onClose}
-            className="absolute top-8 right-8 md:top-12 md:right-12 text-white/50 hover:text-white transition-colors p-2"
+            className="absolute top-4 right-4 md:top-12 md:right-12 text-white/50 hover:text-white transition-colors p-2"
           >
-            <X size={32} strokeWidth={1.5} />
+            <X className="w-8 h-8 md:w-10 md:h-10" strokeWidth={1.5} />
           </button>
 
           {/* Search Container */}
@@ -77,14 +77,14 @@ const SearchOverlay = ({ isOpen, onClose }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative w-full flex items-center">
-              <Search className="absolute left-6 text-accent" size={28} strokeWidth={2} />
+              <Search className="absolute left-5 md:left-6 text-accent w-6 h-6 md:w-7 md:h-7" strokeWidth={2} />
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Search projects, categories..."
+                placeholder="Search projects..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 text-white placeholder-white/30 text-2xl md:text-4xl font-light ac-body rounded-full py-6 pl-20 pr-8 focus:outline-none focus:border-accent/50 focus:bg-white/10 transition-all shadow-2xl"
+                className="w-full bg-white/5 border border-white/10 text-white placeholder-white/30 text-xl md:text-4xl font-light ac-body rounded-full py-4 md:py-6 pl-14 md:pl-20 pr-6 md:pr-8 focus:outline-none focus:border-accent/50 focus:bg-white/10 transition-all shadow-2xl"
               />
             </div>
 

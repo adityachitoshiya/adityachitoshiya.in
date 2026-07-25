@@ -141,7 +141,7 @@ export default function HeroMobile({
             ref={photoRef}
             src={hero.heroImage}
             alt={global.name}
-            className="w-full h-auto rounded-[32px] grayscale"
+            className="w-full h-auto rounded-[32px]"
           />
         </div>
       </div>
