@@ -97,3 +97,45 @@ export const initTextHighlight = (selector = '[data-text-highlight]', options = 
     });
   });
 };
+
+export const initFadeUp = (selector = '[data-fade-up]') => {
+  const elements = gsap.utils.toArray(selector);
+  return elements.map((el) => {
+    return gsap.fromTo(el, 
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 90%",
+          toggleActions: "play none none reverse"
+        }
+      }
+    );
+  });
+};
+
+export const initStaggerList = (containerSelector = '[data-stagger-container]', itemSelector = '[data-stagger-item]') => {
+  const containers = gsap.utils.toArray(containerSelector);
+  return containers.map((container) => {
+    const items = container.querySelectorAll(itemSelector);
+    return gsap.fromTo(items,
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: container,
+          start: "top 85%",
+          toggleActions: "play none none reverse"
+        }
+      }
+    );
+  });
+};

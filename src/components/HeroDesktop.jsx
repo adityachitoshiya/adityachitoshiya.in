@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { animateMarquee } from './gsapAnimations';
+import Magnetic from './Magnetic';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -55,13 +56,17 @@ export default function HeroDesktop({
         <div className="flex absolute left-1/2 -translate-x-1/2 items-center gap-10">
           {navLinks.map((link) => (
             link.href.startsWith('/') && !link.href.includes('#') ? (
-              <Link key={link.label} to={link.href} className="ac-nav-link ac-body text-sm tracking-wide">
-                {link.label}
-              </Link>
+              <Magnetic key={link.label}>
+                <Link to={link.href} className="ac-nav-link ac-body text-sm tracking-wide inline-block px-2 py-1">
+                  {link.label}
+                </Link>
+              </Magnetic>
             ) : (
-              <a key={link.label} href={link.href} className="ac-nav-link ac-body text-sm tracking-wide">
-                {link.label}
-              </a>
+              <Magnetic key={link.label}>
+                <a href={link.href} className="ac-nav-link ac-body text-sm tracking-wide inline-block px-2 py-1">
+                  {link.label}
+                </a>
+              </Magnetic>
             )
           ))}
         </div>

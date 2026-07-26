@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, ChevronUp, ChevronDown, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import Magnetic from './Magnetic';
 
 const FloatingSpotify = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -108,28 +109,32 @@ const FloatingSpotify = () => {
         <div className="flex items-center gap-3 py-2 pl-4 pr-1 md:p-0 md:pr-0 md:pl-0">
           
           {/* Button 1: Search Button */}
-          <button
-            onClick={handleSearchClick}
-            className="w-[34px] h-[34px] rounded-full bg-accent flex items-center justify-center text-background hover:scale-110 transition-transform shadow-lg"
-            aria-label="Open Search"
-          >
-            <Search size={16} strokeWidth={2.5} />
-          </button>
+          <Magnetic strength={15}>
+            <button
+              onClick={handleSearchClick}
+              className="w-[34px] h-[34px] rounded-full bg-accent flex items-center justify-center text-background hover:scale-110 transition-transform shadow-lg"
+              aria-label="Open Search"
+            >
+              <Search size={16} strokeWidth={2.5} />
+            </button>
+          </Magnetic>
 
           {/* Button 2: Play/Pause with Outer Ring */}
-          <button
-            onClick={togglePlay}
-            className="w-[42px] h-[42px] rounded-full border-2 border-accent p-[2px] flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
-            aria-label="Play or Pause Spotify"
-          >
-            <div className="w-full h-full rounded-full bg-accent flex items-center justify-center text-background">
-              {isPlaying ? (
-                <Pause size={14} fill="currentColor" />
-              ) : (
-                <Play size={14} fill="currentColor" className="ml-[2px]" />
-              )}
-            </div>
-          </button>
+          <Magnetic strength={15}>
+            <button
+              onClick={togglePlay}
+              className="w-[42px] h-[42px] rounded-full border-2 border-accent p-[2px] flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+              aria-label="Play or Pause Spotify"
+            >
+              <div className="w-full h-full rounded-full bg-accent flex items-center justify-center text-background">
+                {isPlaying ? (
+                  <Pause size={14} fill="currentColor" />
+                ) : (
+                  <Play size={14} fill="currentColor" className="ml-[2px]" />
+                )}
+              </div>
+            </button>
+          </Magnetic>
 
           {/* Button 3: Toggle Widget (Mirror Effect with ^) */}
           <AnimatePresence>

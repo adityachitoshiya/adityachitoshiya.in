@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 
-const SearchOverlay = ({ isOpen, onClose }) => {
+const SearchOverlay = () => {
   const { portfolioData } = usePortfolio();
+  const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const inputRef = useRef(null);
 
@@ -19,14 +20,21 @@ const SearchOverlay = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  // Handle escape key
+  // Handle open event and escape key
   useEffect(() => {
+    const handleOpenSearch = () => setIsOpen(true);
+    window.addEventListener('openSearch', handleOpenSearch);
+
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') setIsOpen(false);
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+
+    return () => {
+      window.removeEventListener('openSearch', handleOpenSearch);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   // Prevent scroll when open
   useEffect(() => {
@@ -43,9 +51,9 @@ const SearchOverlay = ({ isOpen, onClose }) => {
   // Get project suggestions
   const projects = portfolioData?.projectPortfolio?.projects || [];
   const filteredProjects = projects.filter(p => 
-    p.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    p.type?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+    (p.type || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (p.description || '').toLowerCase().includes(searchQuery.toLowerCase())
   ).slice(0, 5); // Limit to 5 results
 
   return (
@@ -57,11 +65,11 @@ const SearchOverlay = ({ isOpen, onClose }) => {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[100] flex flex-col items-center justify-start bg-[#0a0a0a]/95 backdrop-blur-md pt-[20vh] px-6"
-          onClick={onClose}
+          onClick={() => setIsOpen(false)}
         >
           {/* Close Button */}
           <button 
-            onClick={(e) => { e.stopPropagation(); onClose(); }}
+            onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}
             className="absolute top-4 right-4 md:top-12 md:right-12 z-50 text-white/50 hover:text-white transition-colors p-2"
           >
             <X className="w-8 h-8 md:w-10 md:h-10" strokeWidth={1.5} />
@@ -102,8 +110,8 @@ const SearchOverlay = ({ isOpen, onClose }) => {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.05 }}
                       key={idx}
-                      href={`/creatives`} // Normally would route to specific project
-                      onClick={onClose}
+                      href={`/work/${project.slug || ''}`}
+                      onClick={() => setIsOpen(false)}
                       className="flex items-center gap-4 p-4 hover:bg-white/10 rounded-xl transition-colors cursor-pointer group"
                     >
                       <img src={project.coverImage} alt={project.name} className="w-12 h-12 rounded-lg object-cover" />

@@ -15,9 +15,10 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
 import ThemeProvider from './components/ThemeProvider';
-import { initHeroParallax, initTextHighlight } from './components/gsapAnimations';
+import { initHeroParallax, initTextHighlight, initFadeUp, initStaggerList } from './components/gsapAnimations';
 import FloatingSpotify from './components/FloatingSpotify';
 import Preloader from './components/Preloader';
+import SearchOverlay from './components/SearchOverlay';
 
 import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import Admin from './pages/Admin';
@@ -136,6 +137,8 @@ const ScrollEffectsRunner = () => {
     const timeoutId = setTimeout(() => {
       ctx = gsap.context(() => {
         initTextHighlight();
+        initFadeUp();
+        initStaggerList();
       });
     }, 100);
 
@@ -169,6 +172,7 @@ function App() {
               <Route path="/work/:slug" element={<ProjectRoute />} />
               <Route path="/admin" element={<Admin />} />
             </Routes>
+            <SearchOverlay />
           </Router>
         </ThemeProvider>
       </PortfolioProvider>

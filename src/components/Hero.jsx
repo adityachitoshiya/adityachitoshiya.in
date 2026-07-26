@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import SearchOverlay from './SearchOverlay';
 import HeroDesktop from './HeroDesktop';
 import HeroMobile from './HeroMobile';
 
@@ -17,13 +16,6 @@ export default function Hero({ photoRef, headlineRef, accentRef }) {
   const global = portfolioData?.global || {};
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
-  useEffect(() => {
-    const handleOpenSearch = () => setIsSearchOpen(true);
-    window.addEventListener('openSearch', handleOpenSearch);
-    return () => window.removeEventListener('openSearch', handleOpenSearch);
-  }, []);
 
   return (
     <section id="home" style={{ backgroundColor: '#0a0a0a' }}>
@@ -109,16 +101,12 @@ export default function Hero({ photoRef, headlineRef, accentRef }) {
         }
       `}</style>
 
-      {/* Shared Search Overlay */}
-      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-
       {/* Layout Split: Desktop (md and above) */}
       <div className="hidden md:block">
         <HeroDesktop 
           hero={hero}
           global={global}
           navLinks={navLinks}
-          setIsSearchOpen={setIsSearchOpen}
           photoRef={photoRef}
           headlineRef={headlineRef}
           accentRef={accentRef}
@@ -131,7 +119,6 @@ export default function Hero({ photoRef, headlineRef, accentRef }) {
           hero={hero}
           global={global}
           navLinks={navLinks}
-          setIsSearchOpen={setIsSearchOpen}
           menuOpen={menuOpen}
           setMenuOpen={setMenuOpen}
           photoRef={photoRef}
