@@ -38,6 +38,8 @@ export const initHeroParallax = ({ heroRef, nextSectionRef, layers }, pinDistanc
       marginTop: '-2px', // tiny overlap
       position: 'relative',
       zIndex: 30, // needs to be higher than hero which is z-20
+      force3D: true, // Forces hardware acceleration to prevent rendering glitches
+      boxShadow: '0px -10px 30px rgba(0,0,0,0.5)', // Adds a shadow to hide any 1px gaps
     });
 
     // Parallax layers inside Hero
