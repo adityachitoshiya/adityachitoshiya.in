@@ -63,10 +63,48 @@ const Footer = () => {
              initial={{ opacity: 0 }}
              whileInView={{ opacity: 1 }}
              viewport={{ once: true }}
-             className="text-muted text-sm uppercase tracking-widest text-center px-4"
+             className="text-muted text-sm uppercase tracking-widest text-center px-4 mb-16"
         >
             {thankYou.text}
         </motion.p>
+
+        {/* Footer Bottom (Copyright & Links) */}
+        <div className="w-full flex flex-col md:flex-row justify-between items-center gap-6 pt-10 border-t border-white/10">
+          <div className="text-white/60 text-sm ac-body font-medium">
+            © {new Date().getFullYear()} {portfolioData.global?.name}. All rights reserved.
+          </div>
+          
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            {portfolioData.global?.social && (
+              <a 
+                href={`https://${portfolioData.global.social.replace('@', '')}`} 
+                target="_blank" 
+                rel="noreferrer"
+                className="text-white/60 hover:text-accent transition-colors ac-body text-sm font-medium"
+              >
+                {portfolioData.global.social}
+              </a>
+            )}
+            {portfolioData.global?.website && (
+              <a 
+                href={`https://${portfolioData.global.website}`} 
+                target="_blank" 
+                rel="noreferrer"
+                className="text-white/60 hover:text-accent transition-colors ac-body text-sm font-medium"
+              >
+                {portfolioData.global.website.replace('https://', '')}
+              </a>
+            )}
+            {portfolioData.global?.email && (
+              <a 
+                href={`mailto:${portfolioData.global.email}`} 
+                className="text-white/60 hover:text-accent transition-colors ac-body text-sm font-medium"
+              >
+                Email
+              </a>
+            )}
+          </div>
+        </div>
 
       </div>
     </footer>

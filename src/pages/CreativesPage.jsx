@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import SimpleFooter from '../components/SimpleFooter';
+import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
@@ -30,7 +30,7 @@ export default function CreativesPage({ projects, global, onSelectProject }) {
             transition={{ duration: 0.6, ease: 'easeOut' }}
             className="mb-16"
           >
-            <h1 className="ac-display text-5xl md:text-7xl lg:text-8xl mb-6 text-white tracking-wider">
+            <h1 className="font-heading text-[12vw] leading-none tracking-tighter text-primary uppercase select-none drop-shadow-2xl mb-6">
               CREATIVES
             </h1>
             <p className="ac-body text-lg md:text-xl text-white/70 max-w-2xl">
@@ -60,10 +60,10 @@ export default function CreativesPage({ projects, global, onSelectProject }) {
             ))}
           </motion.div>
 
-          {/* Masonry-style Grid */}
           <motion.div 
             layout
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+            data-stagger-container
           >
             <AnimatePresence mode="popLayout">
               {filteredProjects && filteredProjects.length > 0 ? (
@@ -77,6 +77,7 @@ export default function CreativesPage({ projects, global, onSelectProject }) {
                     transition={{ duration: 0.4 }}
                     className="group relative cursor-pointer overflow-hidden rounded-lg bg-white/5 border border-white/10 aspect-[4/5] md:aspect-[3/4]"
                     onClick={() => onSelectProject(project)}
+                    data-stagger-item
                   >
                     {/* Image */}
                     <img
@@ -111,7 +112,7 @@ export default function CreativesPage({ projects, global, onSelectProject }) {
         </div>
       </main>
 
-      <SimpleFooter />
+      <Footer />
       <BackToTop />
     </div>
   );

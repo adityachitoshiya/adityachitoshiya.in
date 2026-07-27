@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import SimpleFooter from '../components/SimpleFooter';
+import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
 import Contact from '../components/Contact';
 
@@ -17,7 +17,7 @@ export default function ContactPage() {
         <Contact />
       </main>
 
-      <SimpleFooter />
+      <Footer />
       <BackToTop />
     </div>
   );

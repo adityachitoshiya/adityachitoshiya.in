@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { usePortfolio } from '../context/PortfolioContext';
+import Magnetic from './Magnetic';
 
 const Navbar = () => {
   const { portfolioData } = usePortfolio();
@@ -32,40 +33,45 @@ const Navbar = () => {
     >
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 flex justify-between items-center">
         {/* Logo */}
-        <a href="/#home" className="text-accent font-heading text-2xl tracking-widest uppercase">
-          {portfolioData.global?.name?.split(' ')[0]}
+        <a href="/#home" className="ac-display text-4xl tracking-wider text-accent">
+          {portfolioData.global?.name?.split(' ')[0] || 'AC'}.
         </a>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center space-x-8">
+        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-10">
           {navLinks.map((link) => (
             link.href.startsWith('/') && !link.href.includes('#') ? (
-              <Link
-                key={link.name}
-                to={link.href}
-                className="text-primary hover:text-accent font-medium transition-colors relative group"
-              >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
-              </Link>
+              <Magnetic key={link.name}>
+                <Link
+                  to={link.href}
+                  className="ac-nav-link ac-body text-sm tracking-wide inline-block px-2 py-1 text-primary"
+                >
+                  {link.name}
+                </Link>
+              </Magnetic>
             ) : (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-primary hover:text-accent font-medium transition-colors relative group"
-              >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
-              </a>
+              <Magnetic key={link.name}>
+                <a
+                  href={link.href}
+                  className="ac-nav-link ac-body text-sm tracking-wide inline-block px-2 py-1 text-primary"
+                >
+                  {link.name}
+                </a>
+              </Magnetic>
             )
           ))}
         </div>
 
-        {/* Right side toggle (Decorative) */}
-        <div className="hidden md:flex items-center">
-            <div className="w-12 h-6 bg-accent rounded-full flex items-center p-1 cursor-pointer">
-                <div className="w-4 h-4 bg-background rounded-full"></div>
-            </div>
+        {/* Right side Status Badge */}
+        <div className="hidden md:flex items-center gap-4">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5">
+            <span 
+              className={`w-2 h-2 rounded-full ${portfolioData.global?.availableForWork ? 'bg-[#f5a623] shadow-[0_0_8px_#f5a623]' : 'bg-gray-500'}`}
+            ></span>
+            <span className="ac-body text-xs text-white/80 tracking-wide uppercase">
+              {portfolioData.global?.availableForWork ? 'Available for Projects' : 'Currently Booked'}
+            </span>
+          </div>
         </div>
 
         {/* Mobile Menu Toggle */}

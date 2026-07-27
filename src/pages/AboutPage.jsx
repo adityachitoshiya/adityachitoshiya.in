@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import SimpleFooter from '../components/SimpleFooter';
+import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
 import { motion } from 'framer-motion';
 import { Download } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import CurrentFocus from '../components/CurrentFocus';
 import ImageSlideshow from '../components/ImageSlideshow';
+import Magnetic from '../components/Magnetic';
 export default function AboutPage() {
   const { portfolioData } = usePortfolio();
   const { aboutMe, global } = portfolioData;
@@ -33,22 +34,25 @@ export default function AboutPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: 'easeOut' }}
                 className="mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-6"
+                data-fade-up
             >
                 <div>
-                    <h1 className="ac-display text-5xl md:text-7xl lg:text-8xl mb-4 text-white tracking-wider">
+                    <h1 className="font-heading text-[12vw] leading-none tracking-tighter text-primary uppercase select-none drop-shadow-2xl mb-2">
                         ABOUT ME
                     </h1>
                     <p className="text-[#f5a623] ac-script text-3xl">Curriculum Vitae</p>
                 </div>
                 
-                {/* Dummy Download CV button - can be hooked up to a real PDF later */}
-                <button onClick={() => alert('Add your PDF link here in the future!')} className="flex items-center gap-2 bg-[#f5a623] text-black px-6 py-3 rounded-full font-bold uppercase tracking-wider hover:bg-white transition-colors ac-body text-sm">
-                    <Download size={18} />
-                    Download CV
-                </button>
+                {/* Dummy Download CV button */}
+                <Magnetic strength={20}>
+                    <button onClick={() => alert('Add your PDF link here in the future!')} className="flex items-center gap-2 bg-[#f5a623] text-black px-8 py-4 rounded-full font-bold uppercase tracking-wider hover:bg-white transition-colors ac-body text-sm mb-4 md:mb-8">
+                        <Download size={18} />
+                        Download CV
+                    </button>
+                </Magnetic>
             </motion.div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center" data-fade-up>
                 <motion.div 
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -99,7 +103,7 @@ export default function AboutPage() {
 
       </main>
 
-      <SimpleFooter />
+      <Footer />
       <BackToTop />
     </div>
   );

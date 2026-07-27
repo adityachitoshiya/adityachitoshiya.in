@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import SimpleFooter from '../components/SimpleFooter';
+import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import Magnetic from '../components/Magnetic';
 
 export default function ProjectDetail({ project, allProjects, global, onBack, onSelectProject }) {
   useEffect(() => {
@@ -22,12 +23,14 @@ export default function ProjectDetail({ project, allProjects, global, onBack, on
       <main className="pt-32 pb-20 px-6 md:px-14 relative z-10">
         <div className="max-w-7xl mx-auto">
           {/* Back Link */}
-          <button 
-            onClick={onBack}
-            className="flex items-center gap-2 text-white/60 hover:text-[#f5a623] transition-colors ac-body text-sm uppercase tracking-widest font-semibold mb-12"
-          >
-            <ArrowLeft size={16} /> Back to Creatives
-          </button>
+          <Magnetic strength={15}>
+            <button 
+              onClick={onBack}
+              className="flex items-center gap-2 text-white/60 hover:text-[#f5a623] transition-colors ac-body text-sm uppercase tracking-widest font-semibold mb-12 inline-block px-2 py-1"
+            >
+              <ArrowLeft size={16} /> Back to Creatives
+            </button>
+          </Magnetic>
 
           {/* Project Header */}
           <motion.div
@@ -35,10 +38,11 @@ export default function ProjectDetail({ project, allProjects, global, onBack, on
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
             className="mb-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16"
+            data-fade-up
           >
             <div className="lg:col-span-8">
               <span className="text-[#f5a623] ac-script text-3xl md:text-4xl mb-4 block">{project.type}</span>
-              <h1 className="ac-display text-5xl md:text-7xl lg:text-8xl mb-6 text-white tracking-wider">
+              <h1 className="font-heading text-[12vw] leading-none tracking-tighter text-primary uppercase select-none drop-shadow-2xl mb-6">
                 {project.name}
               </h1>
             </div>
@@ -101,19 +105,22 @@ export default function ProjectDetail({ project, allProjects, global, onBack, on
 
           {/* Bottom Back Button */}
           <div className="flex justify-center mb-32 border-b border-white/10 pb-20">
-            <button 
-              onClick={onBack}
-              className="px-8 py-4 bg-white/5 hover:bg-[#f5a623] hover:text-black border border-white/10 rounded-full text-white transition-all duration-300 ac-body uppercase tracking-widest font-semibold text-sm"
-            >
-              View All Projects
-            </button>
+            <Magnetic strength={20}>
+              <button 
+                onClick={onBack}
+                className="px-8 py-4 bg-white/5 hover:bg-[#f5a623] hover:text-black border border-white/10 rounded-full text-white transition-all duration-300 ac-body uppercase tracking-widest font-semibold text-sm"
+              >
+                View All Projects
+              </button>
+            </Magnetic>
           </div>
+
 
           {/* You Might Also Like */}
           {otherProjects.length > 0 && (
-            <div>
+            <div data-fade-up>
               <h3 className="ac-display text-3xl md:text-4xl mb-8 tracking-wide">You Might Also Like</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6" data-stagger-container>
                 {otherProjects.map((other, idx) => (
                   <motion.div
                     key={other.slug || idx}
@@ -123,6 +130,7 @@ export default function ProjectDetail({ project, allProjects, global, onBack, on
                     transition={{ duration: 0.5, delay: idx * 0.1 }}
                     className="group cursor-pointer rounded-lg overflow-hidden bg-white/5 border border-white/10 aspect-video md:aspect-[4/3] relative"
                     onClick={() => onSelectProject(other)}
+                    data-stagger-item
                   >
                     <img 
                       src={other.coverImage} 
@@ -144,7 +152,7 @@ export default function ProjectDetail({ project, allProjects, global, onBack, on
         </div>
       </main>
 
-      <SimpleFooter />
+      <Footer />
       <BackToTop />
     </div>
   );
