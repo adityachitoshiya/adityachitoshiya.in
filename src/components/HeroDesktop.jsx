@@ -43,46 +43,8 @@ export default function HeroDesktop({
         <span>{hero.headline} {hero.headline} {hero.headline} {hero.headline} {hero.headline} {hero.headline}</span>
       </div>
 
-      {/* Nav */}
-      <nav className="relative z-30 flex items-center justify-between px-14 py-8">
-        <span
-          className="ac-display text-4xl tracking-wider"
-          style={{ color: '#f5a623' }}
-        >
-          AC.
-        </span>
-
-        {/* Center Nav Links - Absolute Position for perfect centering */}
-        <div className="flex absolute left-1/2 -translate-x-1/2 items-center gap-10">
-          {navLinks.map((link) => (
-            link.href.startsWith('/') && !link.href.includes('#') ? (
-              <Magnetic key={link.label}>
-                <Link to={link.href} className="ac-nav-link ac-body text-sm tracking-wide inline-block px-2 py-1">
-                  {link.label}
-                </Link>
-              </Magnetic>
-            ) : (
-              <Magnetic key={link.label}>
-                <a href={link.href} className="ac-nav-link ac-body text-sm tracking-wide inline-block px-2 py-1">
-                  {link.label}
-                </a>
-              </Magnetic>
-            )
-          ))}
-        </div>
-
-        <div className="flex items-center gap-4">
-          {/* Availability Status Badge */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5">
-            <span 
-              className={`w-2 h-2 rounded-full ${global.availableForWork ? 'bg-[#f5a623] shadow-[0_0_8px_#f5a623]' : 'bg-gray-500'}`}
-            ></span>
-            <span className="ac-body text-xs text-white/80 tracking-wide uppercase">
-              {global.availableForWork ? 'Available for Projects' : 'Currently Booked'}
-            </span>
-          </div>
-        </div>
-      </nav>
+      {/* Top Spacer for fixed global Navbar */}
+      <div className="w-full pt-20"></div>
 
       {/* Headline block */}
       <div className="relative flex-1 flex items-center justify-center px-4">

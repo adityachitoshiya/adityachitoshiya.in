@@ -19,6 +19,7 @@ import { initHeroParallax, initTextHighlight, initFadeUp, initStaggerList } from
 import FloatingSpotify from './components/FloatingSpotify';
 import Preloader from './components/Preloader';
 import SearchOverlay from './components/SearchOverlay';
+import Navbar from './components/Navbar';
 
 import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import Admin from './pages/Admin';
@@ -67,14 +68,17 @@ const ProjectRoute = () => {
 
 const useMultiRef = () => {
   const elements = useRef([]);
-  const callbackRef = (el) => {
+  const callbackRef = useRef((el) => {
     if (el && !elements.current.includes(el)) {
       elements.current.push(el);
     }
-  };
-  // Expose current for GSAP
-  callbackRef.current = elements.current;
-  return callbackRef;
+  });
+  // Always expose the live array via .current
+  Object.defineProperty(callbackRef.current, 'current', {
+    get: () => elements.current,
+    configurable: true,
+  });
+  return callbackRef.current;
 };
 
 const Portfolio = () => {
@@ -103,6 +107,7 @@ const Portfolio = () => {
 
   return (
     <>
+      <Navbar />
       <main>
         <div ref={heroRef}>
           <Hero 

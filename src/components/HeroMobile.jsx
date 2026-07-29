@@ -1,7 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import { Search, Play, Pause, Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { animateHeroEntrance } from './gsapAnimations';
@@ -45,53 +42,8 @@ export default function HeroMobile({
   }, [accentRef, headlineRef, photoRef]);
 
   return (
-    <div className="relative w-full min-h-[100svh] flex flex-col z-20 bg-[#0a0a0a] overflow-hidden">
-      {/* Nav */}
-      <nav ref={navRef} className="relative z-30 flex items-center justify-between px-6 py-6">
-        <span className="ac-display text-3xl tracking-wider" style={{ color: '#f5a623' }}>
-          AC.
-        </span>
-
-        <div className="flex items-center gap-4">
-          <button aria-label="Open menu" className="text-white" onClick={() => setMenuOpen((o) => !o)}>
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </nav>
-
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20, height: 0 }}
-            animate={{ opacity: 1, y: 0, height: 'auto' }}
-            exit={{ opacity: 0, y: -20, height: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="relative z-30 flex flex-col gap-4 px-6 pb-6 ac-body overflow-hidden bg-[#0a0a0a]"
-          >
-            {navLinks.map((link) =>
-              link.href.startsWith('/') && !link.href.includes('#') ? (
-                <Link
-                  key={link.label}
-                  to={link.href}
-                  className="text-white text-sm py-2 border-b border-white/5 last:border-0"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ) : (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="text-white text-sm py-2 border-b border-white/5 last:border-0"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link.label}
-                </a>
-              )
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div className="relative w-full min-h-[100svh] flex flex-col z-20 bg-[#0a0a0a] overflow-hidden pt-20">
+      {/* Spacer for fixed global Navbar */}
 
       {/* Main Content Stack */}
       <div className="flex-1 flex flex-col items-center justify-start px-4 pt-10 pb-24 gap-8">
