@@ -10,6 +10,19 @@
   }
 }
 
+.ac-display {
+  font-family: 'Anton', sans-serif;
+  font-weight: 700;
+}
+
+.ac-script {
+  font-family: 'Dancing Script', cursive;
+}
+
+.ac-body {
+  font-family: 'Inter', sans-serif;
+}
+
 /* Custom rounded utility for pill images */
 @layer utilities {
   .pill-shape {

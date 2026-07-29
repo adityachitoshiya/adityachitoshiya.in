@@ -22,8 +22,8 @@ export default function Hero({ photoRef, headlineRef, accentRef }) {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
 
-        .ac-display { font-family: 'Anton', sans-serif; }
-        .ac-script { font-family: 'Caveat', cursive; }
+        .ac-display { font-family: 'Anton', sans-serif; font-weight: 700; }
+        .ac-script { font-family: 'Dancing Script', cursive; }
         .ac-body { font-family: 'Inter', sans-serif; }
 
         .ac-nav-link { position: relative; color: #ffffff; }

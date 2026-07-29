@@ -83,7 +83,7 @@ const Navbar = () => {
           {/* Logo */}
           <a 
             href="/#home" 
-            className="ac-display text-4xl tracking-wider text-accent transition-colors duration-300"
+            className="ac-display text-4xl font-bold tracking-wider text-accent transition-colors duration-300"
             onClick={() => setIsMenuOpen(false)}
           >
             AC.
