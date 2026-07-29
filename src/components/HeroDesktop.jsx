@@ -55,7 +55,7 @@ export default function HeroDesktop({
             color: '#ffffff',
             fontSize: 'clamp(3.5rem, 18vw, 24rem)',
             lineHeight: 0.85,
-            letterSpacing: '-0.02em',
+            letterSpacing: '0.05em',
             margin: 0,
           }}
         >

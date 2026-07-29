@@ -78,7 +78,7 @@ export default function HeroMobile({
               color: '#ffffff',
               fontSize: 'clamp(2.8rem, 14vw, 5rem)',
               lineHeight: 0.95,
-              letterSpacing: '-0.02em',
+              letterSpacing: '0.05em',
               margin: 0,
               overflowWrap: 'break-word',
             }}
