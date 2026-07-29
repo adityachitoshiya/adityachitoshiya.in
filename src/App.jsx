@@ -34,9 +34,9 @@ const CreativesRoute = () => {
   if (!portfolioData) return null;
   return (
     <CreativesPage
-      projects={portfolioData.projectPortfolio.projects}
+      projects={portfolioData.projectPortfolio?.projects || []}
       global={portfolioData.global}
-      onSelectProject={(p) => navigate(`/work/${p.slug}`)}
+      onSelectProject={(p) => navigate(`/work/${p.slug || p.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`)}
     />
   );
 };
@@ -48,8 +48,11 @@ const ProjectRoute = () => {
   
   if (!portfolioData) return null;
 
-  const projects = portfolioData.projectPortfolio.projects || [];
-  const project = projects.find(p => p.slug === slug);
+  const projects = portfolioData.projectPortfolio?.projects || [];
+  const project = projects.find(p => 
+    p.slug === slug || 
+    p.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug
+  );
 
   if (!project) {
     return <Navigate to="/creatives" replace />;
@@ -61,7 +64,7 @@ const ProjectRoute = () => {
       allProjects={projects}
       global={portfolioData.global}
       onBack={() => navigate('/creatives')}
-      onSelectProject={(p) => navigate(`/work/${p.slug}`)}
+      onSelectProject={(p) => navigate(`/work/${p.slug || p.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`)}
     />
   );
 };

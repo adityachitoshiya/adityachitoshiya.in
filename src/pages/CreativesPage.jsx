@@ -12,11 +12,19 @@ export default function CreativesPage({ projects, global, onSelectProject }) {
     window.scrollTo(0, 0);
   }, []);
 
-  const categories = ['All', 'Logos', 'Motion Graphic', 'Graphics', 'Post', 'Video Edit', 'Thumbnails', '3D'];
+  // Dynamic categories collected from all project types
+  const defaultCategories = ['All', 'Logos', 'Motion Graphic', 'Graphics', 'Post', 'Video Edit', 'Thumbnails', '3D'];
+  const projectTypes = projects ? projects.map(p => p.type).filter(Boolean) : [];
+  const categories = Array.from(new Set([...defaultCategories, ...projectTypes]));
 
   const filteredProjects = selectedCategory === 'All' 
-    ? projects 
-    : projects.filter(project => project.type && project.type.toLowerCase() === selectedCategory.toLowerCase());
+    ? (projects || [])
+    : (projects || []).filter(project => {
+        if (!project.type) return false;
+        const pType = project.type.toLowerCase().trim();
+        const cat = selectedCategory.toLowerCase().trim();
+        return pType === cat || pType.includes(cat) || cat.includes(pType);
+      });
 
   return (
     <div className="bg-[#0a0a0a] min-h-screen text-white font-body relative overflow-hidden">
@@ -49,9 +57,9 @@ export default function CreativesPage({ projects, global, onSelectProject }) {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-5 py-2 rounded-full border transition-all ac-body text-sm font-medium tracking-wide ${
-                  selectedCategory === category
-                    ? 'border-[#f5a623] bg-[#f5a623] text-black'
+                className={`px-5 py-2 rounded-full border transition-all ac-body text-sm font-medium tracking-wide cursor-pointer ${
+                  selectedCategory.toLowerCase() === category.toLowerCase()
+                    ? 'border-[#f5a623] bg-[#f5a623] text-black shadow-[0_0_15px_rgba(245,166,35,0.4)]'
                     : 'border-white/20 bg-transparent text-white/70 hover:border-white/50 hover:text-white'
                 }`}
               >
@@ -67,37 +75,57 @@ export default function CreativesPage({ projects, global, onSelectProject }) {
           >
             <AnimatePresence mode="popLayout">
               {filteredProjects && filteredProjects.length > 0 ? (
-                filteredProjects.map((project, idx) => (
-                  <motion.div
-                    key={project.slug || idx}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.4 }}
-                    className="group relative cursor-pointer overflow-hidden rounded-lg bg-white/5 border border-white/10 aspect-[4/5] md:aspect-[3/4]"
-                    onClick={() => onSelectProject(project)}
-                    data-stagger-item
-                  >
-                    {/* Image */}
-                    <img
-                      src={project.coverImage}
-                      alt={project.name}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    
-                    {/* Hover Reveal Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 md:p-8">
-                      <div className="translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                        <span className="text-[#f5a623] ac-script text-2xl md:text-3xl mb-2 block">{project.type}</span>
-                        <h3 className="ac-display text-3xl md:text-4xl text-white tracking-wide mb-4">{project.name}</h3>
-                        <div className="flex items-center gap-2 text-white/80 ac-body text-sm uppercase tracking-widest font-semibold hover:text-[#f5a623] transition-colors">
+                filteredProjects.map((project, idx) => {
+                  const projectSlug = project.slug || project.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || `project-${idx}`;
+                  
+                  return (
+                    <motion.div
+                      key={projectSlug}
+                      layout
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.4 }}
+                      className="group relative cursor-pointer overflow-hidden rounded-xl bg-white/5 border border-white/10 aspect-[4/5] md:aspect-[3/4] flex flex-col justify-end"
+                      onClick={() => onSelectProject({ ...project, slug: projectSlug })}
+                      data-stagger-item
+                    >
+                      {/* Image or Fallback */}
+                      {project.coverImage ? (
+                        <img
+                          src={project.coverImage}
+                          alt={project.name}
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] to-[#0d0d0a] flex items-center justify-center p-6 text-center">
+                          <span className="ac-display text-2xl text-white/40">{project.name}</span>
+                        </div>
+                      )}
+                      
+                      {/* Gradient Overlay for Readable Text */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent transition-opacity duration-300"></div>
+
+                      {/* Content Overlay - Always visible on mobile, enhanced hover effect on desktop */}
+                      <div className="relative z-10 p-6 md:p-8 flex flex-col justify-end h-full">
+                        <span className="text-[#f5a623] ac-script text-2xl md:text-3xl mb-1 block">
+                          {project.type || 'Creative Work'}
+                        </span>
+                        <h3 className="ac-display text-2xl md:text-3xl text-white tracking-wide mb-3">
+                          {project.name}
+                        </h3>
+                        {project.description && (
+                          <p className="ac-body text-xs md:text-sm text-white/70 line-clamp-2 mb-4">
+                            {project.description}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-2 text-accent ac-body text-xs md:text-sm uppercase tracking-widest font-semibold group-hover:translate-x-1 transition-transform duration-300">
                           View Project <ArrowRight size={16} />
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))
+                    </motion.div>
+                  );
+                })
               ) : (
                 <motion.div 
                   initial={{ opacity: 0 }} 
