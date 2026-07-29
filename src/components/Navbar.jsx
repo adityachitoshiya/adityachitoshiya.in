@@ -86,7 +86,7 @@ const Navbar = () => {
             className="ac-display text-4xl tracking-wider text-accent transition-colors duration-300"
             onClick={() => setIsMenuOpen(false)}
           >
-            {portfolioData.global?.name?.split(' ')[0] || 'AC'}.
+            AC.
           </a>
 
           {/* Right side controls */}
