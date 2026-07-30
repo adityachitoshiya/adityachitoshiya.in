@@ -23,7 +23,7 @@ export const initHeroParallax = ({ heroRef, nextSectionRef, layers }, pinDistanc
   const ctx = gsap.context(() => {
     if (!heroRef.current) return;
 
-    // Parallax scrub layers inside Hero without abrupt pinning jumps
+    // Parallax scrub layers inside Hero
     layers.forEach((layer) => {
       if (!layer.ref.current || layer.ref.current.length === 0) return;
       
@@ -39,17 +39,6 @@ export const initHeroParallax = ({ heroRef, nextSectionRef, layers }, pinDistanc
         }
       });
     });
-
-    // Next section smooth card tray styling
-    if (nextSectionRef.current) {
-      gsap.set(nextSectionRef.current, {
-        borderTopLeftRadius: '32px',
-        borderTopRightRadius: '32px',
-        position: 'relative',
-        zIndex: 30,
-        boxShadow: '0px -20px 40px rgba(0,0,0,0.8)',
-      });
-    }
   });
   
   return ctx;
