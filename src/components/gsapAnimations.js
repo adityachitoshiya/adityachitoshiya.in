@@ -19,51 +19,37 @@ export const animateMarquee = (ref, { speed = 55 } = {}) => {
   });
 };
 
-export const initHeroParallax = ({ heroRef, nextSectionRef, layers }, pinDistance = 600) => {
+export const initHeroParallax = ({ heroRef, nextSectionRef, layers }, pinDistance = 500) => {
   const ctx = gsap.context(() => {
-    // Pin the hero section
-    ScrollTrigger.create({
-      trigger: heroRef.current,
-      start: "top top",
-      end: `+=${pinDistance}`,
-      pin: true,
-      pinSpacing: false, // next section will slide over it
-    });
+    if (!heroRef.current) return;
 
-    // Make the next section round at the top and act as a tray
-    gsap.set(nextSectionRef.current, {
-      borderTopLeftRadius: '32px',
-      borderTopRightRadius: '32px',
-      overflow: 'hidden',
-      marginTop: '-2px', // tiny overlap
-      position: 'relative',
-      zIndex: 30, // needs to be higher than hero which is z-20
-      force3D: true, // Forces hardware acceleration to prevent rendering glitches
-      boxShadow: '0px -10px 30px rgba(0,0,0,0.5)', // Adds a shadow to hide any 1px gaps
-    });
-
-    // Parallax layers inside Hero
+    // Parallax scrub layers inside Hero without abrupt pinning jumps
     layers.forEach((layer) => {
-      // If ref.current is an array of elements (which it is via callback refs), GSAP animates all of them
       if (!layer.ref.current || layer.ref.current.length === 0) return;
       
-      const tl = gsap.timeline({
+      gsap.to(layer.ref.current, {
+        y: pinDistance * layer.speed,
+        opacity: layer.fade ? 0 : 1,
+        ease: "none",
         scrollTrigger: {
           trigger: heroRef.current,
           start: "top top",
-          end: `+=${pinDistance}`,
-          scrub: true,
+          end: "bottom top",
+          scrub: 0.5,
         }
       });
-      
-      const yMove = pinDistance * layer.speed;
-      const toVars = { y: yMove, ease: "none" };
-      if (layer.fade) {
-        toVars.opacity = 0;
-      }
-      
-      tl.to(layer.ref.current, toVars);
     });
+
+    // Next section smooth card tray styling
+    if (nextSectionRef.current) {
+      gsap.set(nextSectionRef.current, {
+        borderTopLeftRadius: '32px',
+        borderTopRightRadius: '32px',
+        position: 'relative',
+        zIndex: 30,
+        boxShadow: '0px -20px 40px rgba(0,0,0,0.8)',
+      });
+    }
   });
   
   return ctx;

@@ -17,16 +17,9 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Prevent body scroll when full-screen menu is open
+  // Handle menu state cleanly
   useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
+    // Menu state listener if needed
   }, [isMenuOpen]);
 
   const navLinks = [
@@ -75,7 +68,7 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 w-full z-[100] transition-all duration-300 ${
+        className={`fixed top-0 left-0 w-full z-[120] transition-all duration-300 ${
           isScrolled && !isMenuOpen ? 'bg-background/80 backdrop-blur-md py-4 shadow-lg' : 'bg-transparent py-6'
         }`}
       >
@@ -153,7 +146,7 @@ const Navbar = () => {
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed inset-0 w-full h-full bg-[#0a0a0a]/85 backdrop-blur-3xl z-[90] flex flex-col justify-center px-6 md:px-24 overflow-hidden border-b border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
+            className="fixed inset-0 w-full h-full bg-[#0a0a0a]/95 backdrop-blur-3xl z-[110] flex flex-col justify-center px-6 md:px-24 overflow-hidden border-b border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
           >
             {/* Ambient Mirror Glow Effects */}
             <div className="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-accent/15 rounded-full blur-[160px] pointer-events-none"></div>
