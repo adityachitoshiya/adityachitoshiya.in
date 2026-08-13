@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import LoadingScreen from '../components/LoadingScreen';
+import { portfolioData as defaultData } from '../data';
 
 const PortfolioContext = createContext();
 
@@ -12,9 +13,14 @@ export const PortfolioProvider = ({ children }) => {
             try {
                 const res = await fetch('/api/portfolio');
                 const json = await res.json();
-                setData(json);
+                if (json && Object.keys(json).length > 0 && json.welcome?.headline) {
+                    setData(json);
+                } else {
+                    setData(defaultData);
+                }
             } catch (err) {
-                console.error("Failed to fetch portfolio data:", err);
+                console.error("Failed to fetch portfolio data, using default:", err);
+                setData(defaultData);
             } finally {
                 setLoading(false);
             }

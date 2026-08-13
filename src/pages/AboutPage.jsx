@@ -43,12 +43,17 @@ export default function AboutPage() {
                     <p className="text-[#f5a623] ac-script text-3xl">Curriculum Vitae</p>
                 </div>
                 
-                {/* Dummy Download CV button */}
+                {/* Download CV button */}
                 <Magnetic strength={20}>
-                    <button onClick={() => alert('Add your PDF link here in the future!')} className="flex items-center gap-2 bg-[#f5a623] text-black px-8 py-4 rounded-full font-bold uppercase tracking-wider hover:bg-white transition-colors ac-body text-sm mb-4 md:mb-8">
+                    <a 
+                        href="/Aditya_Chitoshiya_CV.html" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 bg-[#f5a623] text-black px-8 py-4 rounded-full font-bold uppercase tracking-wider hover:bg-white transition-colors ac-body text-sm mb-4 md:mb-8 cursor-pointer"
+                    >
                         <Download size={18} />
                         Download CV
-                    </button>
+                    </a>
                 </Magnetic>
             </motion.div>
 

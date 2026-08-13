@@ -20,6 +20,7 @@ import FloatingSpotify from './components/FloatingSpotify';
 import Preloader from './components/Preloader';
 import SearchOverlay from './components/SearchOverlay';
 import Navbar from './components/Navbar';
+import BrandMarquee from './components/BrandMarquee';
 
 import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import Admin from './pages/Admin';
@@ -27,6 +28,7 @@ import CreativesPage from './pages/CreativesPage';
 import ProjectDetail from './pages/ProjectDetail';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import GigsPage from './components/GigsPage';
 
 const CreativesRoute = () => {
   const { portfolioData } = usePortfolio();
@@ -84,6 +86,8 @@ const useMultiRef = () => {
   return callbackRef.current;
 };
 
+import GigList from './components/GigList';
+
 const Portfolio = () => {
   const heroRef = useRef(null);
   const welcomeRef = useRef(null);
@@ -112,15 +116,19 @@ const Portfolio = () => {
     <>
       <Navbar />
       <main>
-        <div ref={heroRef}>
+        <div ref={heroRef} className="sticky top-0 z-10 w-full min-h-screen">
           <Hero 
             photoRef={photoRefs} 
             headlineRef={headlineRefs} 
             accentRef={accentRefs} 
           />
         </div>
-        <div ref={welcomeRef} style={{ background: '#0a0a0a', position: 'relative', zIndex: 30 }}>
+        <div 
+          ref={welcomeRef} 
+          className="relative z-20 bg-[#0a0a0a] rounded-t-[32px] md:rounded-t-[48px] shadow-[0_-30px_80px_rgba(0,0,0,0.9)] border-t border-white/10"
+        >
           <WelcomeBanner />
+          <BrandMarquee />
           <Introduction />
           <AboutMe />
           <CurrentFocus />
@@ -160,12 +168,20 @@ const ScrollEffectsRunner = () => {
 };
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => {
+    // Show preloader only if it hasn't been loaded in this browser session
+    return !sessionStorage.getItem('hasLoadedPreloader');
+  });
+
+  const handlePreloaderComplete = () => {
+    sessionStorage.setItem('hasLoadedPreloader', 'true');
+    setIsLoading(false);
+  };
 
   return (
     <div className="bg-background min-h-screen text-primary selection:bg-accent selection:text-background overflow-x-hidden">
       <AnimatePresence mode="wait">
-        {isLoading && <Preloader onComplete={() => setIsLoading(false)} />}
+        {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
       </AnimatePresence>
 
       <PortfolioProvider>
@@ -175,6 +191,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Portfolio />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/gigs" element={<GigsPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/creatives" element={<CreativesRoute />} />
               <Route path="/work/:slug" element={<ProjectRoute />} />

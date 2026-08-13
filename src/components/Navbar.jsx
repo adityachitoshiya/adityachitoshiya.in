@@ -26,6 +26,7 @@ const Navbar = () => {
     { name: 'Home', href: '/#home' },
     { name: 'About', href: '/about' },
     { name: 'Creatives', href: '/creatives' },
+    { name: 'Services & Gigs', href: '/gigs' },
     { name: 'Contact', href: '/contact' },
   ];
 
@@ -85,14 +86,14 @@ const Navbar = () => {
           {/* Right side controls */}
           <div className="flex items-center gap-6">
             {/* Status Badge */}
-            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 transition-all duration-300">
+            <Link to="/contact" className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 transition-all duration-300 hover:bg-white/10 hover:border-white/20 cursor-pointer">
               <span 
                 className={`w-2 h-2 rounded-full ${portfolioData.global?.availableForWork ? 'bg-[#f5a623] shadow-[0_0_8px_#f5a623]' : 'bg-gray-500'}`}
               ></span>
               <span className="ac-body text-xs tracking-wide uppercase text-white/80">
                 {portfolioData.global?.availableForWork ? 'Available for Projects' : 'Currently Booked'}
               </span>
-            </div>
+            </Link>
 
             {/* Creative Hamburger Toggle */}
             <Magnetic>

@@ -3,14 +3,21 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Global ScrollTrigger Defaults
+ScrollTrigger.config({
+  autoRefreshEvents: "visibilitychange,DOMContentLoaded,load,resize"
+});
+
+export const refreshScrollTrigger = () => {
+  ScrollTrigger.refresh();
+};
+
 export const animateHeroEntrance = (refs) => {
-  // Existing placeholder or implementation
   console.log("GSAP animations triggered on:", refs);
 };
 
 export const animateMarquee = (ref, { speed = 55 } = {}) => {
   if (!ref.current) return;
-  // If the marquee has children, animate them to scroll infinitely
   gsap.to(ref.current.children, {
     xPercent: -50,
     repeat: -1,
@@ -19,26 +26,42 @@ export const animateMarquee = (ref, { speed = 55 } = {}) => {
   });
 };
 
-export const initHeroParallax = ({ heroRef, nextSectionRef, layers }, pinDistance = 500) => {
+export const initHeroParallax = ({ heroRef, nextSectionRef, layers }) => {
   const ctx = gsap.context(() => {
-    if (!heroRef.current) return;
+    if (!heroRef.current || !nextSectionRef.current) return;
 
-    // Parallax scrub layers inside Hero
-    layers.forEach((layer) => {
-      if (!layer.ref.current || layer.ref.current.length === 0) return;
-      
-      gsap.to(layer.ref.current, {
-        y: pinDistance * layer.speed,
-        opacity: layer.fade ? 0 : 1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.5,
-        }
-      });
+    // Subtle scale & slight parallax shift without disappearing or blur glitches
+    gsap.to(heroRef.current, {
+      scale: 0.96,
+      opacity: 0.85,
+      y: -20,
+      ease: "none",
+      scrollTrigger: {
+        trigger: nextSectionRef.current,
+        start: "top bottom",
+        end: "top top",
+        scrub: 0.5,
+      }
     });
+
+    // Gentle layer parallax depth movement
+    if (layers && Array.isArray(layers)) {
+      layers.forEach((layer) => {
+        if (!layer.ref || !layer.ref.current) return;
+        const target = layer.ref.current;
+        
+        gsap.to(target, {
+          y: -40 * (layer.speed || 0.5),
+          ease: "none",
+          scrollTrigger: {
+            trigger: nextSectionRef.current,
+            start: "top bottom",
+            end: "top top",
+            scrub: 0.5,
+          }
+        });
+      });
+    }
   });
   
   return ctx;

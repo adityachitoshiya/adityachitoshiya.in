@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Save, Loader2, ArrowLeft, Plus, Trash2, X as XIcon, Music, Crop } from 'lucide-react';
+import { Upload, Save, Loader2, ArrowLeft, Plus, Trash2, X as XIcon, Music, Crop, Video, Play, Film, Image as ImageIcon, Check, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import LoadingScreen from '../components/LoadingScreen';
 import ImageCropModal from '../components/ImageCropModal';
 import { imageFrameConfigs } from '../utils/imageFrameConfigs';
+
+const isVideoUrl = (url) => {
+    if (typeof url !== 'string' || !url) return false;
+    return /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(url) || url.includes('/video/upload/') || url.startsWith('data:video/');
+};
 
 const Admin = () => {
     const [data, setData] = useState(null);
@@ -12,6 +17,9 @@ const Admin = () => {
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [activeTab, setActiveTab] = useState('global');
+    const [dragActiveField, setDragActiveField] = useState(null);
+    const [autoSaveStatus, setAutoSaveStatus] = useState('idle'); // 'idle' | 'saving' | 'saved' | 'error'
+    const isInitialMount = useRef(true);
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loginForm, setLoginForm] = useState({ username: '', password: '' });
@@ -74,6 +82,48 @@ const Admin = () => {
             setLoading(false);
         }
     };
+
+    // Auto-Save Effect (Debounced 1.2s)
+    useEffect(() => {
+        if (!data || !isAuthenticated) return;
+
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            return;
+        }
+
+        setAutoSaveStatus('saving');
+
+        const timer = setTimeout(async () => {
+            try {
+                const token = sessionStorage.getItem('adminToken');
+                if (!token) return;
+
+                const res = await fetch('/api/portfolio', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    setAutoSaveStatus('saved');
+                    setTimeout(() => {
+                        setAutoSaveStatus('idle');
+                    }, 3000);
+                } else {
+                    setAutoSaveStatus('error');
+                }
+            } catch (err) {
+                console.error("Auto-save failed:", err);
+                setAutoSaveStatus('error');
+            }
+        }, 1200);
+
+        return () => clearTimeout(timer);
+    }, [data, isAuthenticated]);
 
     if (loading) {
         return <LoadingScreen />;
@@ -154,12 +204,9 @@ const Admin = () => {
         }
     };
 
-    const handleFileSelect = (e, targetSection, targetKey, targetIndex = null, configKey = null) => {
-        const file = e.target.files[0];
+    const processUploadedFile = (file, targetSection, targetKey, targetIndex = null, configKey = null) => {
         if (!file) return;
-
         if (file.type.startsWith('image/')) {
-            // Read file as data URL to pass to cropper
             const reader = new FileReader();
             reader.onload = () => {
                 setCropModal({
@@ -175,9 +222,36 @@ const Admin = () => {
             };
             reader.readAsDataURL(file);
         } else {
-            // Non-image files (audio/video) bypass cropper
             uploadMediaBlob(file, targetSection, targetKey, targetIndex);
         }
+    };
+
+    const handleFileSelect = (e, targetSection, targetKey, targetIndex = null, configKey = null) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        processUploadedFile(file, targetSection, targetKey, targetIndex, configKey);
+    };
+
+    const handleDropFile = (e, targetSection, targetKey, targetIndex = null, configKey = null) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActiveField(null);
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            const file = e.dataTransfer.files[0];
+            processUploadedFile(file, targetSection, targetKey, targetIndex, configKey);
+        }
+    };
+
+    const handleDragOver = (e, fieldKey) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActiveField(fieldKey);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActiveField(null);
     };
 
     const handleEditImage = (imageUrl, targetSection, targetKey, targetIndex = null, configKey = null, isCover = false, galleryIndex = null) => {
@@ -250,6 +324,18 @@ const Admin = () => {
                              currentImages.push({ url: result.url, title: '', caption: '' });
                          }
                          return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: currentImages } };
+                    }
+
+                    if (section === 'brands') {
+                         const currentBrands = [...(prev.brands || [])];
+                         if (index !== null) {
+                             currentBrands[index] = typeof currentBrands[index] === 'string'
+                                ? { name: currentBrands[index], logo: result.url }
+                                : { ...currentBrands[index], logo: result.url };
+                         } else {
+                             currentBrands.push({ name: 'New Brand', logo: result.url });
+                         }
+                         return { ...prev, brands: currentBrands };
                     }
                     
                     if (index !== null) {
@@ -436,21 +522,47 @@ const Admin = () => {
     return (
         <div className="min-h-screen bg-background text-primary p-8 font-body">
             <div className="max-w-4xl mx-auto">
-                <header className="flex justify-between items-center mb-12 border-b border-white/10 pb-6">
+                <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12 border-b border-white/10 pb-6">
                     <div>
                         <Link to="/" className="text-accent flex items-center gap-2 mb-4 hover:underline">
                             <ArrowLeft size={16} /> Back to Live Site
                         </Link>
                         <h1 className="text-4xl font-heading uppercase tracking-widest">Admin Dashboard</h1>
                     </div>
-                    <button 
-                        onClick={handleSave} 
-                        disabled={saving}
-                        className="bg-accent text-background px-6 py-3 rounded-full font-bold uppercase tracking-wider flex items-center gap-2 hover:scale-105 transition-all disabled:opacity-50"
-                    >
-                        {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-                        Save Changes
-                    </button>
+                    <div className="flex items-center gap-3 self-end sm:self-auto">
+                        {/* Auto-Save Indicator Badge */}
+                        <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider">
+                            {autoSaveStatus === 'saving' && (
+                                <span className="text-amber-400 flex items-center gap-1.5 animate-pulse">
+                                    <Loader2 className="animate-spin" size={14} /> Auto-saving...
+                                </span>
+                            )}
+                            {autoSaveStatus === 'saved' && (
+                                <span className="text-emerald-400 flex items-center gap-1.5">
+                                    <Check size={14} /> Auto-saved
+                                </span>
+                            )}
+                            {autoSaveStatus === 'error' && (
+                                <span className="text-rose-400 flex items-center gap-1.5">
+                                    <AlertCircle size={14} /> Auto-save Failed
+                                </span>
+                            )}
+                            {autoSaveStatus === 'idle' && (
+                                <span className="text-emerald-400/80 flex items-center gap-1.5">
+                                    <Check size={14} className="text-emerald-400" /> Auto-save ON
+                                </span>
+                            )}
+                        </div>
+
+                        <button 
+                            onClick={handleSave} 
+                            disabled={saving}
+                            className="bg-accent text-background px-6 py-3 rounded-full font-bold uppercase tracking-wider flex items-center gap-2 hover:scale-105 transition-all disabled:opacity-50"
+                        >
+                            {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+                            Save
+                        </button>
+                    </div>
                 </header>
 
                 {uploading && (
@@ -461,7 +573,7 @@ const Admin = () => {
 
                 {/* Tab Navigation */}
                 <div className="flex flex-wrap gap-4 mb-8 border-b border-white/10 pb-4">
-                    {['global', 'hero', 'welcome', 'about', 'work', 'education', 'creatives', 'gallery', 'slideshow', 'contact'].map(tab => (
+                    {['global', 'hero', 'welcome', 'brands', 'about', 'work', 'education', 'creatives', 'gallery', 'slideshow', 'contact'].map(tab => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
@@ -469,7 +581,7 @@ const Admin = () => {
                                 activeTab === tab ? 'bg-accent text-background' : 'bg-white/5 text-muted hover:bg-white/10 hover:text-white'
                             }`}
                         >
-                            {tab === 'creatives' ? 'Projects' : tab === 'slideshow' ? 'Slideshow' : tab === 'about' ? 'About Us' : tab === 'work' ? 'Work Exp' : tab === 'education' ? 'Education' : tab === 'contact' ? 'Contact' : tab}
+                            {tab === 'creatives' ? 'Projects' : tab === 'brands' ? 'Brands & Logos' : tab === 'slideshow' ? 'Slideshow' : tab === 'about' ? 'About Us' : tab === 'work' ? 'Work Exp' : tab === 'education' ? 'Education' : tab === 'contact' ? 'Contact' : tab}
                         </button>
                     ))}
                 </div>
@@ -653,38 +765,134 @@ const Admin = () => {
                 {/* Section: Welcome */}
                 {activeTab === 'welcome' && (
                 <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Welcome Section</h2>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+                        <div>
+                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">Welcome Section</h2>
+                            <p className="text-muted text-sm mt-1">Upload images or videos in 1:1 square ratio with Drag & Drop support.</p>
+                        </div>
+                        <span className="bg-accent/10 border border-accent/30 text-accent px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 self-start sm:self-auto">
+                            <Video size={14} /> 1:1 Video + Image Enabled
+                        </span>
+                    </div>
+
+                    {/* Headline & Intro Text */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label className="block text-muted text-sm mb-2 font-medium">Section Headline</label>
+                            <input 
+                                value={data.welcome?.headline || ''} 
+                                onChange={(e) => handleTextChange(e, 'welcome', 'headline')} 
+                                className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" 
+                                placeholder="WELCOME TO MY BRAND"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-muted text-sm mb-2 font-medium">Introductory Description</label>
+                            <textarea 
+                                value={data.welcome?.introText || ''} 
+                                onChange={(e) => handleTextChange(e, 'welcome', 'introText')} 
+                                className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none h-24 resize-none" 
+                                placeholder="Short overview about your brand..."
+                            />
+                        </div>
+                    </div>
+
+                    {/* Drag & Drop 1:1 Media Cards */}
+                    <h3 className="text-base font-heading text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <Upload size={18} className="text-accent" /> Media Slides (1:1 Aspect Ratio - Drag & Drop Allowed)
+                    </h3>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label className="block text-muted text-sm mb-2">Image 1 (Tall right)</label>
-                            <img src={data.welcome.image1} alt="Welcome 1" className="w-full h-48 object-cover rounded-xl mb-3" />
-                            <div className="flex gap-2">
-                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
-                                    <Upload size={16} /> Replace
-                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'welcome', 'image1', null, 'introImageTall')} accept="image/*,video/*" />
-                                </label>
-                                {data.welcome.image1 && (
-                                    <button onClick={() => handleEditImage(data.welcome.image1, 'welcome', 'image1', null, 'introImageTall')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
-                                        <Crop size={16} /> Edit
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                        <div>
-                            <label className="block text-muted text-sm mb-2">Image 2 (Short left)</label>
-                            <img src={data.welcome.image2} alt="Welcome 2" className="w-full h-48 object-cover rounded-xl mb-3" />
-                            <div className="flex gap-2">
-                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
-                                    <Upload size={16} /> Replace
-                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'welcome', 'image2', null, 'introImageShort')} accept="image/*,video/*" />
-                                </label>
-                                {data.welcome.image2 && (
-                                    <button onClick={() => handleEditImage(data.welcome.image2, 'welcome', 'image2', null, 'introImageShort')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
-                                        <Crop size={16} /> Edit
-                                    </button>
-                                )}
-                            </div>
-                        </div>
+                        {[
+                            { key: 'image1', label: 'Media Slide 1 (1:1 Ratio)', val: data.welcome?.image1 },
+                            { key: 'image2', label: 'Media Slide 2 (1:1 Ratio)', val: data.welcome?.image2 }
+                        ].map((mediaItem, idx) => {
+                            const isDragActive = dragActiveField === `welcome-${mediaItem.key}`;
+                            const isVid = isVideoUrl(mediaItem.val);
+
+                            return (
+                                <div key={mediaItem.key} className="bg-black/30 border border-white/10 rounded-2xl p-5 flex flex-col">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <label className="text-sm font-semibold text-white/90">{mediaItem.label}</label>
+                                        {mediaItem.val && (
+                                            <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded flex items-center gap-1 ${
+                                                isVid ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                            }`}>
+                                                {isVid ? <Play size={10} className="fill-purple-400" /> : <ImageIcon size={10} />}
+                                                {isVid ? '1:1 Video' : '1:1 Image'}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Drag & Drop Zone Box */}
+                                    <div 
+                                        onDragOver={(e) => handleDragOver(e, `welcome-${mediaItem.key}`)}
+                                        onDragLeave={handleDragLeave}
+                                        onDrop={(e) => handleDropFile(e, 'welcome', mediaItem.key, null, 'welcomeSquareMedia')}
+                                        className={`relative w-full aspect-square rounded-2xl border-2 border-dashed overflow-hidden flex flex-col items-center justify-center transition-all duration-300 ${
+                                            isDragActive 
+                                                ? 'border-accent bg-accent/20 scale-[1.02]' 
+                                                : 'border-white/20 bg-white/5 hover:border-accent/60'
+                                        }`}
+                                    >
+                                        {mediaItem.val ? (
+                                            isVid ? (
+                                                <video 
+                                                    src={mediaItem.val} 
+                                                    autoPlay 
+                                                    loop 
+                                                    muted 
+                                                    playsInline 
+                                                    className="w-full h-full object-cover rounded-xl"
+                                                />
+                                            ) : (
+                                                <img 
+                                                    src={mediaItem.val} 
+                                                    alt={`Welcome Media ${idx + 1}`} 
+                                                    className="w-full h-full object-cover rounded-xl"
+                                                />
+                                            )
+                                        ) : (
+                                            <div className="text-center p-6 flex flex-col items-center">
+                                                <Upload size={36} className="text-accent mb-3 animate-bounce" />
+                                                <p className="text-white font-medium text-sm mb-1">Drag & Drop Video or Image Here</p>
+                                                <p className="text-muted text-xs">Supports MP4, MOV, WEBM, PNG, JPG, WEBP (1:1 Ratio)</p>
+                                            </div>
+                                        )}
+
+                                        {/* Drag Overlay Cue */}
+                                        {isDragActive && (
+                                            <div className="absolute inset-0 bg-black/85 backdrop-blur-sm flex flex-col items-center justify-center text-accent z-30 font-bold border-2 border-accent rounded-2xl">
+                                                <Upload size={44} className="mb-2 animate-bounce text-accent" />
+                                                <p className="uppercase tracking-widest text-sm text-white">Drop File to Upload</p>
+                                                <span className="text-xs text-accent font-normal mt-1">Video / Image 1:1 Aspect Ratio</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Action Buttons */}
+                                    <div className="flex gap-2 mt-4">
+                                        <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors text-xs font-semibold uppercase tracking-wider">
+                                            <Upload size={14} /> Replace
+                                            <input 
+                                                type="file" 
+                                                className="hidden" 
+                                                onChange={(e) => handleFileSelect(e, 'welcome', mediaItem.key, null, 'welcomeSquareMedia')} 
+                                                accept="image/*,video/*" 
+                                            />
+                                        </label>
+                                        {mediaItem.val && !isVid && (
+                                            <button 
+                                                onClick={() => handleEditImage(mediaItem.val, 'welcome', mediaItem.key, null, 'welcomeSquareMedia')} 
+                                                className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors text-xs font-semibold uppercase tracking-wider"
+                                            >
+                                                <Crop size={14} /> Crop (1:1)
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </section>
                 )}

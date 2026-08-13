@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aditya Chitoshiya — Visual & Product Designer</title>
+<style>
+  :root{
+    --ink:#151515;
+    --muted:#666;
+    --accent:#e86a33;
+    --paper:#fff;
+    --soft:#f6f4f1;
+    --line:#e2e0dc;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:#e9e7e3;
+    color:var(--ink);
+    font-family:Arial, Helvetica, sans-serif;
+    line-height:1.45;
+  }
+  .page{
+    width:210mm;
+    min-height:297mm;
+    margin:24px auto;
+    padding:15mm;
+    background:var(--paper);
+    box-shadow:0 10px 40px rgba(0,0,0,.08);
+  }
+  header{
+    display:grid;
+    grid-template-columns:1.43fr 1fr;
+    gap:30px;
+    padding-bottom:18px;
+    border-bottom:2px solid var(--accent);
+  }
+  h1{
+    margin:0;
+    font-size:34px;
+    line-height:.98;
+    letter-spacing:-1.5px;
+  }
+  .role{
+    margin-top:10px;
+    color:var(--accent);
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:1.2px;
+  }
+  .meta{
+    margin-top:6px;
+    color:var(--muted);
+    font-size:11px;
+  }
+  .contact{
+    font-size:10.5px;
+    color:var(--muted);
+    line-height:1.7;
+    text-align:right;
+  }
+  .contact strong{color:var(--ink)}
+  section{margin-top:18px}
+  .section-title{
+    margin:0 0 8px;
+    font-size:12px;
+    letter-spacing:1.5px;
+    font-weight:800;
+  }
+  .section-title::before{
+    content:"";
+    display:inline-block;
+    width:22px;
+    height:3px;
+    margin-right:8px;
+    vertical-align:middle;
+    background:var(--accent);
+  }
+  .profile{
+    font-size:11.5px;
+    color:#282828;
+    max-width:95%;
+  }
+  .skills{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    border:1px solid var(--line);
+    background:var(--soft);
+  }
+  .skill{
+    padding:9px 10px;
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    font-size:10.5px;
+    font-weight:700;
+  }
+  .skill:nth-child(3n){border-right:0}
+  .skill:nth-last-child(-n+3){border-bottom:0}
+  .main{
+    display:grid;
+    grid-template-columns:1.45fr 1fr;
+    gap:18px;
+    margin-top:2px;
+  }
+  .main > aside{
+    border-left:1px solid var(--line);
+    padding-left:18px;
+  }
+  .job{margin-bottom:16px}
+  .job-title{
+    font-size:12px;
+    font-weight:800;
+  }
+  .job-sub{
+    font-size:9.5px;
+    color:var(--muted);
+    margin:2px 0 6px;
+  }
+  ul{
+    margin:0;
+    padding-left:17px;
+  }
+  li{
+    margin:0 0 4px;
+    font-size:10.3px;
+  }
+  .item{
+    margin-bottom:10px;
+    font-size:10.3px;
+  }
+  .brand-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    margin-top:2px;
+  }
+  .brand-card{
+    position:relative;
+    min-height:56px;
+    padding:8px 9px 7px 10px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:7px;
+    overflow:hidden;
+  }
+  .brand-card::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:3px;
+    background:var(--accent);
+  }
+  .brand-name{
+    font-size:10.2px;
+    font-weight:800;
+    line-height:1.15;
+  }
+  .brand-type{
+    margin-top:4px;
+    font-size:8.2px;
+    line-height:1.25;
+    color:var(--muted);
+  }
+  .brand-category{
+    display:inline-block;
+    margin-top:5px;
+    padding:2px 5px;
+    border-radius:10px;
+    background:var(--soft);
+    color:#555;
+    font-size:7px;
+    font-weight:700;
+    letter-spacing:.25px;
+    text-transform:uppercase;
+  }
+  .brand-highlight{
+    margin:0 0 10px;
+    padding:9px 10px;
+    background:linear-gradient(135deg,#171717,#2b2b2b);
+    color:#fff;
+    border-radius:8px;
+  }
+  .brand-highlight .big{
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.3px;
+  }
+  .brand-highlight .small{
+    margin-top:3px;
+    font-size:8px;
+    color:#d5d5d5;
+    line-height:1.35;
+  }
+  .item strong{font-size:10.5px}
+  .muted{color:var(--muted)}
+  .tagline{
+    display:inline-block;
+    padding:5px 8px;
+    margin:2px 4px 4px 0;
+    background:var(--soft);
+    border:1px solid var(--line);
+    font-size:9.5px;
+    font-weight:700;
+  }
+  footer{
+    margin-top:18px;
+    padding-top:9px;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    color:var(--muted);
+    font-size:9px;
+    letter-spacing:.3px;
+  }
+  @media(max-width:800px){
+    .page{width:auto;min-height:auto;margin:0;padding:28px}
+    header,.main{grid-template-columns:1fr}
+    .contact{text-align:left}
+    .main > aside{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:15px}
+  }
+  @media print{
+    body{background:#fff}
+    .page{margin:0;box-shadow:none}
+    @page{size:A4;margin:0}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div>
+      <h1>ADITYA<br>CHITOSHIYA</h1>
+      <div class="role">VISUAL &amp; PRODUCT DESIGNER</div>
+      <div class="meta">4+ YEARS EXPERIENCE &nbsp;•&nbsp; JAIPUR</div>
+    </div>
+    <div class="contact">
+      <strong>CONTACT</strong><br>
+      +91 77270 88810<br>
+      adityachitoshiya12@gmail.com<br>
+      adityachitoshiya.in<br>
+      LinkedIn / adityachitoshiya12<br>
+      Behance / adityachitosh12<br>
+      GitHub / adityachitoshiya
+    </div>
+  </header>
+
+  <section>
+    <h2 class="section-title">PROFILE</h2>
+    <div class="profile">
+      Visual &amp; Product Designer with 4+ years of experience spanning brand transformation,
+      product design, UI/UX, brand identity, advertising campaigns, social content, motion graphics and digital experiences.
+      Experienced in building modern visual systems, founder-led storytelling and product communication while collaborating
+      with creative teams, consumer brands, education companies, creators and media projects.
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">CORE EXPERTISE</h2>
+    <div class="skills">
+      <div class="skill">Visual Design</div>
+      <div class="skill">Product Design</div>
+      <div class="skill">UI/UX Design</div>
+      <div class="skill">Brand Identity</div>
+      <div class="skill">Graphic Design</div>
+      <div class="skill">Motion Graphics</div>
+    </div>
+  </section>
+
+  <div class="main">
+    <main>
+      <section>
+        <h2 class="section-title">EXPERIENCE</h2>
+
+        <div class="job">
+          <div class="job-title">Regrip India — Brand Transformation Lead</div>
+          <div class="job-sub">Sep 2025 – Present</div>
+          <ul>
+            <li>Drive advertising and commercial campaign design across brand and product communication.</li>
+            <li>Develop founder-focused storytelling and high-impact brand narratives.</li>
+            <li>Create influencer and TED Talk-style video content for digital audiences.</li>
+            <li>Lead social media and marketing production across multiple creative formats.</li>
+            <li>Coordinate celebrity-led creative requirements, including Suniel Shetty.</li>
+          </ul>
+          <div class="item"><strong>Impact:</strong> <span class="muted">Helped shape a more modern, emotionally connected brand presence across marketing touchpoints.</span></div>
+        </div>
+
+        <div class="job">
+          <div class="job-title">BIEDX — Media &amp; Visual Education Specialist</div>
+          <div class="job-sub">Singapore EdTech</div>
+          <ul>
+            <li>Build event documentation and visual storytelling assets for educational communication.</li>
+            <li>Design understanding-friendly course content and visual learning structures.</li>
+            <li>Structure vision-oriented content for digital education and marketing initiatives.</li>
+            <li>Support media production and marketing communication through motion and visual design.</li>
+          </ul>
+          <div class="item"><strong>Impact:</strong> <span class="muted">Enhanced learning communication through structured visual storytelling.</span></div>
+        </div>
+
+        <div class="job">
+          <div class="job-title">Mittsure — Brand Identity Designer</div>
+          <div class="job-sub">Publishing &amp; Education</div>
+          <ul>
+            <li>Design international and national book covers across educational and publishing categories.</li>
+            <li>Create magazine layouts and editorial design systems.</li>
+            <li>Develop educational product visuals and supporting marketing assets.</li>
+            <li>Contribute to premium brand identity upgrades and visual consistency.</li>
+          </ul>
+          <div class="item"><strong>Impact:</strong> <span class="muted">Elevated visual presence through premium, modern design systems.</span></div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">EDUCATION &amp; PRODUCT BRANDING</h2>
+        <div class="brand-grid">
+          <div class="brand-card"><div class="brand-name">Think Trail</div><div class="brand-type">Logo design · Educational book company branding</div><span class="brand-category">Publishing</span></div>
+          <div class="brand-card"><div class="brand-name">Lumalearn</div><div class="brand-type">EdTech branding · Plantation-themed logo design</div><span class="brand-category">EdTech</span></div>
+          <div class="brand-card"><div class="brand-name">Luma</div><div class="brand-type">Product design · Stationery brand identity</div><span class="brand-category">Product</span></div>
+          <div class="brand-card"><div class="brand-name">Pinaka</div><div class="brand-type">Education platform · Visual identity &amp; branding</div><span class="brand-category">Education</span></div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">CELEBRITY &amp; CREATOR COLLABORATIONS</h2>
+        <div class="brand-grid">
+          <div class="brand-card"><div class="brand-name">Suniel Shetty</div><div class="brand-type">Face-of-brand visuals &amp; brand identity</div><span class="brand-category">Celebrity</span></div>
+          <div class="brand-card"><div class="brand-name">Abhi &amp; Niyu</div><div class="brand-type">YouTube video content &amp; visual storytelling</div><span class="brand-category">YouTube</span></div>
+          <div class="brand-card"><div class="brand-name">Aman Dhattarwal</div><div class="brand-type">YouTube content &amp; creative visual production</div><span class="brand-category">YouTube</span></div>
+          <div class="brand-card"><div class="brand-name">Technology YouTubers</div><div class="brand-type">Short-form video content</div><span class="brand-category">Creator</span></div>
+        </div>
+        <div class="item" style="margin-top:8px;"><strong>Impact:</strong> <span class="muted">Delivered high-quality visual storytelling across creator, celebrity and media-led content.</span></div>
+      </section>
+
+      <section>
+        <h2 class="section-title">SELECTED PROJECTS</h2>
+        <div class="item"><strong>Varaha Jewels</strong> — Brand, product marketing, social and digital experience</div>
+        <div class="item"><strong>Tyrebook</strong> — Product-focused platform and visual/product design</div>
+        <div class="item"><strong>Varaha Motion Studio</strong> — Creative studio identity and digital direction</div>
+        <div class="item"><strong>BIEDX</strong> — Motion design, educational content and marketing</div>
+      </section>
+
+      <section>
+        <h2 class="section-title">DESIGN TOOLSET</h2>
+        <div class="item">
+          Photoshop &nbsp;•&nbsp; Illustrator &nbsp;•&nbsp; After Effects &nbsp;•&nbsp; Premiere Pro
+          &nbsp;•&nbsp; Figma &nbsp;•&nbsp; Canva &nbsp;•&nbsp; AI-assisted creative tools &nbsp;•&nbsp; Web/UI workflows
+        </div>
+      </section>
+    </main>
+
+    <aside>
+      <section>
+        <h2 class="section-title">SELECTED BRAND &amp; CLIENT EXPERIENCE</h2>
+
+        <div class="brand-highlight">
+          <div class="big">BRAND • PRODUCT • MEDIA • CAMPAIGNS</div>
+          <div class="small">Creative experience across consumer brands, public-facing personalities, digital creators and entertainment projects.</div>
+        </div>
+
+        <div class="brand-grid">
+          <div class="brand-card">
+            <div class="brand-name">boAt</div>
+            <div class="brand-type">Product marketing &amp; social creative</div>
+            <span class="brand-category">Consumer Brand</span>
+          </div>
+          <div class="brand-card">
+            <div class="brand-name">SleepyOwl</div>
+            <div class="brand-type">Product marketing &amp; social creative</div>
+            <span class="brand-category">D2C</span>
+          </div>          <div class="brand-card">
+            <div class="brand-name">EA Jaipur</div>
+            <div class="brand-type">Marketing &amp; visual design</div>
+            <span class="brand-category">Brand</span>
+          </div>
+          <div class="brand-card">
+            <div class="brand-name">Suniel Shetty</div>
+            <div class="brand-type">Brand identity</div>
+            <span class="brand-category">Celebrity</span>
+          </div>
+          <div class="brand-card">
+            <div class="brand-name">Abhi &amp; Niyu</div>
+            <div class="brand-type">YouTube video content</div>
+            <span class="brand-category">Creator</span>
+          </div>
+          <div class="brand-card">
+            <div class="brand-name">Bharat Ke Super Founders</div>
+            <div class="brand-type">Social media design</div>
+            <span class="brand-category">Media</span>
+          </div>
+          <div class="brand-card">
+            <div class="brand-name">Vande Bharat / Adani TV Show</div>
+            <div class="brand-type">Show visual design</div>
+            <span class="brand-category">Entertainment</span>
+          </div>
+          <div class="brand-card">
+            <div class="brand-name">Technology YouTubers</div>
+            <div class="brand-type">Short-form video content</div>
+            <span class="brand-category">Creator</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">EDUCATION</h2>
+        <div class="item"><strong>B.Tech — Computer Science</strong><br><span class="muted">Anand ICE, Jaipur</span></div>
+      </section>
+
+      <section>
+        <h2 class="section-title">WORKING STYLE</h2>
+        <span class="tagline">Product-minded visual thinking</span>
+        <span class="tagline">Brand consistency</span>
+        <span class="tagline">Campaign-led execution</span>
+        <span class="tagline">Creative leadership</span>
+      </section>
+    </aside>
+  </div>
+
+  <footer>
+    <span>VISUAL DESIGN / PRODUCT THINKING / MOTION / BRAND</span>
+    <span>adityachitoshiya.in</span>
+  </footer>
+
+</div>
+</body>
+</html>

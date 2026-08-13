@@ -5,11 +5,17 @@ export const imageFrameConfigs = {
     outputWidth: 900,
     outputHeight: 1200,
   },
+  welcomeSquareMedia: {
+    label: 'Welcome Media (1:1 Square)',
+    aspectRatio: 1 / 1,
+    outputWidth: 1000,
+    outputHeight: 1000,
+  },
   welcomeImage: {
     label: 'Welcome Image',
-    aspectRatio: 800 / 900,
-    outputWidth: 800,
-    outputHeight: 900,
+    aspectRatio: 1 / 1,
+    outputWidth: 1000,
+    outputHeight: 1000,
   },
   introImageTall: {
     label: 'Introduction — Tall Image',

@@ -28,9 +28,19 @@ const AboutMe = () => {
               paragraph.trim() && <p data-text-highlight key={index}>{paragraph}</p>
             ))}
           </div>
-          <a href="/about">
-            <Button>Learn More</Button>
-          </a>
+          <div className="flex flex-wrap items-center gap-4">
+            <a href="/about">
+              <Button>Learn More</Button>
+            </a>
+            <a 
+              href="/Aditya_Chitoshiya_CV.html" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="px-6 py-3 rounded-full border border-white/20 hover:border-[#f5a623] text-white hover:text-[#f5a623] transition-colors font-bold uppercase text-xs tracking-wider flex items-center gap-2 cursor-pointer"
+            >
+              Download CV ↗
+            </a>
+          </div>
         </motion.div>
 
         {/* Right Column - Large Image */}

@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import mongoose from 'mongoose';
 import cors from 'cors';
 import multer from 'multer';
 import fs from 'fs';
@@ -81,20 +82,24 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 
 // GET all portfolio data
+// GET all portfolio data
 app.get('/api/portfolio', async (req, res) => {
     try {
+        if (process.env.USE_LOCAL_JSON === 'true' || mongoose.connection.readyState !== 1) {
+            const rawData = fs.readFileSync(path.join(__dirname, 'current_data.json'), 'utf-8');
+            return res.json(JSON.parse(rawData));
+        }
         const data = await Portfolio.findOne();
-        if (!data) return res.json({});
+        if (!data) {
+            const rawData = fs.readFileSync(path.join(__dirname, 'current_data.json'), 'utf-8');
+            return res.json(JSON.parse(rawData));
+        }
         
-        // Convert mongoose document to plain JS object to modify it
         const responseData = data.toObject();
-
-        // Fetch related collections
         const projects = await Project.find();
         const experiences = await Experience.find();
         const educations = await Education.find();
 
-        // Merge back into the monolithic structure expected by the frontend
         if (!responseData.projectPortfolio) responseData.projectPortfolio = {};
         responseData.projectPortfolio.projects = projects;
 
@@ -106,73 +111,14 @@ app.get('/api/portfolio', async (req, res) => {
 
         res.json(responseData);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Server Error" });
-    }
-});
-
-// Endpoint specifically designed for AI agents (ChatGPT, Gemini, Claude, etc.)
-app.get(['/llms.txt', '/ai.txt'], async (req, res) => {
-    try {
-        const data = await Portfolio.findOne();
-        if (!data) return res.type('text/plain').send('No data available.');
-        
-        const projects = await Project.find();
-        const experiences = await Experience.find();
-        const educations = await Education.find();
-
-        let md = `# Aditya Chitoshiya - Portfolio Data\n\n`;
-        md += `This document is specifically formatted for LLMs and AI Agents to understand who Aditya Chitoshiya is.\n\n`;
-
-        // Welcome / Intro
-        if (data.welcome?.headline) md += `## Introduction\n${data.welcome.headline}\n${data.welcome.subheadline || ''}\n\n`;
-        if (data.introduction?.text) md += `**Elevator Pitch:** ${data.introduction.text}\n\n`;
-
-        // About Me
-        if (data.aboutMe?.headline) md += `## About Me\n${data.aboutMe.text || ''}\n\n`;
-
-        // Work Experience
-        if (experiences.length > 0) {
-            md += `## Work Experience\n`;
-            experiences.forEach(exp => {
-                md += `- **${exp.company} (${exp.year})**: ${exp.description || ''}\n`;
-            });
-            md += `\n`;
+        console.warn("Falling back to local current_data.json:", err.message);
+        try {
+            const rawData = fs.readFileSync(path.join(__dirname, 'current_data.json'), 'utf-8');
+            res.json(JSON.parse(rawData));
+        } catch (fileErr) {
+            console.error(fileErr);
+            res.status(500).json({ error: "Server Error" });
         }
-
-        // Education
-        if (educations.length > 0) {
-            md += `## Education\n`;
-            educations.forEach(edu => {
-                md += `- **${edu.institution} (${edu.year})**: ${edu.description || ''}\n`;
-            });
-            md += `\n`;
-        }
-
-        // Projects
-        if (projects.length > 0) {
-            md += `## Projects & Case Studies\n`;
-            projects.forEach(p => {
-                md += `### ${p.title} (${p.category})\n`;
-                if (p.year) md += `**Year:** ${p.year}\n`;
-                if (p.role) md += `**Role:** ${p.role}\n`;
-                if (p.description) md += `${p.description}\n`;
-                md += `\n`;
-            });
-        }
-
-        // Contact
-        if (data.global?.email) md += `## Contact Information\n- Email: ${data.global.email}\n`;
-        if (data.global?.website) md += `- Website: ${data.global.website}\n`;
-        if (data.global?.social) md += `- Social: ${data.global.social}\n`;
-        if (data.global?.phone) md += `- Phone: ${data.global.phone}\n`;
-
-        md += `\n*End of context.*`;
-
-        res.type('text/plain').send(md);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Server Error");
     }
 });
 
@@ -181,11 +127,17 @@ app.post('/api/portfolio', requireAuth, async (req, res) => {
     try {
         const newData = req.body;
         
-        // 1. Handle extracted collections
+        // Save to local JSON file
+        fs.writeFileSync(path.join(__dirname, 'current_data.json'), JSON.stringify(newData, null, 2), 'utf-8');
+
+        if (process.env.USE_LOCAL_JSON === 'true' || mongoose.connection.readyState !== 1) {
+            return res.json({ success: true, message: 'Portfolio updated successfully in local current_data.json' });
+        }
+
+        // Handle MongoDB collections if connected
         if (newData.projectPortfolio && Array.isArray(newData.projectPortfolio.projects)) {
             await Project.deleteMany({});
             await Project.insertMany(newData.projectPortfolio.projects);
-            // Remove from the monolith payload so we don't duplicate it
             delete newData.projectPortfolio.projects;
         }
 
@@ -201,7 +153,6 @@ app.post('/api/portfolio', requireAuth, async (req, res) => {
             delete newData.education.items;
         }
         
-        // 2. Handle monolithic data
         let data = await Portfolio.findOne();
         if (!data) {
             data = new Portfolio(newData);
@@ -209,14 +160,13 @@ app.post('/api/portfolio', requireAuth, async (req, res) => {
             Object.assign(data, newData);
         }
         
-        // Force Mongoose to mark mixed/nested properties as modified
         ['global', 'hero', 'welcome', 'introduction', 'aboutMe', 'education', 'workExperience', 'projectPortfolio', 'latestProject', 'contact', 'thankYou'].forEach(key => {
             data.markModified(key);
         });
 
         await data.save();
         
-        res.json({ success: true, message: 'Portfolio updated successfully across collections' });
+        res.json({ success: true, message: 'Portfolio updated successfully across collections and local JSON' });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Server Error", details: err.message });

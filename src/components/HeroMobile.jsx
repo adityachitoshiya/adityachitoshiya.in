@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { animateHeroEntrance } from './gsapAnimations';
@@ -48,9 +49,10 @@ export default function HeroMobile({
       {/* Main Content Stack */}
       <div className="flex-1 flex flex-col items-center justify-start px-4 pt-10 pb-24 gap-8">
         {/* Availability Badge */}
-        <div
+        <Link
+          to="/contact"
           ref={badgeRef}
-          className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 w-fit"
+          className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 w-fit hover:bg-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer"
         >
           <span
             className={`w-2 h-2 rounded-full ${
@@ -60,7 +62,7 @@ export default function HeroMobile({
           <span className="ac-body text-xs text-white/80 tracking-wide uppercase">
             {global.availableForWork ? 'Available for Projects' : 'Currently Booked'}
           </span>
-        </div>
+        </Link>
 
         {/* Accent Word & Headline */}
         <div className="flex flex-col items-center text-center gap-2">
