@@ -26,15 +26,39 @@ const defaultSlideshowImages = [
 const ImageSlideshow = () => {
   const { portfolioData } = usePortfolio();
   
-  // Use dedicated slideshow images from Admin (data.aboutMe.slideshowImages)
   const adminSlideshowImages = portfolioData?.aboutMe?.slideshowImages || [];
-  
-  // Normalize into { url, title, caption } objects
-  const normalizedAdminImages = adminSlideshowImages.map(item => 
+  const projects = portfolioData?.projectPortfolio?.projects || [];
+  const galleryImages = portfolioData?.projectPortfolio?.images || [];
+
+  const normalizedAdmin = adminSlideshowImages.map(item => 
     typeof item === 'string' ? { url: item, title: '', caption: '' } : item
   );
-  
-  const slideImages = normalizedAdminImages.length > 0 ? normalizedAdminImages : defaultSlideshowImages;
+
+  const normalizedProjects = projects.filter(p => p.coverImage || p.image).map(p => ({
+    url: p.coverImage || p.image,
+    title: p.name || p.title || '',
+    caption: p.type || p.category || ''
+  }));
+
+  const normalizedGallery = galleryImages.map(item => 
+    typeof item === 'string' ? { url: item, title: '', caption: '' } : item
+  );
+
+  // Combine custom admin slides with project portfolio candidates (Suniel Shetty, etc.)
+  const allCandidates = [
+    ...normalizedAdmin,
+    ...normalizedProjects,
+    ...normalizedGallery,
+    ...defaultSlideshowImages
+  ];
+
+  const seenUrls = new Set();
+  const slideImages = allCandidates.filter(item => {
+    if (!item || !item.url) return false;
+    if (seenUrls.has(item.url)) return false;
+    seenUrls.add(item.url);
+    return true;
+  });
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
