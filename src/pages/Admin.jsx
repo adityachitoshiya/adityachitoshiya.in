@@ -575,9 +575,9 @@ const Admin = () => {
                 <div className="flex flex-wrap gap-3 mb-6 border-b border-white/10 pb-4">
                     {[
                         { id: 'homepage', label: 'HOMEPAGE (ALL CONTENT)' },
-                        { id: 'gallery', label: 'GIGS / PORTFOLIO (HOME)' },
+                        { id: 'gigs', label: 'SERVICES & GIGS (/gigs)' },
+                        { id: 'creatives', label: 'ALL PROJECTS LIST (/creatives)' },
                         { id: 'global', label: 'THEME & AVAILABILITY' },
-                        { id: 'creatives', label: 'ALL PROJECTS LIST' },
                         { id: 'slideshow', label: 'VISUAL SLIDESHOW' }
                     ].map(tab => (
                         <button
@@ -1201,6 +1201,163 @@ const Admin = () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </section>
+                )}
+
+                {/* Section: Services & Gigs (/gigs) */}
+                {activeTab === 'gigs' && (
+                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+                        <div>
+                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">Services & Gigs Page (/gigs)</h2>
+                            <p className="text-muted text-sm mt-1 font-light">Manage offered service packages, prices, ratings, and preview images/videos for the /gigs page.</p>
+                        </div>
+                        <button 
+                            onClick={() => {
+                                setData(prev => ({
+                                    ...prev,
+                                    gigs: [
+                                        ...(prev.gigs || []),
+                                        {
+                                            id: Date.now(),
+                                            title: 'New Service Package',
+                                            price: 150,
+                                            rating: 5.0,
+                                            reviews: 1,
+                                            image: ''
+                                        }
+                                    ]
+                                }));
+                            }} 
+                            className="bg-accent text-background px-4 py-2 rounded-full font-bold uppercase tracking-wider flex items-center gap-2 hover:scale-105 transition-all text-xs self-start sm:self-auto"
+                        >
+                            <Plus size={14} /> Add New Gig
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {(data.gigs || []).map((gig, gIdx) => (
+                            <div key={gIdx} className="bg-background border border-white/10 p-5 rounded-2xl relative group flex flex-col">
+                                <button 
+                                    onClick={() => {
+                                        setData(prev => ({
+                                            ...prev,
+                                            gigs: (prev.gigs || []).filter((_, i) => i !== gIdx)
+                                        }));
+                                    }}
+                                    className="absolute top-4 right-4 text-red-500 hover:text-red-400 p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+
+                                <div className="space-y-4 mb-4">
+                                    <div>
+                                        <label className="block text-white/50 text-xs mb-1 font-medium">Gig Title / Service Package</label>
+                                        <input 
+                                            value={gig.title || ''} 
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                setData(prev => {
+                                                    const newGigs = [...(prev.gigs || [])];
+                                                    newGigs[gIdx] = { ...newGigs[gIdx], title: val };
+                                                    return { ...prev, gigs: newGigs };
+                                                });
+                                            }} 
+                                            className="w-full bg-white/5 border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none text-sm" 
+                                            placeholder="e.g. I will design a modern UI/UX website"
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-3 gap-3">
+                                        <div>
+                                            <label className="block text-white/50 text-xs mb-1 font-medium">Price ($)</label>
+                                            <input 
+                                                type="number"
+                                                value={gig.price ?? ''} 
+                                                onChange={(e) => {
+                                                    const val = Number(e.target.value);
+                                                    setData(prev => {
+                                                        const newGigs = [...(prev.gigs || [])];
+                                                        newGigs[gIdx] = { ...newGigs[gIdx], price: val };
+                                                        return { ...prev, gigs: newGigs };
+                                                    });
+                                                }} 
+                                                className="w-full bg-white/5 border border-white/20 rounded-lg p-2.5 text-white focus:border-accent outline-none text-sm" 
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-white/50 text-xs mb-1 font-medium">Rating</label>
+                                            <input 
+                                                type="number"
+                                                step="0.1"
+                                                value={gig.rating ?? 5.0} 
+                                                onChange={(e) => {
+                                                    const val = Number(e.target.value);
+                                                    setData(prev => {
+                                                        const newGigs = [...(prev.gigs || [])];
+                                                        newGigs[gIdx] = { ...newGigs[gIdx], rating: val };
+                                                        return { ...prev, gigs: newGigs };
+                                                    });
+                                                }} 
+                                                className="w-full bg-white/5 border border-white/20 rounded-lg p-2.5 text-white focus:border-accent outline-none text-sm" 
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-white/50 text-xs mb-1 font-medium">Reviews</label>
+                                            <input 
+                                                type="number"
+                                                value={gig.reviews ?? 0} 
+                                                onChange={(e) => {
+                                                    const val = Number(e.target.value);
+                                                    setData(prev => {
+                                                        const newGigs = [...(prev.gigs || [])];
+                                                        newGigs[gIdx] = { ...newGigs[gIdx], reviews: val };
+                                                        return { ...prev, gigs: newGigs };
+                                                    });
+                                                }} 
+                                                className="w-full bg-white/5 border border-white/20 rounded-lg p-2.5 text-white focus:border-accent outline-none text-sm" 
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <label className="block text-white/50 text-xs font-medium">Gig Media (Image or Video)</label>
+                                            <span className="text-[11px] text-accent font-mono">Aspect Ratio: 16:9 or 1:1</span>
+                                        </div>
+                                        {isVideoUrl(gig.image) ? (
+                                            <video src={gig.image} autoPlay loop muted playsInline className="w-full h-40 object-cover rounded-xl mb-3" />
+                                        ) : (
+                                            <img src={gig.image || '/ai-images/gallery_1_1784234838549.png'} alt="Gig" className="w-full h-40 object-cover rounded-xl mb-3" />
+                                        )}
+                                        <div className="flex gap-2">
+                                            <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
+                                                <Upload size={14} /> Replace
+                                                <input 
+                                                    type="file" 
+                                                    className="hidden" 
+                                                    onChange={(e) => {
+                                                        const file = e.target.files[0];
+                                                        if (!file) return;
+                                                        processUploadedFile(file, 'gigs', 'image', gIdx, 'projectGallery');
+                                                    }} 
+                                                    accept="image/*,video/*" 
+                                                />
+                                            </label>
+                                            {gig.image && !isVideoUrl(gig.image) && (
+                                                <button 
+                                                    onClick={() => handleEditImage(gig.image, 'gigs', 'image', gIdx, 'projectGallery')} 
+                                                    className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider"
+                                                >
+                                                    <Crop size={14} /> Edit
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </section>
                 )}

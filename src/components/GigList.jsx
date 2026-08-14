@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import GigCard from './GigCard';
+import { usePortfolio } from '../context/PortfolioContext';
 
-const mockGigs = [
+const defaultGigs = [
   {
     id: 1,
     title: "I will design a premium brand identity and logo for your business",
@@ -30,6 +31,9 @@ const mockGigs = [
 ];
 
 const GigList = () => {
+  const { portfolioData } = usePortfolio();
+  const gigs = portfolioData?.gigs && portfolioData.gigs.length > 0 ? portfolioData.gigs : defaultGigs;
+
   return (
     <section className="w-full pb-24 md:pb-32 bg-background">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12">
@@ -63,8 +67,8 @@ const GigList = () => {
 
         {/* Gigs Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {mockGigs.map((gig, index) => (
-            <GigCard key={gig.id} gig={gig} index={index} />
+          {gigs.map((gig, index) => (
+            <GigCard key={gig.id || index} gig={gig} index={index} />
           ))}
         </div>
 
