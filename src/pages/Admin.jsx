@@ -574,10 +574,10 @@ const Admin = () => {
                 {/* Main Tab Navigation */}
                 <div className="flex flex-wrap gap-3 mb-6 border-b border-white/10 pb-4">
                     {[
-                        { id: 'homepage', label: '🏠 HOMEPAGE (ALL CONTENT)' },
-                        { id: 'global', label: '⚙️ Theme & Availability' },
-                        { id: 'creatives', label: '📁 All Projects List' },
-                        { id: 'slideshow', label: '🖼️ Visual Slideshow' }
+                        { id: 'homepage', label: 'HOMEPAGE (ALL CONTENT)' },
+                        { id: 'global', label: 'THEME & AVAILABILITY' },
+                        { id: 'creatives', label: 'ALL PROJECTS LIST' },
+                        { id: 'slideshow', label: 'VISUAL SLIDESHOW' }
                     ].map(tab => (
                         <button
                             key={tab.id}
@@ -597,7 +597,7 @@ const Admin = () => {
                 {activeTab === 'homepage' && (
                     <div className="bg-[#141414]/95 border border-white/15 rounded-2xl p-3.5 mb-8 flex flex-wrap items-center gap-2 sticky top-4 z-30 backdrop-blur-md shadow-2xl">
                         <span className="text-xs font-bold text-accent uppercase tracking-wider px-2 flex items-center gap-1">
-                            ⚡ Quick Jump:
+                            QUICK JUMP:
                         </span>
                         {[
                             { id: 'admin-hero', label: '1. Hero' },
