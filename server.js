@@ -138,19 +138,16 @@ app.post('/api/portfolio', requireAuth, async (req, res) => {
         if (newData.projectPortfolio && Array.isArray(newData.projectPortfolio.projects)) {
             await Project.deleteMany({});
             await Project.insertMany(newData.projectPortfolio.projects);
-            delete newData.projectPortfolio.projects;
         }
 
         if (newData.workExperience && Array.isArray(newData.workExperience.items)) {
             await Experience.deleteMany({});
             await Experience.insertMany(newData.workExperience.items);
-            delete newData.workExperience.items;
         }
 
         if (newData.education && Array.isArray(newData.education.items)) {
             await Education.deleteMany({});
             await Education.insertMany(newData.education.items);
-            delete newData.education.items;
         }
         
         let data = await Portfolio.findOne();

@@ -25,7 +25,6 @@ async function syncData() {
       await Project.deleteMany({});
       await Project.insertMany(newData.projectPortfolio.projects);
       console.log(`   ✓ Synced ${newData.projectPortfolio.projects.length} projects.`);
-      delete newData.projectPortfolio.projects;
     }
 
     console.log("2. Syncing Work Experiences to MongoDB...");
@@ -33,7 +32,6 @@ async function syncData() {
       await Experience.deleteMany({});
       await Experience.insertMany(newData.workExperience.items);
       console.log(`   ✓ Synced ${newData.workExperience.items.length} work experience items.`);
-      delete newData.workExperience.items;
     }
 
     console.log("3. Syncing Education to MongoDB...");
@@ -41,10 +39,9 @@ async function syncData() {
       await Education.deleteMany({});
       await Education.insertMany(newData.education.items);
       console.log(`   ✓ Synced ${newData.education.items.length} education items.`);
-      delete newData.education.items;
     }
 
-    console.log("4. Syncing Main Portfolio Document to MongoDB...");
+    console.log("4. Syncing Main Portfolio Document to MongoDB (preserving embedded items)...");
     let data = await Portfolio.findOne();
     if (!data) {
       data = new Portfolio(newData);
@@ -57,7 +54,7 @@ async function syncData() {
     });
 
     await data.save();
-    console.log("\n✅ SUCCESS: All data from current_data.json has been synced to MongoDB Atlas main database!");
+    console.log("\n✅ SUCCESS: All data from current_data.json (including Work Experience and Education items) synced to MongoDB Atlas!");
 
     process.exit(0);
   } catch (error) {
