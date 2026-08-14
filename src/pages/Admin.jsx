@@ -6,9 +6,35 @@ import LoadingScreen from '../components/LoadingScreen';
 import ImageCropModal from '../components/ImageCropModal';
 import { imageFrameConfigs } from '../utils/imageFrameConfigs';
 
+import heic2any from 'heic2any';
+
 const isVideoUrl = (url) => {
     if (typeof url !== 'string' || !url) return false;
     return /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(url) || url.includes('/video/upload/') || url.startsWith('data:video/');
+};
+
+const isHeicFile = (file) => {
+    if (!file) return false;
+    const name = (file.name || '').toLowerCase();
+    const type = (file.type || '').toLowerCase();
+    return name.endsWith('.heic') || name.endsWith('.heif') || type.includes('heic') || type.includes('heif');
+};
+
+const convertHeicIfNeeded = async (file) => {
+    if (!file || !isHeicFile(file)) return file;
+    try {
+        const converted = await heic2any({
+            blob: file,
+            toType: 'image/jpeg',
+            quality: 0.9
+        });
+        const blobResult = Array.isArray(converted) ? converted[0] : converted;
+        const newName = (file.name || 'image.heic').replace(/\.(heic|heif)$/i, '.jpg');
+        return new File([blobResult], newName, { type: 'image/jpeg' });
+    } catch (err) {
+        console.warn("heic2any conversion fallback:", err);
+        return file;
+    }
 };
 
 const Admin = () => {
@@ -204,9 +230,20 @@ const Admin = () => {
         }
     };
 
-    const processUploadedFile = (file, targetSection, targetKey, targetIndex = null, configKey = null) => {
+    const processUploadedFile = async (file, targetSection, targetKey, targetIndex = null, configKey = null) => {
         if (!file) return;
-        if (file.type.startsWith('image/')) {
+
+        setUploading(true);
+        let processedFile = file;
+        try {
+            processedFile = await convertHeicIfNeeded(file);
+        } catch (err) {
+            console.warn("HEIC conversion error:", err);
+        } finally {
+            setUploading(false);
+        }
+
+        if (processedFile.type.startsWith('image/') || isHeicFile(processedFile)) {
             const reader = new FileReader();
             reader.onload = () => {
                 setCropModal({
@@ -220,9 +257,9 @@ const Admin = () => {
                     configKey
                 });
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(processedFile);
         } else {
-            uploadMediaBlob(file, targetSection, targetKey, targetIndex);
+            uploadMediaBlob(processedFile, targetSection, targetKey, targetIndex);
         }
     };
 
@@ -268,11 +305,21 @@ const Admin = () => {
         });
     };
 
-    const handleProjectFileSelect = (e, targetIndex, isCover, galleryIndex = null, configKey = null) => {
+    const handleProjectFileSelect = async (e, targetIndex, isCover, galleryIndex = null, configKey = null) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        if (file.type.startsWith('image/')) {
+        setUploading(true);
+        let processedFile = file;
+        try {
+            processedFile = await convertHeicIfNeeded(file);
+        } catch (err) {
+            console.warn("HEIC project conversion error:", err);
+        } finally {
+            setUploading(false);
+        }
+
+        if (processedFile.type.startsWith('image/') || isHeicFile(processedFile)) {
             const reader = new FileReader();
             reader.onload = () => {
                 setCropModal({
@@ -286,10 +333,9 @@ const Admin = () => {
                     configKey
                 });
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(processedFile);
         } else {
-             // Non-image file bypass
-             uploadProjectMediaBlob(file, targetIndex, isCover, galleryIndex);
+             uploadProjectMediaBlob(processedFile, targetIndex, isCover, galleryIndex);
         }
     };
 
@@ -1064,7 +1110,7 @@ const Admin = () => {
                             <div className="flex gap-2">
                                 <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                     <Upload size={16} /> Replace
-                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'hero', 'heroImage', null, 'heroPhoto')} accept="image/*,video/*" />
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'hero', 'heroImage', null, 'heroPhoto')} accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" />
                                 </label>
                                 {data.hero.heroImage && !isVideoUrl(data.hero.heroImage) && (
                                     <button onClick={() => handleEditImage(data.hero.heroImage, 'hero', 'heroImage', null, 'heroPhoto')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
@@ -1193,7 +1239,7 @@ const Admin = () => {
                                                 type="file" 
                                                 className="hidden" 
                                                 onChange={(e) => handleFileSelect(e, 'welcome', mediaItem.key, null, 'welcomeSquareMedia')} 
-                                                accept="image/*,video/*" 
+                                                accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" 
                                             />
                                         </label>
                                         {mediaItem.val && !isVid && (
@@ -1279,7 +1325,7 @@ const Admin = () => {
                                             type="file" 
                                             className="hidden" 
                                             onChange={(e) => handleFileSelect(e, 'introduction', capsule.key, null, capsule.configKey)} 
-                                            accept="image/*,video/*" 
+                                            accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" 
                                         />
 
                                         {mediaUrl ? (
@@ -1310,7 +1356,7 @@ const Admin = () => {
                                                 type="file" 
                                                 className="hidden" 
                                                 onChange={(e) => handleFileSelect(e, 'introduction', capsule.key, null, capsule.configKey)} 
-                                                accept="image/*,video/*" 
+                                                accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" 
                                             />
                                         </label>
                                         {mediaUrl && !isVid && (
@@ -1364,7 +1410,7 @@ const Admin = () => {
                             <div className="flex gap-2 w-48">
                                 <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-2 py-2 rounded-lg flex items-center justify-center gap-1 transition-colors text-xs font-semibold uppercase tracking-wider">
                                     <Upload size={14} /> Replace
-                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'image', null, 'aboutImage')} accept="image/*,video/*" />
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'image', null, 'aboutImage')} accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" />
                                 </label>
                                 {data.aboutMe?.image && !isVideoUrl(data.aboutMe?.image) && (
                                     <button onClick={() => handleEditImage(data.aboutMe.image, 'aboutMe', 'image', null, 'aboutImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-2 py-2 rounded-lg flex items-center justify-center gap-1 transition-colors text-xs font-semibold uppercase tracking-wider">
@@ -1456,7 +1502,7 @@ const Admin = () => {
                                 <div className="flex gap-2">
                                     <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                         <Upload size={16} /> Replace
-                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'workExperience', 'image1', null, 'experienceImage')} accept="image/*,video/*" />
+                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'workExperience', 'image1', null, 'experienceImage')} accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" />
                                     </label>
                                     {data.workExperience?.image1 && !isVideoUrl(data.workExperience?.image1) && (
                                         <button onClick={() => handleEditImage(data.workExperience.image1, 'workExperience', 'image1', null, 'experienceImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
@@ -1475,7 +1521,7 @@ const Admin = () => {
                                 <div className="flex gap-2">
                                     <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                         <Upload size={16} /> Replace
-                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'workExperience', 'image2', null, 'experienceImage')} accept="image/*,video/*" />
+                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'workExperience', 'image2', null, 'experienceImage')} accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" />
                                     </label>
                                     {data.workExperience?.image2 && !isVideoUrl(data.workExperience?.image2) && (
                                         <button onClick={() => handleEditImage(data.workExperience.image2, 'workExperience', 'image2', null, 'experienceImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
@@ -1572,7 +1618,7 @@ const Admin = () => {
                                 <div className="flex gap-2">
                                     <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                         <Upload size={16} /> Replace
-                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'education', 'bannerImage', null, 'educationBanner')} accept="image/*,video/*" />
+                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'education', 'bannerImage', null, 'educationBanner')} accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" />
                                     </label>
                                     {data.education?.bannerImage && !isVideoUrl(data.education?.bannerImage) && (
                                         <button onClick={() => handleEditImage(data.education.bannerImage, 'education', 'bannerImage', null, 'educationBanner')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
@@ -1723,7 +1769,7 @@ const Admin = () => {
                                                         if (!file) return;
                                                         processUploadedFile(file, 'gigs', 'image', gIdx, 'projectGallery');
                                                     }} 
-                                                    accept="image/*,video/*" 
+                                                    accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" 
                                                 />
                                             </label>
                                             {gig.image && !isVideoUrl(gig.image) && (
@@ -1790,7 +1836,7 @@ const Admin = () => {
                                         <div className="flex flex-col gap-2">
                                             <label className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
                                                 <Upload size={14} /> Replace
-                                                <input type="file" className="hidden" onChange={(e) => handleProjectFileSelect(e, pIdx, true, null, 'projectCover')} accept="image/*,video/*" />
+                                                <input type="file" className="hidden" onChange={(e) => handleProjectFileSelect(e, pIdx, true, null, 'projectCover')} accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" />
                                             </label>
                                             {project.coverImage && (
                                                 <button onClick={() => handleEditImage(project.coverImage, 'projectPortfolio', 'projects', pIdx, 'projectCover', true, null)} className="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
@@ -1820,7 +1866,7 @@ const Admin = () => {
                                         <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center h-24 transition-colors">
                                             <Plus size={20} className="text-white/50 mb-1" />
                                             <span className="text-xs text-white/50">Add Image</span>
-                                            <input type="file" className="hidden" onChange={(e) => handleProjectFileSelect(e, pIdx, false, null, 'projectGallery')} accept="image/*,video/*" />
+                                            <input type="file" className="hidden" onChange={(e) => handleProjectFileSelect(e, pIdx, false, null, 'projectGallery')} accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" />
                                         </label>
                                     </div>
                                 </div>
@@ -1881,7 +1927,7 @@ const Admin = () => {
                                     const newIdx = data.projectPortfolio?.images?.length || 0;
                                     processUploadedFile(file, 'projectPortfolio', 'images', newIdx, 'projectGallery');
                                 }} 
-                                accept="image/*,video/*" 
+                                accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" 
                             />
                         </label>
                     </div>
@@ -1952,7 +1998,7 @@ const Admin = () => {
                                                 type="file" 
                                                 className="hidden" 
                                                 onChange={(e) => handleFileSelect(e, 'projectPortfolio', 'images', index, 'projectGallery')} 
-                                                accept="image/*,video/*" 
+                                                accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" 
                                             />
                                         </label>
                                         {img && !isVid && (
@@ -2096,7 +2142,7 @@ const Admin = () => {
                         <label className="cursor-pointer bg-white/5 hover:bg-white/10 border border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center min-h-[250px] transition-colors">
                             <Plus size={24} className="text-white/50 mb-2" />
                             <span className="text-sm text-white/50">Add Image</span>
-                            <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'slideshowImages', null, 'slideshowImage')} accept="image/*,video/*" />
+                            <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'slideshowImages', null, 'slideshowImage')} accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" />
                         </label>
                     </div>
                 </section>
@@ -2122,7 +2168,7 @@ const Admin = () => {
                             <div className="flex gap-2">
                                 <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                     <Upload size={16} /> Replace
-                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'contact', 'image', null, 'contactImage')} accept="image/*,video/*" />
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'contact', 'image', null, 'contactImage')} accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" />
                                 </label>
                                 {data.contact?.image && !isVideoUrl(data.contact?.image) && (
                                     <button onClick={() => handleEditImage(data.contact.image, 'contact', 'image', null, 'contactImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
@@ -2196,7 +2242,7 @@ const Admin = () => {
                             <div className="flex gap-2">
                                 <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
                                     <Upload size={14} /> Replace
-                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'latestProject', 'mainImage', null, 'latestProjectMain')} accept="image/*,video/*" />
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'latestProject', 'mainImage', null, 'latestProjectMain')} accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" />
                                 </label>
                                 {data.latestProject?.mainImage && !isVideoUrl(data.latestProject?.mainImage) && (
                                     <button onClick={() => handleEditImage(data.latestProject.mainImage, 'latestProject', 'mainImage', null, 'latestProjectMain')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
@@ -2217,7 +2263,7 @@ const Admin = () => {
                             <div className="flex gap-2">
                                 <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
                                     <Upload size={14} /> Replace
-                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'latestProject', 'image1', null, 'latestProjectSub')} accept="image/*,video/*" />
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'latestProject', 'image1', null, 'latestProjectSub')} accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" />
                                 </label>
                                 {data.latestProject?.image1 && !isVideoUrl(data.latestProject?.image1) && (
                                     <button onClick={() => handleEditImage(data.latestProject.image1, 'latestProject', 'image1', null, 'latestProjectSub')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
@@ -2238,7 +2284,7 @@ const Admin = () => {
                             <div className="flex gap-2">
                                 <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
                                     <Upload size={14} /> Replace
-                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'latestProject', 'image2', null, 'latestProjectSub')} accept="image/*,video/*" />
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'latestProject', 'image2', null, 'latestProjectSub')} accept="image/*,video/*,.heic,.heif,.HEIC,.HEIF" />
                                 </label>
                                 {data.latestProject?.image2 && !isVideoUrl(data.latestProject?.image2) && (
                                     <button onClick={() => handleEditImage(data.latestProject.image2, 'latestProject', 'image2', null, 'latestProjectSub')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
