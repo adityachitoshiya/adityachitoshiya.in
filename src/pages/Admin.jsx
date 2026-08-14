@@ -374,6 +374,9 @@ const Admin = () => {
         formData.append('timestamp', sigData.timestamp);
         formData.append('signature', sigData.signature);
         formData.append('folder', sigData.folder);
+        if (sigData.eager) {
+            formData.append('eager', sigData.eager);
+        }
 
         const resourceType = isVid ? 'video' : 'auto';
         const cloudUrl = `https://api.cloudinary.com/v1_1/${sigData.cloudName}/${resourceType}/upload`;

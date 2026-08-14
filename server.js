@@ -197,11 +197,16 @@ app.get('/api/cloudinary-signature', requireAuth, (req, res) => {
 
         const timestamp = Math.round(new Date().getTime() / 1000);
         const folder = 'portfolio_uploads';
+        const eager = 'q_auto,f_auto,w_1280,vc_auto'; // Auto-compress video and image upon upload
+        
+        const paramsToSign = {
+            timestamp: timestamp,
+            folder: folder,
+            eager: eager
+        };
+
         const signature = cloudinary.utils.api_sign_request(
-            {
-                timestamp: timestamp,
-                folder: folder
-            },
+            paramsToSign,
             process.env.CLOUDINARY_API_SECRET
         );
 
@@ -210,6 +215,7 @@ app.get('/api/cloudinary-signature', requireAuth, (req, res) => {
             signature,
             timestamp,
             folder,
+            eager,
             cloudName: process.env.CLOUDINARY_CLOUD_NAME,
             apiKey: process.env.CLOUDINARY_API_KEY
         });

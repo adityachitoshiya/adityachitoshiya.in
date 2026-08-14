@@ -1,13 +1,16 @@
 import React from 'react';
 import { isVideoUrl } from '../utils/isVideoUrl';
+import { optimizeCloudinaryUrl } from '../utils/optimizeCloudinaryUrl';
 
 const MediaRenderer = ({ src, alt = '', className = '', ...props }) => {
   if (!src) return null;
 
+  const optimizedSrc = optimizeCloudinaryUrl(src);
+
   if (isVideoUrl(src)) {
     return (
       <video
-        src={src}
+        src={optimizedSrc}
         autoPlay
         loop
         muted
@@ -20,7 +23,7 @@ const MediaRenderer = ({ src, alt = '', className = '', ...props }) => {
 
   return (
     <img
-      src={src}
+      src={optimizedSrc}
       alt={alt}
       className={className}
       {...props}
