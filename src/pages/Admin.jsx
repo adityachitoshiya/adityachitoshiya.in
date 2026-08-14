@@ -1249,8 +1249,8 @@ const Admin = () => {
                     {/* 2 Capsule Images/Videos */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {[
-                            { key: 'imageTall', title: 'Tall Capsule Portrait (Left)', ratio: 'Aspect Ratio: 4:5 or 9:16 (Tall Capsule)' },
-                            { key: 'imageShort', title: 'Short Capsule Portrait (Right)', ratio: 'Aspect Ratio: 4:5 or 1:1 (Short Capsule)' }
+                            { key: 'imageTall', title: 'Tall Capsule Portrait (Left)', ratio: 'Aspect Ratio: 4:5 (Tall Capsule)', configKey: 'introImageTall' },
+                            { key: 'imageShort', title: 'Short Capsule Portrait (Right)', ratio: 'Aspect Ratio: 1:1 or 4:5 (Short Capsule)', configKey: 'introImageShort' }
                         ].map((capsule) => {
                             const mediaUrl = data.introduction?.[capsule.key];
                             const isVid = isVideoUrl(mediaUrl);
@@ -1265,16 +1265,23 @@ const Admin = () => {
                                         </span>
                                     </div>
 
-                                    <div 
+                                    <label 
                                         onDragOver={(e) => handleDragOver(e, `introduction-${capsule.key}`)}
                                         onDragLeave={handleDragLeave}
-                                        onDrop={(e) => handleDropFile(e, 'introduction', capsule.key, null, 'introductionMedia')}
-                                        className={`relative w-full h-64 rounded-2xl border-2 border-dashed overflow-hidden flex flex-col items-center justify-center transition-all duration-300 ${
+                                        onDrop={(e) => handleDropFile(e, 'introduction', capsule.key, null, capsule.configKey)}
+                                        className={`relative w-full h-64 rounded-2xl border-2 border-dashed overflow-hidden flex flex-col items-center justify-center cursor-pointer transition-all duration-300 ${
                                             isDragActive 
                                                 ? 'border-accent bg-accent/20 scale-[1.02]' 
                                                 : 'border-white/20 bg-white/5 hover:border-accent/60'
                                         }`}
                                     >
+                                        <input 
+                                            type="file" 
+                                            className="hidden" 
+                                            onChange={(e) => handleFileSelect(e, 'introduction', capsule.key, null, capsule.configKey)} 
+                                            accept="image/*,video/*" 
+                                        />
+
                                         {mediaUrl ? (
                                             isVid ? (
                                                 <video src={mediaUrl} autoPlay loop muted playsInline className="w-full h-full object-cover rounded-xl" />
@@ -1282,9 +1289,9 @@ const Admin = () => {
                                                 <img src={mediaUrl} alt={capsule.title} className="w-full h-full object-cover rounded-xl" />
                                             )
                                         ) : (
-                                            <div className="text-center p-6">
+                                            <div className="text-center p-6 pointer-events-none">
                                                 <Upload size={36} className="text-accent mb-2 animate-bounce mx-auto" />
-                                                <p className="text-white text-sm font-medium">Drag & Drop Image or Video</p>
+                                                <p className="text-white text-sm font-medium">Click or Drag & Drop Image / Video</p>
                                             </div>
                                         )}
 
@@ -1294,7 +1301,7 @@ const Admin = () => {
                                                 <p className="uppercase tracking-widest text-xs text-white">Drop File to Upload</p>
                                             </div>
                                         )}
-                                    </div>
+                                    </label>
 
                                     <div className="flex gap-2 mt-4">
                                         <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors text-xs font-semibold uppercase tracking-wider">
@@ -1302,13 +1309,13 @@ const Admin = () => {
                                             <input 
                                                 type="file" 
                                                 className="hidden" 
-                                                onChange={(e) => handleFileSelect(e, 'introduction', capsule.key, null, 'introductionMedia')} 
+                                                onChange={(e) => handleFileSelect(e, 'introduction', capsule.key, null, capsule.configKey)} 
                                                 accept="image/*,video/*" 
                                             />
                                         </label>
                                         {mediaUrl && !isVid && (
                                             <button 
-                                                onClick={() => handleEditImage(mediaUrl, 'introduction', capsule.key, null, 'introductionMedia')} 
+                                                onClick={() => handleEditImage(mediaUrl, 'introduction', capsule.key, null, capsule.configKey)} 
                                                 className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors text-xs font-semibold uppercase tracking-wider"
                                             >
                                                 <Crop size={14} /> Edit & Crop
