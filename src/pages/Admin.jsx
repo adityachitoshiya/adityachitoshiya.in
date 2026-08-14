@@ -657,9 +657,9 @@ const Admin = () => {
                     {/* Onboarding Mode Toggle */}
                     <div className="flex items-center justify-between mb-12 border-b border-white/10 pb-8">
                         <div>
-                            <h2 className="text-2xl font-heading text-accent mb-2 uppercase tracking-wider">Live Domain Onboarding Lock Mode</h2>
+                            <h2 className="text-2xl font-heading text-accent mb-2 uppercase tracking-wider">Master Onboarding Lock (All Pages)</h2>
                             <p className="text-muted text-sm">
-                                When ON, general visitors on live domain see a sleek "Data Onboarding in Progress" screen with your email.
+                                Master switch to lock/unlock all live domain public pages at once.
                                 <br />
                                 <span className="text-accent font-mono text-xs">Localhost and Admin logged-in users will always see full updates.</span>
                             </p>
@@ -684,6 +684,78 @@ const Admin = () => {
                                 }}
                             />
                         </button>
+                    </div>
+
+                    {/* Per-Page Onboarding Lock Controls */}
+                    <div className="mb-12 border-b border-white/10 pb-8">
+                        <div className="mb-6">
+                            <h2 className="text-2xl font-heading text-accent mb-2 uppercase tracking-wider">Per-Page Onboarding Lock Controls</h2>
+                            <p className="text-muted text-sm">
+                                Choose specifically which tabs/pages are LIVE or LOCKED in Onboarding Mode for public domain visitors.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            {[
+                                { key: 'homepage', name: 'Homepage ( / )', desc: 'Hero, Welcome, Showcase sections' },
+                                { key: 'about', name: 'About Page ( /about )', desc: 'Bio, Experience, Visual Gallery' },
+                                { key: 'gigs', name: 'Services & Gigs ( /gigs )', desc: 'Service packages & pricing' },
+                                { key: 'creatives', name: 'Creatives & Projects ( /creatives )', desc: 'All projects & case studies' },
+                                { key: 'contact', name: 'Contact Page ( /contact )', desc: 'Direct contact form & details' }
+                            ].map((page) => {
+                                const pageVis = data.global?.pageVisibility || {};
+                                const isLive = pageVis[page.key] !== false;
+
+                                return (
+                                    <div key={page.key} className="bg-black/40 border border-white/10 p-5 rounded-2xl flex flex-col justify-between hover:border-white/20 transition-all">
+                                        <div className="mb-4">
+                                            <div className="flex items-center justify-between mb-1 gap-2">
+                                                <span className="font-heading uppercase text-xs font-bold text-white tracking-wider">{page.name}</span>
+                                                <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full font-bold uppercase ${isLive ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}`}>
+                                                    {isLive ? 'LIVE' : 'LOCKED'}
+                                                </span>
+                                            </div>
+                                            <p className="text-white/60 text-xs font-light">{page.desc}</p>
+                                        </div>
+
+                                        <div className="flex items-center justify-between pt-3 border-t border-white/10">
+                                            <span className="text-xs text-white/50">{isLive ? 'Public View Open' : 'Onboarding Screen'}</span>
+                                            <button
+                                                onClick={() => {
+                                                    setData(prev => ({
+                                                        ...prev,
+                                                        global: {
+                                                            ...prev.global,
+                                                            pageVisibility: {
+                                                                ...(prev.global?.pageVisibility || {}),
+                                                                [page.key]: !isLive
+                                                            }
+                                                        }
+                                                    }));
+                                                }}
+                                                className="relative flex items-center rounded-full transition-colors cursor-pointer"
+                                                style={{ 
+                                                    width: 48, height: 26, 
+                                                    background: isLive ? '#22c55e' : '#f5a623', 
+                                                    padding: '3px' 
+                                                }}
+                                            >
+                                                <span
+                                                    style={{
+                                                        width: 20,
+                                                        height: 20,
+                                                        borderRadius: 9999,
+                                                        background: '#0a0a0a',
+                                                        transform: isLive ? 'translateX(22px)' : 'translateX(0px)',
+                                                        transition: 'transform 0.25s ease',
+                                                    }}
+                                                />
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
 
                     {/* Background Music */}

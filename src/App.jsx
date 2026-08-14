@@ -169,7 +169,7 @@ const ScrollEffectsRunner = () => {
 
 import OnboardingScreen from './components/OnboardingScreen';
 
-const OnboardingGuard = ({ children }) => {
+const OnboardingGuard = ({ pageKey, pageName, children }) => {
   const { portfolioData } = usePortfolio();
   const location = useLocation();
 
@@ -184,16 +184,20 @@ const OnboardingGuard = ({ children }) => {
   const isPreview = searchParams.get('preview') === 'true';
   const isAdminLoggedIn = !!localStorage.getItem('adminToken');
 
-  // Check if onboarding maintenance mode is active (defaults to true for live domain)
-  const isOnboardingMode = portfolioData?.global?.onboardingMode !== false;
+  // Check overall onboarding mode AND per-page visibility
+  const masterOnboarding = portfolioData?.global?.onboardingMode;
+  const pageVisibility = portfolioData?.global?.pageVisibility || {};
+  
+  // Page is live if master switch is NOT false AND specific pageKey is NOT false
+  const isPageLive = masterOnboarding === false || pageVisibility[pageKey] !== false;
 
-  // On localhost, or if logged in as admin, or if URL has ?preview=true, or if mode turned off -> show full site
-  if (isLocalhost || isAdminLoggedIn || isPreview || !isOnboardingMode) {
+  // On localhost, or if logged in as admin, or if URL has ?preview=true, or if page is live -> allow access!
+  if (isLocalhost || isAdminLoggedIn || isPreview || isPageLive) {
     return children;
   }
 
-  // Otherwise show sleek onboarding maintenance screen for live site visitors
-  return <OnboardingScreen global={portfolioData?.global} />;
+  // Otherwise show sleek onboarding maintenance screen for locked page
+  return <OnboardingScreen global={portfolioData?.global} pageName={pageName} />;
 };
 
 function App() {
@@ -218,12 +222,12 @@ function App() {
           <Router>
             <ScrollEffectsRunner />
             <Routes>
-              <Route path="/" element={<OnboardingGuard><Portfolio /></OnboardingGuard>} />
-              <Route path="/about" element={<OnboardingGuard><AboutPage /></OnboardingGuard>} />
-              <Route path="/gigs" element={<OnboardingGuard><GigsPage /></OnboardingGuard>} />
-              <Route path="/contact" element={<OnboardingGuard><ContactPage /></OnboardingGuard>} />
-              <Route path="/creatives" element={<OnboardingGuard><CreativesRoute /></OnboardingGuard>} />
-              <Route path="/work/:slug" element={<OnboardingGuard><ProjectRoute /></OnboardingGuard>} />
+              <Route path="/" element={<OnboardingGuard pageKey="homepage" pageName="Homepage"><Portfolio /></OnboardingGuard>} />
+              <Route path="/about" element={<OnboardingGuard pageKey="about" pageName="About Section"><AboutPage /></OnboardingGuard>} />
+              <Route path="/gigs" element={<OnboardingGuard pageKey="gigs" pageName="Services & Gigs"><GigsPage /></OnboardingGuard>} />
+              <Route path="/contact" element={<OnboardingGuard pageKey="contact" pageName="Contact Page"><ContactPage /></OnboardingGuard>} />
+              <Route path="/creatives" element={<OnboardingGuard pageKey="creatives" pageName="Creatives & Projects"><CreativesRoute /></OnboardingGuard>} />
+              <Route path="/work/:slug" element={<OnboardingGuard pageKey="creatives" pageName="Creatives & Projects"><ProjectRoute /></OnboardingGuard>} />
               <Route path="/admin" element={<Admin />} />
             </Routes>
             <SearchOverlay />

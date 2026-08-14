@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Mail, Phone, Lock, Sparkles, Check, ExternalLink, ArrowRight, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const OnboardingScreen = ({ global = {} }) => {
+const OnboardingScreen = ({ global = {}, pageName = '' }) => {
   const [copied, setCopied] = useState(false);
   const email = global.email || 'adityachitoshiya12@gmail.com';
   const phone = global.phone || '+91 77270 88810';
@@ -13,6 +13,8 @@ const OnboardingScreen = ({ global = {} }) => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
+
+  const pageHeadline = pageName ? pageName.toUpperCase() : 'FRESH CREATIVE WORK';
 
   return (
     <div className="min-h-screen w-full bg-[#0a0a0a] text-white flex flex-col justify-between items-center px-6 py-12 relative overflow-hidden font-sans selection:bg-[#f5a623] selection:text-black">
@@ -50,7 +52,7 @@ const OnboardingScreen = ({ global = {} }) => {
           transition={{ duration: 0.5 }}
           className="inline-flex items-center gap-2 bg-[#f5a623]/15 border border-[#f5a623]/30 text-[#f5a623] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6"
         >
-          <Sparkles size={14} /> System Maintenance & Updates
+          <Sparkles size={14} /> System Onboarding & Updates
         </motion.div>
 
         {/* Main Title */}
@@ -60,9 +62,9 @@ const OnboardingScreen = ({ global = {} }) => {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-4xl sm:text-6xl md:text-7xl font-heading uppercase tracking-tight font-extrabold text-white leading-[1.08] mb-6"
         >
-          WE'RE ONBOARDING <br />
+          ONBOARDING IN PROGRESS <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#f5a623] via-amber-200 to-white">
-            FRESH CREATIVE WORK
+            FOR {pageHeadline}
           </span>
         </motion.h1>
 
@@ -73,7 +75,7 @@ const OnboardingScreen = ({ global = {} }) => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-white/70 text-base sm:text-xl font-light leading-relaxed max-w-2xl mb-10"
         >
-          Our live portfolio domain is currently undergoing data onboarding with fresh brand campaigns, motion storytelling reels, and AI projects. We apologize for the temporary inconvenience!
+          The <span className="text-white font-semibold">{pageName || 'requested section'}</span> is currently undergoing data onboarding with fresh media, brand case studies, and content. We apologize for the temporary inconvenience!
         </motion.p>
 
         {/* Action Card */}
