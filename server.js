@@ -157,7 +157,7 @@ app.post('/api/portfolio', requireAuth, async (req, res) => {
             Object.assign(data, newData);
         }
         
-        ['global', 'hero', 'welcome', 'introduction', 'aboutMe', 'education', 'workExperience', 'projectPortfolio', 'latestProject', 'contact', 'thankYou'].forEach(key => {
+        ['global', 'hero', 'welcome', 'introduction', 'aboutMe', 'education', 'workExperience', 'projectPortfolio', 'latestProject', 'contact', 'thankYou', 'gigs'].forEach(key => {
             data.markModified(key);
         });
 
