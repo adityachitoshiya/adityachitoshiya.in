@@ -654,6 +654,38 @@ const Admin = () => {
                         </button>
                     </div>
 
+                    {/* Onboarding Mode Toggle */}
+                    <div className="flex items-center justify-between mb-12 border-b border-white/10 pb-8">
+                        <div>
+                            <h2 className="text-2xl font-heading text-accent mb-2 uppercase tracking-wider">Live Domain Onboarding Lock Mode</h2>
+                            <p className="text-muted text-sm">
+                                When ON, general visitors on live domain see a sleek "Data Onboarding in Progress" screen with your email.
+                                <br />
+                                <span className="text-accent font-mono text-xs">Localhost and Admin logged-in users will always see full updates.</span>
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => handleTextChange({ target: { value: data.global?.onboardingMode === false ? true : false } }, 'global', 'onboardingMode')}
+                            className="relative flex items-center rounded-full transition-colors"
+                            style={{ 
+                                width: 52, height: 28, 
+                                background: data.global?.onboardingMode !== false ? '#f5a623' : '#333', 
+                                padding: '4px' 
+                            }}
+                        >
+                            <span
+                                style={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 9999,
+                                    background: '#0a0a0a',
+                                    transform: data.global?.onboardingMode !== false ? 'translateX(24px)' : 'translateX(0px)',
+                                    transition: 'transform 0.25s ease',
+                                }}
+                            />
+                        </button>
+                    </div>
+
                     {/* Background Music */}
                     <div className="mb-12 border-b border-white/10 pb-8">
                         <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Background Music</h2>

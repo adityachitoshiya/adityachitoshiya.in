@@ -167,6 +167,35 @@ const ScrollEffectsRunner = () => {
   return null;
 };
 
+import OnboardingScreen from './components/OnboardingScreen';
+
+const OnboardingGuard = ({ children }) => {
+  const { portfolioData } = usePortfolio();
+  const location = useLocation();
+
+  const hostname = window.location.hostname;
+  const isLocalhost = 
+    hostname === 'localhost' || 
+    hostname === '127.0.0.1' || 
+    hostname.startsWith('192.168.') ||
+    hostname.endsWith('.local');
+
+  const searchParams = new URLSearchParams(location.search);
+  const isPreview = searchParams.get('preview') === 'true';
+  const isAdminLoggedIn = !!localStorage.getItem('adminToken');
+
+  // Check if onboarding maintenance mode is active (defaults to true for live domain)
+  const isOnboardingMode = portfolioData?.global?.onboardingMode !== false;
+
+  // On localhost, or if logged in as admin, or if URL has ?preview=true, or if mode turned off -> show full site
+  if (isLocalhost || isAdminLoggedIn || isPreview || !isOnboardingMode) {
+    return children;
+  }
+
+  // Otherwise show sleek onboarding maintenance screen for live site visitors
+  return <OnboardingScreen global={portfolioData?.global} />;
+};
+
 function App() {
   const [isLoading, setIsLoading] = useState(() => {
     // Show preloader only if it hasn't been loaded in this browser session
@@ -189,12 +218,12 @@ function App() {
           <Router>
             <ScrollEffectsRunner />
             <Routes>
-              <Route path="/" element={<Portfolio />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/gigs" element={<GigsPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/creatives" element={<CreativesRoute />} />
-              <Route path="/work/:slug" element={<ProjectRoute />} />
+              <Route path="/" element={<OnboardingGuard><Portfolio /></OnboardingGuard>} />
+              <Route path="/about" element={<OnboardingGuard><AboutPage /></OnboardingGuard>} />
+              <Route path="/gigs" element={<OnboardingGuard><GigsPage /></OnboardingGuard>} />
+              <Route path="/contact" element={<OnboardingGuard><ContactPage /></OnboardingGuard>} />
+              <Route path="/creatives" element={<OnboardingGuard><CreativesRoute /></OnboardingGuard>} />
+              <Route path="/work/:slug" element={<OnboardingGuard><ProjectRoute /></OnboardingGuard>} />
               <Route path="/admin" element={<Admin />} />
             </Routes>
             <SearchOverlay />
