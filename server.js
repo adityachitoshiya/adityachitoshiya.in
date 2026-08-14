@@ -246,6 +246,96 @@ app.get('/api/welcome', async (req, res) => {
     }
 });
 
+// Visitor Analytics Routes for Express Local Server
+import Visitor from './models/Visitor.js';
+
+app.post('/api/track-visitor', async (req, res) => {
+    try {
+        const { visitorId, sessionId, currentPath = '/', pageTitle = 'Portfolio', durationIncrement = 0, isNewSession = false } = req.body || {};
+        if (!visitorId) return res.status(400).json({ error: 'visitorId required' });
+
+        const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || '127.0.0.1';
+        const userAgent = req.headers['user-agent'] || '';
+        const deviceType = /mobile|android|iphone/i.test(userAgent) ? 'Mobile' : 'Desktop';
+        const durationSec = Math.max(0, parseInt(durationIncrement, 10) || 0);
+
+        let visitor = await Visitor.findOne({ visitorId });
+        if (!visitor) {
+            visitor = new Visitor({
+                visitorId, ip, userAgent, deviceType,
+                visitCount: 1, totalDuration: durationSec,
+                lastActive: new Date(), firstVisit: new Date(),
+                pagesViewed: [{ path: currentPath, title: pageTitle, timestamp: new Date(), duration: durationSec }]
+            });
+        } else {
+            visitor.ip = ip || visitor.ip;
+            visitor.userAgent = userAgent || visitor.userAgent;
+            visitor.deviceType = deviceType || visitor.deviceType;
+            visitor.lastActive = new Date();
+            visitor.totalDuration += durationSec;
+            if (isNewSession) visitor.visitCount = (visitor.visitCount || 1) + 1;
+
+            const lastPage = visitor.pagesViewed?.[visitor.pagesViewed.length - 1];
+            if (lastPage && lastPage.path === currentPath) {
+                lastPage.duration += durationSec;
+                lastPage.timestamp = new Date();
+            } else {
+                if (visitor.pagesViewed.length >= 100) visitor.pagesViewed.shift();
+                visitor.pagesViewed.push({ path: currentPath, title: pageTitle, timestamp: new Date(), duration: durationSec });
+            }
+        }
+        await visitor.save();
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Track error:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/visitors', requireAuth, async (req, res) => {
+    try {
+        const visitors = await Visitor.find().sort({ lastActive: -1 }).limit(200).lean();
+        const now = new Date();
+        const threeMinAgo = new Date(now.getTime() - 3 * 60 * 1000);
+
+        let totalVisitors = visitors.length;
+        let totalVisits = 0;
+        let totalDuration = 0;
+        let activeNow = 0;
+        const pageCounts = {};
+
+        visitors.forEach(v => {
+            totalVisits += (v.visitCount || 1);
+            totalDuration += (v.totalDuration || 0);
+            if (new Date(v.lastActive) >= threeMinAgo) activeNow++;
+            if (Array.isArray(v.pagesViewed)) {
+                v.pagesViewed.forEach(pv => {
+                    const pathName = pv.path || '/';
+                    pageCounts[pathName] = (pageCounts[pathName] || 0) + 1;
+                });
+            }
+        });
+
+        res.json({
+            summary: { totalVisitors, totalVisits, totalDuration, activeNow, pageStats: pageCounts },
+            visitors
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.delete('/api/visitors', requireAuth, async (req, res) => {
+    try {
+        const { visitorId } = req.query;
+        if (visitorId) await Visitor.deleteOne({ visitorId });
+        else await Visitor.deleteMany({});
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error("Global Error Handler:", err);

@@ -200,6 +200,8 @@ const OnboardingGuard = ({ pageKey, pageName, children }) => {
   return <OnboardingScreen global={portfolioData?.global} pageName={pageName} />;
 };
 
+import VisitorTracker from './components/VisitorTracker';
+
 function App() {
   const [isLoading, setIsLoading] = useState(() => {
     // Show preloader only if it hasn't been loaded in this browser session
@@ -220,6 +222,7 @@ function App() {
       <PortfolioProvider>
         <ThemeProvider>
           <Router>
+            <VisitorTracker />
             <ScrollEffectsRunner />
             <Routes>
               <Route path="/" element={<OnboardingGuard pageKey="homepage" pageName="Homepage"><Portfolio /></OnboardingGuard>} />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Save, Loader2, ArrowLeft, Plus, Trash2, X as XIcon, Music, Crop, Video, Play, Film, Image as ImageIcon, Check, AlertCircle } from 'lucide-react';
+import { Upload, Save, Loader2, ArrowLeft, Plus, Trash2, X as XIcon, Music, Crop, Video, Play, Film, Image as ImageIcon, Check, AlertCircle, Users, Activity, Clock, Eye, Monitor, Smartphone, RefreshCw, Search, Globe, ChevronRight, BarChart3, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import LoadingScreen from '../components/LoadingScreen';
 import ImageCropModal from '../components/ImageCropModal';
@@ -64,12 +64,70 @@ const Admin = () => {
         configKey: null // Replaced aspect with configKey
     });
 
+    // Visitors Analytics State
+    const [visitorsData, setVisitorsData] = useState(null);
+    const [loadingVisitors, setLoadingVisitors] = useState(false);
+    const [selectedVisitor, setSelectedVisitor] = useState(null);
+    const [visitorSearch, setVisitorSearch] = useState('');
+
+    const formatVisitorDuration = (sec = 0) => {
+        if (!sec || sec <= 0) return '0s';
+        const m = Math.floor(sec / 60);
+        const s = sec % 60;
+        if (m === 0) return `${s}s`;
+        const h = Math.floor(m / 60);
+        const remM = m % 60;
+        if (h === 0) return `${m}m ${s}s`;
+        return `${h}h ${remM}m`;
+    };
+
+    const fetchVisitors = async () => {
+        setLoadingVisitors(true);
+        try {
+            const token = sessionStorage.getItem('adminToken');
+            const res = await fetch('/api/visitors', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const result = await res.json();
+                setVisitorsData(result);
+            }
+        } catch (err) {
+            console.error("Visitors fetch error:", err);
+        } finally {
+            setLoadingVisitors(false);
+        }
+    };
+
+    const handleClearVisitors = async () => {
+        if (!window.confirm('Are you sure you want to clear all visitor analytics logs?')) return;
+        try {
+            const token = sessionStorage.getItem('adminToken');
+            await fetch('/api/visitors', {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            alert('Visitor logs cleared!');
+            fetchVisitors();
+        } catch (err) {
+            alert('Failed to clear visitor logs');
+        }
+    };
+
     useEffect(() => {
         if (sessionStorage.getItem('adminToken')) {
             setIsAuthenticated(true);
         }
         fetchData();
     }, []);
+
+    useEffect(() => {
+        if (activeTab === 'visitors' && isAuthenticated) {
+            fetchVisitors();
+            const interval = setInterval(fetchVisitors, 10000);
+            return () => clearInterval(interval);
+        }
+    }, [activeTab, isAuthenticated]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -782,7 +840,8 @@ const Admin = () => {
                         { id: 'gigs', label: 'SERVICES & GIGS (/gigs)' },
                         { id: 'creatives', label: 'ALL PROJECTS LIST (/creatives)' },
                         { id: 'global', label: 'THEME & AVAILABILITY' },
-                        { id: 'slideshow', label: 'VISUAL SLIDESHOW' }
+                        { id: 'slideshow', label: 'VISUAL SLIDESHOW' },
+                        { id: 'visitors', label: '📊 VISITORS ANALYTICS' }
                     ].map(tab => (
                         <button
                             key={tab.id}
@@ -2380,6 +2439,315 @@ const Admin = () => {
                         </div>
                     </div>
                 </section>
+                )}
+
+                {/* Visitors Analytics Section */}
+                {activeTab === 'visitors' && (
+                <section className="mb-12 space-y-8">
+                    {/* Top Bar / Controls */}
+                    <div className="flex flex-wrap items-center justify-between gap-4 bg-white/5 p-6 rounded-2xl border border-white/10">
+                        <div>
+                            <div className="flex items-center gap-3 mb-1">
+                                <h2 className="text-3xl font-heading text-accent uppercase tracking-wider flex items-center gap-2">
+                                    <BarChart3 size={28} /> Visitor Traffic Analytics
+                                </h2>
+                                {visitorsData?.summary?.activeNow > 0 && (
+                                    <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs font-mono px-3 py-1 rounded-full font-bold uppercase flex items-center gap-1.5 animate-pulse">
+                                        <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                        {visitorsData.summary.activeNow} LIVE NOW
+                                    </span>
+                                )}
+                            </div>
+                            <p className="text-muted text-sm">Real-time visitor IP tracking, session duration, and tab/page access logs stored in MongoDB.</p>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={fetchVisitors}
+                                disabled={loadingVisitors}
+                                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl font-semibold uppercase text-xs tracking-wider flex items-center gap-2 transition-all cursor-pointer"
+                            >
+                                <RefreshCw size={14} className={loadingVisitors ? "animate-spin" : ""} />
+                                {loadingVisitors ? "Refreshing..." : "Refresh Stats"}
+                            </button>
+
+                            <button
+                                onClick={handleClearVisitors}
+                                className="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 px-4 py-2.5 rounded-xl font-semibold uppercase text-xs tracking-wider flex items-center gap-2 transition-all cursor-pointer"
+                            >
+                                <Trash2 size={14} />
+                                Clear Logs
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Stat Cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        <div className="bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/20 p-5 rounded-2xl">
+                            <div className="flex items-center justify-between text-emerald-400 mb-2">
+                                <span className="text-xs uppercase tracking-widest font-bold font-mono">Live Active</span>
+                                <Activity size={18} className="animate-pulse" />
+                            </div>
+                            <div className="text-3xl font-heading text-white">
+                                {visitorsData?.summary?.activeNow || 0}
+                            </div>
+                            <p className="text-[11px] text-white/50 mt-1">Visitors on site in last 3 mins</p>
+                        </div>
+
+                        <div className="bg-white/5 border border-white/10 p-5 rounded-2xl">
+                            <div className="flex items-center justify-between text-accent mb-2">
+                                <span className="text-xs uppercase tracking-widest font-bold font-mono">Unique Visitors</span>
+                                <Users size={18} />
+                            </div>
+                            <div className="text-3xl font-heading text-white">
+                                {visitorsData?.summary?.totalVisitors || 0}
+                            </div>
+                            <p className="text-[11px] text-white/50 mt-1">Total unique IP / browser profiles</p>
+                        </div>
+
+                        <div className="bg-white/5 border border-white/10 p-5 rounded-2xl">
+                            <div className="flex items-center justify-between text-blue-400 mb-2">
+                                <span className="text-xs uppercase tracking-widest font-bold font-mono">Total Visits</span>
+                                <Eye size={18} />
+                            </div>
+                            <div className="text-3xl font-heading text-white">
+                                {visitorsData?.summary?.totalVisits || 0}
+                            </div>
+                            <p className="text-[11px] text-white/50 mt-1">Cumulative sessions across site</p>
+                        </div>
+
+                        <div className="bg-white/5 border border-white/10 p-5 rounded-2xl">
+                            <div className="flex items-center justify-between text-purple-400 mb-2">
+                                <span className="text-xs uppercase tracking-widest font-bold font-mono">Total Time Spent</span>
+                                <Clock size={18} />
+                            </div>
+                            <div className="text-3xl font-heading text-white">
+                                {formatVisitorDuration(visitorsData?.summary?.totalDuration || 0)}
+                            </div>
+                            <p className="text-[11px] text-white/50 mt-1">Cumulative time spent by visitors</p>
+                        </div>
+                    </div>
+
+                    {/* Tab / Page Traffic Distribution */}
+                    <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+                        <h3 className="text-sm font-bold uppercase tracking-wider text-accent mb-4 flex items-center gap-2">
+                            <Globe size={16} /> Tab & Page Views Breakdown
+                        </h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                            {[
+                                { path: '/', name: 'Homepage ( / )' },
+                                { path: '/about', name: 'About ( /about )' },
+                                { path: '/gigs', name: 'Services ( /gigs )' },
+                                { path: '/creatives', name: 'Creatives ( /creatives )' },
+                                { path: '/contact', name: 'Contact ( /contact )' }
+                            ].map(p => {
+                                const count = visitorsData?.summary?.pageStats?.[p.path] || 0;
+                                const total = visitorsData?.summary?.totalVisits || 1;
+                                const pct = Math.round((count / total) * 100);
+
+                                return (
+                                    <div key={p.path} className="bg-black/40 border border-white/10 p-4 rounded-xl">
+                                        <div className="flex items-center justify-between text-xs mb-1 font-semibold text-white">
+                                            <span>{p.name}</span>
+                                            <span className="text-accent font-mono">{count} views</span>
+                                        </div>
+                                        <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden mt-2">
+                                            <div 
+                                                className="bg-accent h-full rounded-full transition-all duration-500" 
+                                                style={{ width: `${Math.min(100, Math.max(5, pct))}%` }} 
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Visitor Log Table */}
+                    <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+                        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                            <h3 className="text-lg font-heading uppercase text-white tracking-wider">
+                                Detailed Visitor Logs ({visitorsData?.visitors?.length || 0})
+                            </h3>
+
+                            {/* Search bar */}
+                            <div className="relative w-full sm:w-72">
+                                <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
+                                <input
+                                    type="text"
+                                    value={visitorSearch}
+                                    onChange={(e) => setVisitorSearch(e.target.value)}
+                                    placeholder="Search by IP, Device, Page..."
+                                    className="w-full bg-black/40 border border-white/20 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder:text-white/40 outline-none focus:border-accent"
+                                />
+                            </div>
+                        </div>
+
+                        {loadingVisitors && !visitorsData ? (
+                            <div className="py-12 text-center text-white/50 flex flex-col items-center gap-2 font-mono text-xs">
+                                <Loader2 className="animate-spin text-accent" size={24} />
+                                Loading visitor analytics from database...
+                            </div>
+                        ) : !visitorsData?.visitors || visitorsData.visitors.length === 0 ? (
+                            <div className="py-12 text-center text-white/40 font-mono text-xs border border-dashed border-white/10 rounded-xl">
+                                No visitor traffic recorded yet. Open your portfolio in another browser tab to test!
+                            </div>
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="border-b border-white/10 text-[11px] font-bold text-white/50 uppercase tracking-wider font-mono">
+                                            <th className="py-3 px-4">Visitor IP & Device</th>
+                                            <th className="py-3 px-4">Visits</th>
+                                            <th className="py-3 px-4">Total Time Spent</th>
+                                            <th className="py-3 px-4">Tabs / Pages Visited</th>
+                                            <th className="py-3 px-4">Last Active</th>
+                                            <th className="py-3 px-4 text-right">Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-white/5 text-xs">
+                                        {visitorsData.visitors
+                                            .filter(v => {
+                                                if (!visitorSearch) return true;
+                                                const q = visitorSearch.toLowerCase();
+                                                return (
+                                                    (v.ip || '').toLowerCase().includes(q) ||
+                                                    (v.deviceType || '').toLowerCase().includes(q) ||
+                                                    (v.pagesViewed || []).some(pv => (pv.path || '').toLowerCase().includes(q))
+                                                );
+                                            })
+                                            .map((v) => {
+                                                const isOnline = new Date(v.lastActive) >= new Date(Date.now() - 3 * 60 * 1000);
+                                                const uniquePages = Array.from(new Set((v.pagesViewed || []).map(p => p.path || '/')));
+
+                                                return (
+                                                    <tr key={v._id || v.visitorId} className="hover:bg-white/5 transition-colors">
+                                                        <td className="py-3.5 px-4 font-mono">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-white/20'}`} />
+                                                                <span className="font-bold text-white">{v.ip || '127.0.0.1'}</span>
+                                                                <span className="text-[10px] bg-white/10 text-white/70 px-2 py-0.5 rounded font-sans flex items-center gap-1">
+                                                                    {v.deviceType === 'Mobile' ? <Smartphone size={10} /> : <Monitor size={10} />}
+                                                                    {v.deviceType || 'Desktop'}
+                                                                </span>
+                                                            </div>
+                                                        </td>
+
+                                                        <td className="py-3.5 px-4 font-semibold text-white">
+                                                            {v.visitCount || 1} {v.visitCount === 1 ? 'visit' : 'visits'}
+                                                        </td>
+
+                                                        <td className="py-3.5 px-4 font-mono font-bold text-accent">
+                                                            {formatVisitorDuration(v.totalDuration || 0)}
+                                                        </td>
+
+                                                        <td className="py-3.5 px-4">
+                                                            <div className="flex flex-wrap gap-1">
+                                                                {uniquePages.map((path) => (
+                                                                    <span 
+                                                                        key={path} 
+                                                                        className="text-[10px] bg-accent/15 border border-accent/30 text-accent px-2 py-0.5 rounded-full font-mono font-bold"
+                                                                    >
+                                                                        {path === '/' ? 'Home' : path.replace('/', '')}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </td>
+
+                                                        <td className="py-3.5 px-4 text-white/60 text-[11px] font-mono">
+                                                            {v.lastActive ? new Date(v.lastActive).toLocaleString() : 'N/A'}
+                                                        </td>
+
+                                                        <td className="py-3.5 px-4 text-right">
+                                                            <button
+                                                                onClick={() => setSelectedVisitor(v)}
+                                                                className="bg-white/10 hover:bg-accent hover:text-black text-white px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer"
+                                                            >
+                                                                View Log
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                </section>
+                )}
+
+                {/* Detailed Visitor Session Modal */}
+                {selectedVisitor && (
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+                        <div className="bg-[#121212] border border-white/20 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+                            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                                <div>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <h3 className="text-xl font-heading text-accent uppercase">
+                                            Visitor History Log
+                                        </h3>
+                                        <span className="text-xs bg-white/10 text-white font-mono px-2 py-0.5 rounded">
+                                            IP: {selectedVisitor.ip}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-white/50">
+                                        Device: {selectedVisitor.deviceType} | First Seen: {new Date(selectedVisitor.firstVisit).toLocaleString()}
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={() => setSelectedVisitor(null)}
+                                    className="bg-white/10 hover:bg-white/20 text-white p-2 rounded-lg transition-colors cursor-pointer"
+                                >
+                                    <XIcon size={18} />
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-3 bg-white/5 p-4 rounded-xl border border-white/10 text-center font-mono">
+                                <div>
+                                    <span className="text-[10px] text-white/50 uppercase block">Visits</span>
+                                    <span className="text-lg font-bold text-white">{selectedVisitor.visitCount || 1}</span>
+                                </div>
+                                <div>
+                                    <span className="text-[10px] text-white/50 uppercase block">Total Duration</span>
+                                    <span className="text-lg font-bold text-accent">{formatVisitorDuration(selectedVisitor.totalDuration)}</span>
+                                </div>
+                                <div>
+                                    <span className="text-[10px] text-white/50 uppercase block">Total Pages</span>
+                                    <span className="text-lg font-bold text-blue-400">{selectedVisitor.pagesViewed?.length || 0}</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 className="text-xs font-bold uppercase tracking-wider text-white/70 mb-3 flex items-center gap-2">
+                                    <Clock size={14} /> Chronological Page Access History
+                                </h4>
+                                <div className="space-y-2 font-mono text-xs">
+                                    {(selectedVisitor.pagesViewed || []).slice().reverse().map((pv, idx) => (
+                                        <div key={idx} className="bg-black/50 border border-white/10 p-3 rounded-xl flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-accent font-bold px-2 py-0.5 bg-accent/15 rounded text-[11px]">
+                                                    {pv.path}
+                                                </span>
+                                                <span className="text-white text-xs">{pv.title || 'Portfolio Page'}</span>
+                                            </div>
+                                            <div className="text-right">
+                                                <span className="text-emerald-400 font-bold block">{formatVisitorDuration(pv.duration)} spent</span>
+                                                <span className="text-[10px] text-white/40">{new Date(pv.timestamp).toLocaleTimeString()}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={() => setSelectedVisitor(null)}
+                                className="w-full bg-accent text-black font-bold uppercase text-xs py-3 rounded-xl hover:bg-accent/90 transition-colors cursor-pointer"
+                            >
+                                Close Modal
+                            </button>
+                        </div>
+                    </div>
                 )}
 
                 {/* Notice */}
