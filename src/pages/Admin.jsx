@@ -572,16 +572,16 @@ const Admin = () => {
                 )}
 
                 {/* Tab Navigation */}
-                <div className="flex flex-wrap gap-4 mb-8 border-b border-white/10 pb-4">
-                    {['global', 'hero', 'welcome', 'brands', 'about', 'work', 'education', 'creatives', 'gallery', 'slideshow', 'contact'].map(tab => (
+                <div className="flex flex-wrap gap-3 mb-8 border-b border-white/10 pb-4">
+                    {['global', 'hero', 'welcome', 'gallery', 'creatives', 'brands', 'about', 'work', 'education', 'slideshow', 'contact'].map(tab => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`px-4 py-2 rounded-full uppercase tracking-wider font-heading text-sm transition-colors ${
-                                activeTab === tab ? 'bg-accent text-background' : 'bg-white/5 text-muted hover:bg-white/10 hover:text-white'
+                            className={`px-4 py-2 rounded-full uppercase tracking-wider font-heading text-xs sm:text-sm transition-all ${
+                                activeTab === tab ? 'bg-accent text-background shadow-lg scale-105 font-bold' : 'bg-white/5 text-muted hover:bg-white/10 hover:text-white'
                             }`}
                         >
-                            {tab === 'creatives' ? 'Projects' : tab === 'brands' ? 'Brands & Logos' : tab === 'slideshow' ? 'Slideshow' : tab === 'about' ? 'About Us' : tab === 'work' ? 'Work Exp' : tab === 'education' ? 'Education' : tab === 'contact' ? 'Contact' : tab}
+                            {tab === 'gallery' ? 'Project Portfolio (Home)' : tab === 'creatives' ? 'Projects List' : tab === 'brands' ? 'Brands & Logos' : tab === 'slideshow' ? 'Slideshow' : tab === 'about' ? 'About Us' : tab === 'work' ? 'Work Exp' : tab === 'education' ? 'Education' : tab === 'contact' ? 'Contact' : tab}
                         </button>
                     ))}
                 </div>
@@ -1203,25 +1203,140 @@ const Admin = () => {
                 </section>
                 )}
 
-                {/* Section: Project Gallery Images */}
+                {/* Section: Project Portfolio (Homepage) */}
                 {activeTab === 'gallery' && (
                 <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Gallery Images</h2>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+                        <div>
+                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">Project Portfolio (Homepage Section)</h2>
+                            <p className="text-muted text-sm mt-1">Manage the headline, text description, and feature images for the Homepage #portfolio section.</p>
+                        </div>
+                    </div>
+
+                    {/* Headline & Description Editor */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label className="block text-muted text-sm mb-2 font-medium">Section Headline</label>
+                            <input 
+                                value={data.projectPortfolio?.headline || ''} 
+                                onChange={(e) => handleTextChange(e, 'projectPortfolio', 'headline')} 
+                                className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none font-heading uppercase" 
+                                placeholder="PROJECT PORTFOLIO"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-muted text-sm mb-2 font-medium">Description Text</label>
+                            <textarea 
+                                value={data.projectPortfolio?.text || ''} 
+                                onChange={(e) => handleTextChange(e, 'projectPortfolio', 'text')} 
+                                className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none h-24 resize-none" 
+                                placeholder="A mix of brand campaigns, celebrity collaborations..."
+                            />
+                        </div>
+                    </div>
+
+                    {/* Homepage Portfolio Images Grid */}
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-base font-heading text-white uppercase tracking-wider flex items-center gap-2">
+                            <Upload size={18} className="text-accent" /> Homepage Featured Images (Drag & Drop Allowed)
+                        </h3>
+                        <label className="cursor-pointer bg-accent text-background px-4 py-2 rounded-full font-bold uppercase tracking-wider flex items-center gap-2 hover:scale-105 transition-all text-xs">
+                            <Plus size={14} /> Add Image
+                            <input 
+                                type="file" 
+                                className="hidden" 
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if (!file) return;
+                                    const newIdx = data.projectPortfolio?.images?.length || 0;
+                                    processUploadedFile(file, 'projectPortfolio', 'images', newIdx, 'projectGallery');
+                                }} 
+                                accept="image/*,video/*" 
+                            />
+                        </label>
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {data.projectPortfolio?.images?.map((img, index) => (
-                            <div key={index}>
-                                <img src={img} alt={`Gallery ${index}`} className="w-full h-32 object-cover rounded-xl mb-3" />
-                                <div className="flex gap-2">
-                                    <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-2 py-2 rounded-lg flex items-center justify-center gap-1 transition-colors text-xs">
-                                        <Upload size={14} /> Replace
-                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'projectPortfolio', 'images', index, 'projectGallery')} accept="image/*,video/*" />
-                                    </label>
-                                    <button onClick={() => handleEditImage(img, 'projectPortfolio', 'images', index, 'projectGallery')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-2 py-2 rounded-lg flex items-center justify-center gap-1 transition-colors text-xs">
-                                        <Crop size={14} /> Edit
-                                    </button>
+                        {data.projectPortfolio?.images?.map((img, index) => {
+                            const isDragActive = dragActiveField === `projectPortfolio-images-${index}`;
+                            const isVid = isVideoUrl(img);
+
+                            return (
+                                <div key={index} className="bg-black/30 border border-white/10 rounded-2xl p-4 flex flex-col">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <label className="text-xs font-semibold text-white/90">Homepage Image #{index + 1}</label>
+                                        <button 
+                                            onClick={() => {
+                                                setData(prev => {
+                                                    const updatedImages = (prev.projectPortfolio?.images || []).filter((_, i) => i !== index);
+                                                    return {
+                                                        ...prev,
+                                                        projectPortfolio: { ...prev.projectPortfolio, images: updatedImages }
+                                                    };
+                                                });
+                                            }}
+                                            className="text-red-400 hover:text-red-300 p-1 transition-colors"
+                                            title="Delete Image"
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
+                                    </div>
+
+                                    {/* Drag & Drop Zone Box */}
+                                    <div 
+                                        onDragOver={(e) => handleDragOver(e, `projectPortfolio-images-${index}`)}
+                                        onDragLeave={handleDragLeave}
+                                        onDrop={(e) => handleDropFile(e, 'projectPortfolio', 'images', index, 'projectGallery')}
+                                        className={`relative w-full h-48 rounded-xl border-2 border-dashed overflow-hidden flex flex-col items-center justify-center transition-all duration-300 ${
+                                            isDragActive 
+                                                ? 'border-accent bg-accent/20 scale-[1.02]' 
+                                                : 'border-white/20 bg-white/5 hover:border-accent/60'
+                                        }`}
+                                    >
+                                        {img ? (
+                                            isVid ? (
+                                                <video src={img} autoPlay loop muted playsInline className="w-full h-full object-cover rounded-lg" />
+                                            ) : (
+                                                <img src={img} alt={`Homepage Portfolio ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
+                                            )
+                                        ) : (
+                                            <div className="text-center p-4">
+                                                <Upload size={28} className="text-accent mb-2 animate-bounce mx-auto" />
+                                                <p className="text-white text-xs font-medium">Drag & Drop File Here</p>
+                                            </div>
+                                        )}
+
+                                        {isDragActive && (
+                                            <div className="absolute inset-0 bg-black/85 backdrop-blur-sm flex flex-col items-center justify-center text-accent z-30 font-bold border-2 border-accent rounded-xl">
+                                                <Upload size={32} className="mb-2 animate-bounce text-accent" />
+                                                <p className="uppercase tracking-widest text-xs text-white">Drop File to Upload</p>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Action Buttons */}
+                                    <div className="flex gap-2 mt-3">
+                                        <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
+                                            <Upload size={12} /> Replace
+                                            <input 
+                                                type="file" 
+                                                className="hidden" 
+                                                onChange={(e) => handleFileSelect(e, 'projectPortfolio', 'images', index, 'projectGallery')} 
+                                                accept="image/*,video/*" 
+                                            />
+                                        </label>
+                                        {img && !isVid && (
+                                            <button 
+                                                onClick={() => handleEditImage(img, 'projectPortfolio', 'images', index, 'projectGallery')} 
+                                                className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider"
+                                            >
+                                                <Crop size={12} /> Crop
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </section>
                 )}
