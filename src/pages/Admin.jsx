@@ -575,6 +575,7 @@ const Admin = () => {
                 <div className="flex flex-wrap gap-3 mb-6 border-b border-white/10 pb-4">
                     {[
                         { id: 'homepage', label: 'HOMEPAGE (ALL CONTENT)' },
+                        { id: 'gallery', label: 'GIGS / PORTFOLIO (HOME)' },
                         { id: 'global', label: 'THEME & AVAILABILITY' },
                         { id: 'creatives', label: 'ALL PROJECTS LIST' },
                         { id: 'slideshow', label: 'VISUAL SLIDESHOW' }
@@ -602,7 +603,7 @@ const Admin = () => {
                         {[
                             { id: 'admin-hero', label: '1. Hero' },
                             { id: 'admin-welcome', label: '2. Welcome 1:1' },
-                            { id: 'admin-portfolio', label: '3. Project Portfolio' },
+                            { id: 'admin-portfolio', label: '3. Gigs / Portfolio' },
                             { id: 'admin-brands', label: '4. Brands & Logos' },
                             { id: 'admin-about', label: '5. About Me' },
                             { id: 'admin-work', label: '6. Work Exp' },
@@ -1262,8 +1263,8 @@ const Admin = () => {
                 <section id="admin-portfolio" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
                         <div>
-                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">3. Project Portfolio (Homepage Grid)</h2>
-                            <p className="text-muted text-sm mt-1">Manage the headline, text description, and featured media for the Homepage #portfolio section.</p>
+                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">3. Gigs & Project Portfolio (Homepage Cards)</h2>
+                            <p className="text-muted text-sm mt-1 font-light">Manage headline, description, drag & drop media cards, and crop aspect ratio for the homepage portfolio section.</p>
                         </div>
                     </div>
 
