@@ -8,6 +8,8 @@ import { usePortfolio } from '../context/PortfolioContext';
 import CurrentFocus from '../components/CurrentFocus';
 import ImageSlideshow from '../components/ImageSlideshow';
 import Magnetic from '../components/Magnetic';
+import MediaRenderer from '../components/MediaRenderer';
+
 export default function AboutPage() {
   const { portfolioData } = usePortfolio();
   const { aboutMe, global } = portfolioData;
@@ -64,7 +66,7 @@ export default function AboutPage() {
                     transition={{ duration: 0.8, delay: 0.2 }}
                     className="lg:col-span-5 w-full h-[500px] md:h-[600px] relative rounded-3xl overflow-hidden"
                 >
-                    <img 
+                    <MediaRenderer 
                         src={aboutMe.image} 
                         alt="Aditya Chitoshiya" 
                         className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"

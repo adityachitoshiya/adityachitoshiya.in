@@ -5,6 +5,7 @@ import BackToTop from '../components/BackToTop';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Magnetic from '../components/Magnetic';
+import MediaRenderer from '../components/MediaRenderer';
 
 export default function ProjectDetail({ project, allProjects, global, onBack, onSelectProject }) {
   useEffect(() => {
@@ -74,7 +75,7 @@ export default function ProjectDetail({ project, allProjects, global, onBack, on
             transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
             className="w-full aspect-video md:aspect-[21/9] rounded-xl overflow-hidden mb-16 border border-white/10"
           >
-            <img 
+            <MediaRenderer 
               src={project.coverImage} 
               alt={`${project.name} Cover`} 
               className="w-full h-full object-cover"
@@ -93,7 +94,7 @@ export default function ProjectDetail({ project, allProjects, global, onBack, on
                   transition={{ duration: 0.6, ease: 'easeOut' }}
                   className="w-full rounded-xl overflow-hidden border border-white/10"
                 >
-                  <img 
+                  <MediaRenderer 
                     src={imgSrc} 
                     alt={`${project.name} Gallery ${idx + 1}`} 
                     className="w-full h-auto object-cover"
@@ -132,7 +133,7 @@ export default function ProjectDetail({ project, allProjects, global, onBack, on
                     onClick={() => onSelectProject(other)}
                     data-stagger-item
                   >
-                    <img 
+                    <MediaRenderer 
                       src={other.coverImage} 
                       alt={other.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"

@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { usePortfolio } from '../context/PortfolioContext';
 
+import MediaRenderer from './MediaRenderer';
+
 const WorkExperience = () => {
   const { portfolioData } = usePortfolio();
   const { workExperience } = portfolioData;
@@ -41,26 +43,34 @@ const WorkExperience = () => {
             </div>
         </div>
 
-        {/* Right Column - Stacked Images */}
+        {/* Right Column - Stacked Images/Videos */}
         <div className="lg:col-span-4 flex flex-col gap-8 h-full justify-center">
-             <motion.img 
+             <motion.div 
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                src={workExperience.image1} 
-                alt="Work Context 1" 
-                className="w-full h-[300px] object-cover rounded-[32px] grayscale hover:grayscale-0 transition-all duration-500"
-            />
-            <motion.img 
+                className="w-full h-[300px] overflow-hidden rounded-[32px]"
+             >
+                <MediaRenderer
+                  src={workExperience.image1} 
+                  alt="Work Context 1" 
+                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                />
+            </motion.div>
+            <motion.div 
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                src={workExperience.image2} 
-                alt="Work Context 2" 
-                className="w-full h-[300px] object-cover rounded-[32px] grayscale hover:grayscale-0 transition-all duration-500"
-            />
+                className="w-full h-[300px] overflow-hidden rounded-[32px]"
+            >
+                <MediaRenderer
+                  src={workExperience.image2} 
+                  alt="Work Context 2" 
+                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                />
+            </motion.div>
         </div>
 
       </div>

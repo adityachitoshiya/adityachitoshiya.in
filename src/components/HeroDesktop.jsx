@@ -6,6 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { animateMarquee } from './gsapAnimations';
 import Magnetic from './Magnetic';
 
+import MediaRenderer from './MediaRenderer';
+
 gsap.registerPlugin(ScrollTrigger);
 
 export default function HeroDesktop({
@@ -95,7 +97,7 @@ export default function HeroDesktop({
         </p>
       </div>
 
-      <img
+      <MediaRenderer
         ref={photoRef}
         src={hero.heroImage}
         alt={global.name}

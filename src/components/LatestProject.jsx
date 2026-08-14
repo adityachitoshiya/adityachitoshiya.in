@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { usePortfolio } from '../context/PortfolioContext';
 
+import MediaRenderer from './MediaRenderer';
+
 const LatestProject = () => {
   const { portfolioData } = usePortfolio();
   const { latestProject } = portfolioData;
@@ -20,7 +22,7 @@ const LatestProject = () => {
             transition={{ duration: 0.8 }}
             className="lg:col-span-5 h-[500px] md:h-[700px] w-full"
         >
-            <img 
+            <MediaRenderer 
                 src={latestProject.mainImage} 
                 alt="Latest Project Main" 
                 className="w-full h-full object-cover rounded-[32px] grayscale hover:grayscale-0 transition-all duration-500"
@@ -47,7 +49,7 @@ const LatestProject = () => {
                     transition={{ duration: 0.6, delay: 0.2 }}
                     className="w-1/2 h-[200px] md:h-[250px]"
                 >
-                    <img src={latestProject.image1} alt="Detail 1" className="w-full h-full object-cover rounded-[24px] grayscale hover:grayscale-0 transition-all duration-500" />
+                    <MediaRenderer src={latestProject.image1} alt="Detail 1" className="w-full h-full object-cover rounded-[24px] grayscale hover:grayscale-0 transition-all duration-500" />
                 </motion.div>
                 <motion.div 
                     initial={{ opacity: 0, y: 50 }}
@@ -56,7 +58,7 @@ const LatestProject = () => {
                     transition={{ duration: 0.6, delay: 0.4 }}
                     className="w-1/2 h-[200px] md:h-[250px]"
                 >
-                    <img src={latestProject.image2} alt="Detail 2" className="w-full h-full object-cover rounded-[24px] grayscale hover:grayscale-0 transition-all duration-500" />
+                    <MediaRenderer src={latestProject.image2} alt="Detail 2" className="w-full h-full object-cover rounded-[24px] grayscale hover:grayscale-0 transition-all duration-500" />
                 </motion.div>
             </div>
         </div>

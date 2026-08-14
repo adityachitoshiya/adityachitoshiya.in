@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 
+import MediaRenderer from './MediaRenderer';
+
 const ImageSlideshow = () => {
   const { portfolioData } = usePortfolio();
   
@@ -101,7 +103,7 @@ const ImageSlideshow = () => {
                   transition={{ duration: 0.5, ease: "easeInOut" }}
                   className="absolute inset-0 w-full h-full"
                >
-                  <img
+                  <MediaRenderer
                      src={currentSlide.url}
                      className="w-full h-full object-cover"
                      alt={currentSlide.title || `Slide ${currentIndex + 1}`}

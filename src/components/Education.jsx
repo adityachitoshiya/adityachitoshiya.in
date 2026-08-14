@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { usePortfolio } from '../context/PortfolioContext';
 
+import MediaRenderer from './MediaRenderer';
+
 const Education = () => {
   const { portfolioData } = usePortfolio();
   const { education } = portfolioData;
@@ -26,12 +28,12 @@ const Education = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="lg:w-2/3 h-[250px] md:h-[400px] w-full"
+                className="lg:w-2/3 h-[250px] md:h-[400px] w-full overflow-hidden rounded-[32px]"
             >
-                <img 
+                <MediaRenderer 
                     src={education.bannerImage} 
                     alt="Education Banner" 
-                    className="w-full h-full object-cover rounded-[32px] grayscale hover:grayscale-0 transition-all duration-500"
+                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
                 />
             </motion.div>
         </div>

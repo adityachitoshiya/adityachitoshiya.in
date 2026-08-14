@@ -4,6 +4,7 @@ import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import MediaRenderer from '../components/MediaRenderer';
 
 export default function CreativesPage({ projects, global, onSelectProject }) {
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -90,9 +91,9 @@ export default function CreativesPage({ projects, global, onSelectProject }) {
                       onClick={() => onSelectProject({ ...project, slug: projectSlug })}
                       data-stagger-item
                     >
-                      {/* Image or Fallback */}
+                      {/* Image/Video or Fallback */}
                       {project.coverImage ? (
-                        <img
+                        <MediaRenderer
                           src={project.coverImage}
                           alt={project.name}
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"

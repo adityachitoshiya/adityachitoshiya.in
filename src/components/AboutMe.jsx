@@ -4,6 +4,8 @@ import { usePortfolio } from '../context/PortfolioContext';
 import { Link } from 'react-router-dom';
 import Button from './Button';
 
+import MediaRenderer from './MediaRenderer';
+
 const AboutMe = () => {
   const { portfolioData } = usePortfolio();
   const { aboutMe } = portfolioData;
@@ -51,7 +53,7 @@ const AboutMe = () => {
           transition={{ duration: 0.8 }}
           className="w-full h-[500px] md:h-[700px]"
         >
-          <img 
+          <MediaRenderer 
             src={aboutMe.image} 
             alt="About Me Portrait" 
             className="w-full h-full object-cover rounded-[32px] grayscale hover:grayscale-0 transition-all duration-500"

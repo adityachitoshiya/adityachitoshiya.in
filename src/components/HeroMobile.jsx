@@ -6,6 +6,8 @@ import { animateHeroEntrance } from './gsapAnimations';
 
 gsap.registerPlugin(ScrollTrigger);
 
+import MediaRenderer from './MediaRenderer';
+
 export default function HeroMobile({
   hero,
   global,
@@ -91,7 +93,7 @@ export default function HeroMobile({
 
         {/* Hero Image (normal inline flow, no absolute positioning) */}
         <div className="w-full max-w-[260px] px-4 flex justify-center">
-          <img
+          <MediaRenderer
             ref={photoRef}
             src={hero.heroImage}
             alt={global.name}

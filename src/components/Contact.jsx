@@ -4,6 +4,8 @@ import { Mail, Globe, Phone, User } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import GigList from './GigList';
 
+import MediaRenderer from './MediaRenderer';
+
 const Contact = () => {
   const { portfolioData } = usePortfolio();
   const { contact, global } = portfolioData;
@@ -58,7 +60,7 @@ const Contact = () => {
             transition={{ duration: 0.8 }}
             className="w-full h-[500px] md:h-[700px]"
           >
-            <img 
+            <MediaRenderer 
               src={contact?.image} 
               alt="Contact Portrait" 
               className="w-full h-full object-cover rounded-[32px] grayscale hover:grayscale-0 transition-all duration-500"

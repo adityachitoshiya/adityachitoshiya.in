@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Star, Heart } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 
+import MediaRenderer from './MediaRenderer';
+
 const GigCard = ({ gig, index }) => {
   const { portfolioData } = usePortfolio();
   const name = portfolioData?.global?.name || 'Aditya C.';
@@ -28,7 +30,7 @@ const GigCard = ({ gig, index }) => {
     >
       {/* Gig Image/Thumbnail */}
       <div className="relative w-full aspect-video overflow-hidden bg-[#1a1a1a]">
-        <img
+        <MediaRenderer
           src={gig.image}
           alt={gig.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

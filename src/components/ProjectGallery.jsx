@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { usePortfolio } from '../context/PortfolioContext';
 
+import MediaRenderer from './MediaRenderer';
+
 const ProjectGallery = () => {
   const { portfolioData } = usePortfolio();
   const { projectPortfolio } = portfolioData;
@@ -47,7 +49,7 @@ const ProjectGallery = () => {
                     transition={{ duration: 0.6, delay: index * 0.2 }}
                     className="overflow-hidden rounded-[32px] h-[400px] md:h-[600px] group cursor-pointer"
                 >
-                    <img 
+                    <MediaRenderer 
                         src={imgUrl} 
                         alt={`Gallery Item ${index + 1}`} 
                         className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
