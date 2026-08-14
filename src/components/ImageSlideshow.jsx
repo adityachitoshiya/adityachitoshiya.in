@@ -5,32 +5,36 @@ import { usePortfolio } from '../context/PortfolioContext';
 
 import MediaRenderer from './MediaRenderer';
 
+const defaultSlideshowImages = [
+  {
+    url: "/ai-images/gallery_1_1784234838549.png",
+    title: "Creative Studio & Motion Design",
+    caption: "Visual Storytelling"
+  },
+  {
+    url: "/ai-images/gallery_2_1784234862332.png",
+    title: "Brand Identity & Product Design",
+    caption: "UI/UX & Systems"
+  },
+  {
+    url: "/ai-images/gallery_3_1784234882940.png",
+    title: "AI & Future Tech Exploration",
+    caption: "Automations & Code"
+  }
+];
+
 const ImageSlideshow = () => {
   const { portfolioData } = usePortfolio();
   
-  // Use the dedicated slideshow images from Admin, or fallback to project cover images / generic gallery
+  // Use dedicated slideshow images from Admin (data.aboutMe.slideshowImages)
   const adminSlideshowImages = portfolioData?.aboutMe?.slideshowImages || [];
-  const projects = portfolioData?.projectPortfolio?.projects || [];
   
   // Normalize into { url, title, caption } objects
   const normalizedAdminImages = adminSlideshowImages.map(item => 
     typeof item === 'string' ? { url: item, title: '', caption: '' } : item
   );
   
-  const projectImages = projects.filter(p => p.coverImage).map(p => ({ 
-    url: p.coverImage, 
-    title: p.name || '', 
-    caption: p.type || '' 
-  }));
-  
-  const fallbackImages = portfolioData?.projectPortfolio?.images || [];
-  const normalizedFallbackImages = fallbackImages.map(item => 
-    typeof item === 'string' ? { url: item, title: '', caption: '' } : item
-  );
-  
-  const slideImages = normalizedAdminImages.length > 0 
-    ? normalizedAdminImages 
-    : (projectImages.length > 0 ? projectImages.slice(0, 8) : normalizedFallbackImages);
+  const slideImages = normalizedAdminImages.length > 0 ? normalizedAdminImages : defaultSlideshowImages;
 
   const [currentIndex, setCurrentIndex] = useState(0);
 

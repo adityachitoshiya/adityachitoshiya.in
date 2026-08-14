@@ -29,7 +29,24 @@ export const portfolioData = {
   "aboutMe": {
     "headline": "ABOUT ME",
     "text": "My mission is to turn ideas into powerful digital experiences. I combine design, technology, and AI into one integrated skillset — moving fluidly between motion graphics, UI/UX design, and Python-driven automation. I'm currently building a future-ready studio where designers, developers, and AI systems work as one.",
-    "image": "/uploads/1784200419613-715959562.jpg"
+    "image": "/uploads/1784200419613-715959562.jpg",
+    "slideshowImages": [
+      {
+        "url": "/ai-images/gallery_1_1784234838549.png",
+        "title": "Creative Studio & Motion Design",
+        "caption": "Visual Storytelling"
+      },
+      {
+        "url": "/ai-images/gallery_2_1784234862332.png",
+        "title": "Brand Identity & Product Design",
+        "caption": "UI/UX & Systems"
+      },
+      {
+        "url": "/ai-images/gallery_3_1784234882940.png",
+        "title": "AI & Future Tech Exploration",
+        "caption": "Automations & Code"
+      }
+    ]
   },
   "education": {
     "headline": "EDUCATION",
