@@ -27,38 +27,13 @@ const ImageSlideshow = () => {
   const { portfolioData } = usePortfolio();
   
   const adminSlideshowImages = portfolioData?.aboutMe?.slideshowImages || [];
-  const projects = portfolioData?.projectPortfolio?.projects || [];
-  const galleryImages = portfolioData?.projectPortfolio?.images || [];
 
-  const normalizedAdmin = adminSlideshowImages.map(item => 
-    typeof item === 'string' ? { url: item, title: '', caption: '' } : item
-  );
+  const normalizedAdmin = adminSlideshowImages
+    .map(item => typeof item === 'string' ? { url: item, title: '', caption: '' } : item)
+    .filter(item => item && item.url);
 
-  const normalizedProjects = projects.filter(p => p.coverImage || p.image).map(p => ({
-    url: p.coverImage || p.image,
-    title: p.name || p.title || '',
-    caption: p.type || p.category || ''
-  }));
-
-  const normalizedGallery = galleryImages.map(item => 
-    typeof item === 'string' ? { url: item, title: '', caption: '' } : item
-  );
-
-  // Combine custom admin slides with project portfolio candidates (Suniel Shetty, etc.)
-  const allCandidates = [
-    ...normalizedAdmin,
-    ...normalizedProjects,
-    ...normalizedGallery,
-    ...defaultSlideshowImages
-  ];
-
-  const seenUrls = new Set();
-  const slideImages = allCandidates.filter(item => {
-    if (!item || !item.url) return false;
-    if (seenUrls.has(item.url)) return false;
-    seenUrls.add(item.url);
-    return true;
-  });
+  // Display exclusively the images uploaded in Admin -> Visual Gallery (Slideshow)
+  const slideImages = normalizedAdmin.length > 0 ? normalizedAdmin : defaultSlideshowImages;
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
