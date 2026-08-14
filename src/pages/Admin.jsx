@@ -293,13 +293,77 @@ const Admin = () => {
         }
     };
 
-    const uploadMediaBlob = async (blob, section, key, index = null) => {
-        setUploading(true);
-        const formData = new FormData();
-        // Append blob as file
-        formData.append('media', blob, 'upload.webp');
+    const compressImageBlobIfNeeded = async (fileOrBlob) => {
+        if (fileOrBlob.type && !fileOrBlob.type.startsWith('image/')) {
+            return fileOrBlob;
+        }
+        if (fileOrBlob.size <= 2 * 1024 * 1024) {
+            return fileOrBlob;
+        }
 
+        return new Promise((resolve) => {
+            const img = new Image();
+            const url = URL.createObjectURL(fileOrBlob);
+
+            img.onload = () => {
+                URL.revokeObjectURL(url);
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                const maxDim = 2048;
+                if (width > maxDim || height > maxDim) {
+                    if (width > height) {
+                        height = Math.round((height * maxDim) / width);
+                        width = maxDim;
+                    } else {
+                        width = Math.round((width * maxDim) / height);
+                        height = maxDim;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                canvas.toBlob(
+                    (compressedBlob) => {
+                        if (compressedBlob) {
+                            resolve(compressedBlob);
+                        } else {
+                            resolve(fileOrBlob);
+                        }
+                    },
+                    'image/webp',
+                    0.82
+                );
+            };
+
+            img.onerror = () => {
+                URL.revokeObjectURL(url);
+                resolve(fileOrBlob);
+            };
+
+            img.src = url;
+        });
+    };
+
+    const uploadMediaBlob = async (rawBlob, section, key, index = null) => {
+        setUploading(true);
         try {
+            const blob = await compressImageBlobIfNeeded(rawBlob);
+
+            if (blob.size > 4.5 * 1024 * 1024) {
+                alert(`File size (${(blob.size / (1024 * 1024)).toFixed(1)}MB) exceeds the 4.5MB limit for live server uploads. Please compress your file/video under 4.5MB before uploading.`);
+                setUploading(false);
+                return;
+            }
+
+            const formData = new FormData();
+            const filename = blob.type && blob.type.includes('video') ? 'upload.mp4' : 'upload.webp';
+            formData.append('media', blob, filename);
+
             const res = await fetch('/api/upload', {
                 method: 'POST',
                 headers: {
@@ -307,6 +371,17 @@ const Admin = () => {
                 },
                 body: formData
             });
+
+            if (!res.ok) {
+                if (res.status === 413) {
+                    alert("File payload too large (413). Please upload a file smaller than 4.5MB.");
+                } else {
+                    alert(`Upload failed with server status ${res.status}.`);
+                }
+                setUploading(false);
+                return;
+            }
+
             const result = await res.json();
             
             if (result.success) {
@@ -348,24 +423,44 @@ const Admin = () => {
             }
         } catch (err) {
             console.error("Upload failed:", err);
-            alert("File upload failed.");
+            alert("File upload failed. Please try a smaller file.");
         } finally {
             setUploading(false);
             setCropModal({ isOpen: false, imageSrc: null }); // Close modal
         }
     };
 
-    const uploadProjectMediaBlob = async (blob, index, isCover, galleryIndex = null) => {
+    const uploadProjectMediaBlob = async (rawBlob, index, isCover, galleryIndex = null) => {
         setUploading(true);
-        const formData = new FormData();
-        formData.append('media', blob, 'upload.webp');
-
         try {
+            const blob = await compressImageBlobIfNeeded(rawBlob);
+
+            if (blob.size > 4.5 * 1024 * 1024) {
+                alert(`File size (${(blob.size / (1024 * 1024)).toFixed(1)}MB) exceeds the 4.5MB limit for live server uploads. Please compress your file/video under 4.5MB before uploading.`);
+                setUploading(false);
+                return;
+            }
+
+            const formData = new FormData();
+            const filename = blob.type && blob.type.includes('video') ? 'upload.mp4' : 'upload.webp';
+            formData.append('media', blob, filename);
+
             const res = await fetch('/api/upload', { 
                 method: 'POST', 
                 headers: { 'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}` },
                 body: formData 
             });
+
+            if (!res.ok) {
+                if (res.status === 413) {
+                    alert("File payload too large (413). Please upload a file smaller than 4.5MB.");
+                } else {
+                    alert(`Upload failed with server status ${res.status}.`);
+                }
+                setUploading(false);
+                return;
+            }
+
             const result = await res.json();
             
             if (result.success) {
@@ -384,7 +479,7 @@ const Admin = () => {
             }
         } catch (err) {
             console.error("Upload failed:", err);
-            alert("File upload failed.");
+            alert("File upload failed. Please try a smaller file.");
         } finally {
             setUploading(false);
             setCropModal({ isOpen: false, imageSrc: null });
