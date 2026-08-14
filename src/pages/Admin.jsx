@@ -16,7 +16,7 @@ const Admin = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
-    const [activeTab, setActiveTab] = useState('global');
+    const [activeTab, setActiveTab] = useState('homepage');
     const [dragActiveField, setDragActiveField] = useState(null);
     const [autoSaveStatus, setAutoSaveStatus] = useState('idle'); // 'idle' | 'saving' | 'saved' | 'error'
     const isInitialMount = useRef(true);
@@ -571,20 +571,54 @@ const Admin = () => {
                     </div>
                 )}
 
-                {/* Tab Navigation */}
-                <div className="flex flex-wrap gap-3 mb-8 border-b border-white/10 pb-4">
-                    {['global', 'hero', 'welcome', 'gallery', 'creatives', 'brands', 'about', 'work', 'education', 'slideshow', 'contact'].map(tab => (
+                {/* Main Tab Navigation */}
+                <div className="flex flex-wrap gap-3 mb-6 border-b border-white/10 pb-4">
+                    {[
+                        { id: 'homepage', label: '🏠 HOMEPAGE (ALL CONTENT)' },
+                        { id: 'global', label: '⚙️ Theme & Availability' },
+                        { id: 'creatives', label: '📁 All Projects List' },
+                        { id: 'slideshow', label: '🖼️ Visual Slideshow' }
+                    ].map(tab => (
                         <button
-                            key={tab}
-                            onClick={() => setActiveTab(tab)}
-                            className={`px-4 py-2 rounded-full uppercase tracking-wider font-heading text-xs sm:text-sm transition-all ${
-                                activeTab === tab ? 'bg-accent text-background shadow-lg scale-105 font-bold' : 'bg-white/5 text-muted hover:bg-white/10 hover:text-white'
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`px-5 py-2.5 rounded-full uppercase tracking-wider font-heading text-xs sm:text-sm transition-all ${
+                                activeTab === tab.id 
+                                    ? 'bg-accent text-background shadow-xl scale-105 font-bold' 
+                                    : 'bg-white/5 text-muted hover:bg-white/10 hover:text-white'
                             }`}
                         >
-                            {tab === 'gallery' ? 'Project Portfolio (Home)' : tab === 'creatives' ? 'Projects List' : tab === 'brands' ? 'Brands & Logos' : tab === 'slideshow' ? 'Slideshow' : tab === 'about' ? 'About Us' : tab === 'work' ? 'Work Exp' : tab === 'education' ? 'Education' : tab === 'contact' ? 'Contact' : tab}
+                            {tab.label}
                         </button>
                     ))}
                 </div>
+
+                {/* Sticky Quick Jump Bar for Homepage Tab */}
+                {activeTab === 'homepage' && (
+                    <div className="bg-[#141414]/95 border border-white/15 rounded-2xl p-3.5 mb-8 flex flex-wrap items-center gap-2 sticky top-4 z-30 backdrop-blur-md shadow-2xl">
+                        <span className="text-xs font-bold text-accent uppercase tracking-wider px-2 flex items-center gap-1">
+                            ⚡ Quick Jump:
+                        </span>
+                        {[
+                            { id: 'admin-hero', label: '1. Hero' },
+                            { id: 'admin-welcome', label: '2. Welcome 1:1' },
+                            { id: 'admin-portfolio', label: '3. Project Portfolio' },
+                            { id: 'admin-brands', label: '4. Brands & Logos' },
+                            { id: 'admin-about', label: '5. About Me' },
+                            { id: 'admin-work', label: '6. Work Exp' },
+                            { id: 'admin-education', label: '7. Education' },
+                            { id: 'admin-contact', label: '8. Contact' },
+                        ].map(item => (
+                            <a
+                                key={item.id}
+                                href={`#${item.id}`}
+                                className="text-xs bg-white/10 hover:bg-accent hover:text-black text-white px-3 py-1.5 rounded-lg transition-all font-semibold uppercase tracking-wider"
+                            >
+                                {item.label}
+                            </a>
+                        ))}
+                    </div>
+                )}
 
                 {/* Section: Global Settings */}
                 {activeTab === 'global' && (
@@ -731,27 +765,31 @@ const Admin = () => {
                 )}
 
                 {/* Section: Hero */}
-                {activeTab === 'hero' && (
-                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Hero Section</h2>
+                {(activeTab === 'homepage' || activeTab === 'hero') && (
+                <section id="admin-hero" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">1. Hero Section</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-muted text-sm mb-2">Headline</label>
+                            <label className="block text-muted text-sm mb-2 font-medium">Headline</label>
                             <input value={data.hero.headline} onChange={(e) => handleTextChange(e, 'hero', 'headline')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
                         </div>
                         <div>
-                            <label className="block text-muted text-sm mb-2">Accent Word</label>
+                            <label className="block text-muted text-sm mb-2 font-medium">Accent Word</label>
                             <input value={data.hero.accentWord} onChange={(e) => handleTextChange(e, 'hero', 'accentWord')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
                         </div>
                         <div>
-                            <label className="block text-muted text-sm mb-2">Hero Image</label>
-                            <img src={data.hero.heroImage} alt="Hero" className="w-full h-48 object-cover rounded-xl mb-3" />
+                            <label className="block text-muted text-sm mb-2 font-medium">Hero Media (Image or Video)</label>
+                            {isVideoUrl(data.hero.heroImage) ? (
+                                <video src={data.hero.heroImage} autoPlay loop muted playsInline className="w-full h-48 object-cover rounded-xl mb-3" />
+                            ) : (
+                                <img src={data.hero.heroImage} alt="Hero" className="w-full h-48 object-cover rounded-xl mb-3" />
+                            )}
                             <div className="flex gap-2">
                                 <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
                                     <Upload size={16} /> Replace
                                     <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'hero', 'heroImage', null, 'heroPhoto')} accept="image/*,video/*" />
                                 </label>
-                                {data.hero.heroImage && (
+                                {data.hero.heroImage && !isVideoUrl(data.hero.heroImage) && (
                                     <button onClick={() => handleEditImage(data.hero.heroImage, 'hero', 'heroImage', null, 'heroPhoto')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
                                         <Crop size={16} /> Edit
                                     </button>
@@ -763,12 +801,12 @@ const Admin = () => {
                 )}
 
                 {/* Section: Welcome */}
-                {activeTab === 'welcome' && (
-                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                {(activeTab === 'homepage' || activeTab === 'welcome') && (
+                <section id="admin-welcome" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
                         <div>
-                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">Welcome Section</h2>
-                            <p className="text-muted text-sm mt-1">Upload images or videos in 1:1 square ratio with Drag & Drop support.</p>
+                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">2. Welcome Section (1:1 Media)</h2>
+                            <p className="text-muted text-sm mt-1 font-light">Upload images or videos in 1:1 square ratio with Drag & Drop support.</p>
                         </div>
                         <span className="bg-accent/10 border border-accent/30 text-accent px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 self-start sm:self-auto">
                             <Video size={14} /> 1:1 Video + Image Enabled
@@ -897,20 +935,60 @@ const Admin = () => {
                 </section>
                 )}
 
-                {/* Section: Work Experience */}
-                {activeTab === 'work' && (
-                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Work Experience Section</h2>
+                {/* Section: About Us */}
+                {(activeTab === 'homepage' || activeTab === 'about') && (
+                <section id="admin-about" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">5. About Me Section</h2>
                     <div className="grid grid-cols-1 gap-6">
                         <div>
-                            <label className="block text-muted text-sm mb-2">Section Headline</label>
+                            <label className="block text-muted text-sm mb-2 font-medium">Headline</label>
+                            <input value={data.aboutMe?.headline || ''} onChange={(e) => handleTextChange(e, 'aboutMe', 'headline')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                        </div>
+                        <div>
+                            <label className="block text-muted text-sm mb-2 font-medium">Biography (New lines create paragraphs)</label>
+                            <textarea 
+                                value={data.aboutMe?.text || ''} 
+                                onChange={(e) => handleTextChange(e, 'aboutMe', 'text')} 
+                                className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none h-48 resize-y" 
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-muted text-sm mb-2 font-medium">Portrait Media (Image or Video)</label>
+                            {isVideoUrl(data.aboutMe?.image) ? (
+                                <video src={data.aboutMe?.image} autoPlay loop muted playsInline className="w-48 h-48 object-cover rounded-xl mb-3" />
+                            ) : (
+                                <img src={data.aboutMe?.image} alt="About Me" className="w-48 h-48 object-cover rounded-xl mb-3" />
+                            )}
+                            <div className="flex gap-2 w-48">
+                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-2 py-2 rounded-lg flex items-center justify-center gap-1 transition-colors text-xs font-semibold uppercase tracking-wider">
+                                    <Upload size={14} /> Replace
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'image', null, 'aboutImage')} accept="image/*,video/*" />
+                                </label>
+                                {data.aboutMe?.image && !isVideoUrl(data.aboutMe?.image) && (
+                                    <button onClick={() => handleEditImage(data.aboutMe.image, 'aboutMe', 'image', null, 'aboutImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-2 py-2 rounded-lg flex items-center justify-center gap-1 transition-colors text-xs font-semibold uppercase tracking-wider">
+                                        <Crop size={14} /> Edit
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                )}
+
+                {/* Section: Work Experience */}
+                {(activeTab === 'homepage' || activeTab === 'work') && (
+                <section id="admin-work" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">6. Work Experience Section</h2>
+                    <div className="grid grid-cols-1 gap-6">
+                        <div>
+                            <label className="block text-muted text-sm mb-2 font-medium">Section Headline</label>
                             <input value={data.workExperience?.headline || ''} onChange={(e) => handleTextChange(e, 'workExperience', 'headline')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
                         </div>
                         
                         <div>
                             <div className="flex items-center justify-between mb-4">
-                                <label className="block text-muted text-sm">Experience Items</label>
-                                <button onClick={handleAddWorkExperienceItem} className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg flex items-center gap-2 text-sm transition-colors">
+                                <label className="block text-muted text-sm font-medium">Experience Items</label>
+                                <button onClick={handleAddWorkExperienceItem} className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg flex items-center gap-2 text-sm transition-colors font-semibold">
                                     <Plus size={14} /> Add Item
                                 </button>
                             </div>
@@ -925,7 +1003,7 @@ const Admin = () => {
                                         </button>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                             <div>
-                                                <label className="block text-white/50 text-xs mb-1">Year(s)</label>
+                                                <label className="block text-white/50 text-xs mb-1 font-medium">Year(s)</label>
                                                 <input 
                                                     value={item.year} 
                                                     onChange={(e) => handleWorkExperienceItemChange(index, 'year', e.target.value)}
@@ -934,7 +1012,7 @@ const Admin = () => {
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-white/50 text-xs mb-1">Company / Role</label>
+                                                <label className="block text-white/50 text-xs mb-1 font-medium">Company / Role</label>
                                                 <input 
                                                     value={item.company} 
                                                     onChange={(e) => handleWorkExperienceItemChange(index, 'company', e.target.value)}
@@ -944,7 +1022,7 @@ const Admin = () => {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-white/50 text-xs mb-1">Description</label>
+                                            <label className="block text-white/50 text-xs mb-1 font-medium">Description</label>
                                             <textarea 
                                                 value={item.description} 
                                                 onChange={(e) => handleWorkExperienceItemChange(index, 'description', e.target.value)}
@@ -959,30 +1037,38 @@ const Admin = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6 border-t border-white/10 pt-8">
                             <div>
-                                <label className="block text-muted text-sm mb-2">Image 1 (Top)</label>
-                                <img src={data.workExperience?.image1} alt="Work 1" className="w-full h-48 object-cover rounded-xl mb-3" />
+                                <label className="block text-muted text-sm mb-2 font-medium">Media 1 (Top Image or Video)</label>
+                                {isVideoUrl(data.workExperience?.image1) ? (
+                                    <video src={data.workExperience?.image1} autoPlay loop muted playsInline className="w-full h-48 object-cover rounded-xl mb-3" />
+                                ) : (
+                                    <img src={data.workExperience?.image1} alt="Work 1" className="w-full h-48 object-cover rounded-xl mb-3" />
+                                )}
                                 <div className="flex gap-2">
-                                    <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                    <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                         <Upload size={16} /> Replace
-                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'workExperience', 'image1', null, 'experienceImage')} accept="image/*" />
+                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'workExperience', 'image1', null, 'experienceImage')} accept="image/*,video/*" />
                                     </label>
-                                    {data.workExperience?.image1 && (
-                                        <button onClick={() => handleEditImage(data.workExperience.image1, 'workExperience', 'image1', null, 'experienceImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                    {data.workExperience?.image1 && !isVideoUrl(data.workExperience?.image1) && (
+                                        <button onClick={() => handleEditImage(data.workExperience.image1, 'workExperience', 'image1', null, 'experienceImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                             <Crop size={16} /> Edit
                                         </button>
                                     )}
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-muted text-sm mb-2">Image 2 (Bottom)</label>
-                                <img src={data.workExperience?.image2} alt="Work 2" className="w-full h-48 object-cover rounded-xl mb-3" />
+                                <label className="block text-muted text-sm mb-2 font-medium">Media 2 (Bottom Image or Video)</label>
+                                {isVideoUrl(data.workExperience?.image2) ? (
+                                    <video src={data.workExperience?.image2} autoPlay loop muted playsInline className="w-full h-48 object-cover rounded-xl mb-3" />
+                                ) : (
+                                    <img src={data.workExperience?.image2} alt="Work 2" className="w-full h-48 object-cover rounded-xl mb-3" />
+                                )}
                                 <div className="flex gap-2">
-                                    <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                    <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                         <Upload size={16} /> Replace
-                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'workExperience', 'image2', null, 'experienceImage')} accept="image/*" />
+                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'workExperience', 'image2', null, 'experienceImage')} accept="image/*,video/*" />
                                     </label>
-                                    {data.workExperience?.image2 && (
-                                        <button onClick={() => handleEditImage(data.workExperience.image2, 'workExperience', 'image2', null, 'experienceImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                    {data.workExperience?.image2 && !isVideoUrl(data.workExperience?.image2) && (
+                                        <button onClick={() => handleEditImage(data.workExperience.image2, 'workExperience', 'image2', null, 'experienceImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                             <Crop size={16} /> Edit
                                         </button>
                                     )}
@@ -994,24 +1080,24 @@ const Admin = () => {
                 )}
 
                 {/* Section: Education */}
-                {activeTab === 'education' && (
-                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                {(activeTab === 'homepage' || activeTab === 'education') && (
+                <section id="admin-education" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">Education Section</h2>
+                        <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">7. Education Section</h2>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {/* Text Content */}
                         <div className="flex flex-col gap-6">
                             <div>
-                                <label className="block text-muted text-sm mb-2">Headline</label>
+                                <label className="block text-muted text-sm mb-2 font-medium">Headline</label>
                                 <input value={data.education?.headline || ''} onChange={(e) => handleTextChange(e, 'education', 'headline')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
                             </div>
 
                             <div>
                                 <div className="flex justify-between items-center mb-2">
-                                    <label className="block text-muted text-sm">Timeline Items</label>
-                                    <button onClick={handleAddEducationItem} className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg flex items-center gap-2 text-sm transition-colors">
+                                    <label className="block text-muted text-sm font-medium">Timeline Items</label>
+                                    <button onClick={handleAddEducationItem} className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg flex items-center gap-2 text-sm transition-colors font-semibold">
                                         <Plus size={16} /> Add Item
                                     </button>
                                 </div>
@@ -1027,7 +1113,7 @@ const Admin = () => {
                                         
                                         <div className="grid grid-cols-2 gap-4 mb-4 mt-2">
                                             <div>
-                                                <label className="block text-white/50 text-xs mb-1">Year(s)</label>
+                                                <label className="block text-white/50 text-xs mb-1 font-medium">Year(s)</label>
                                                 <input 
                                                     value={item.year || ''} 
                                                     onChange={(e) => handleEducationItemChange(index, 'year', e.target.value)}
@@ -1036,7 +1122,7 @@ const Admin = () => {
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-white/50 text-xs mb-1">Institution</label>
+                                                <label className="block text-white/50 text-xs mb-1 font-medium">Institution</label>
                                                 <input 
                                                     value={item.institution || ''} 
                                                     onChange={(e) => handleEducationItemChange(index, 'institution', e.target.value)}
@@ -1046,7 +1132,7 @@ const Admin = () => {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-white/50 text-xs mb-1">Description</label>
+                                            <label className="block text-white/50 text-xs mb-1 font-medium">Description</label>
                                             <textarea 
                                                 value={item.description || ''} 
                                                 onChange={(e) => handleEducationItemChange(index, 'description', e.target.value)}
@@ -1061,55 +1147,23 @@ const Admin = () => {
                         {/* Images */}
                         <div className="flex flex-col gap-6">
                             <div>
-                                <label className="block text-muted text-sm mb-2">Banner Image</label>
-                                <img src={data.education?.bannerImage} alt="Education Banner" className="w-full h-48 object-cover rounded-xl mb-3" />
+                                <label className="block text-muted text-sm mb-2 font-medium">Banner Media (Image or Video)</label>
+                                {isVideoUrl(data.education?.bannerImage) ? (
+                                    <video src={data.education?.bannerImage} autoPlay loop muted playsInline className="w-full h-48 object-cover rounded-xl mb-3" />
+                                ) : (
+                                    <img src={data.education?.bannerImage} alt="Education Banner" className="w-full h-48 object-cover rounded-xl mb-3" />
+                                )}
                                 <div className="flex gap-2">
-                                    <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                    <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                         <Upload size={16} /> Replace
-                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'education', 'bannerImage', null, 'educationBanner')} accept="image/*" />
+                                        <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'education', 'bannerImage', null, 'educationBanner')} accept="image/*,video/*" />
                                     </label>
-                                    {data.education?.bannerImage && (
-                                        <button onClick={() => handleEditImage(data.education.bannerImage, 'education', 'bannerImage', null, 'educationBanner')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                    {data.education?.bannerImage && !isVideoUrl(data.education?.bannerImage) && (
+                                        <button onClick={() => handleEditImage(data.education.bannerImage, 'education', 'bannerImage', null, 'educationBanner')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                             <Crop size={16} /> Edit
                                         </button>
                                     )}
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                )}
-
-                {/* Section: About Us */}
-                {activeTab === 'about' && (
-                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">About Me Section</h2>
-                    <div className="grid grid-cols-1 gap-6">
-                        <div>
-                            <label className="block text-muted text-sm mb-2">Headline</label>
-                            <input value={data.aboutMe?.headline || ''} onChange={(e) => handleTextChange(e, 'aboutMe', 'headline')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
-                        </div>
-                        <div>
-                            <label className="block text-muted text-sm mb-2">Biography (New lines create paragraphs)</label>
-                            <textarea 
-                                value={data.aboutMe?.text || ''} 
-                                onChange={(e) => handleTextChange(e, 'aboutMe', 'text')} 
-                                className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none h-48 resize-y" 
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-muted text-sm mb-2">Portrait Image</label>
-                            <img src={data.aboutMe?.image} alt="About Me" className="w-48 h-48 object-cover rounded-xl mb-3" />
-                            <div className="flex gap-2 w-48">
-                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-2 py-2 rounded-lg flex items-center justify-center gap-1 transition-colors text-xs">
-                                    <Upload size={14} /> Replace
-                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'aboutMe', 'image', null, 'aboutImage')} accept="image/*,video/*" />
-                                </label>
-                                {data.aboutMe?.image && (
-                                    <button onClick={() => handleEditImage(data.aboutMe.image, 'aboutMe', 'image', null, 'aboutImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-2 py-2 rounded-lg flex items-center justify-center gap-1 transition-colors text-xs">
-                                        <Crop size={14} /> Edit
-                                    </button>
-                                )}
                             </div>
                         </div>
                     </div>
@@ -1204,12 +1258,12 @@ const Admin = () => {
                 )}
 
                 {/* Section: Project Portfolio (Homepage) */}
-                {activeTab === 'gallery' && (
-                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                {(activeTab === 'homepage' || activeTab === 'gallery') && (
+                <section id="admin-portfolio" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
                         <div>
-                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">Project Portfolio (Homepage Section)</h2>
-                            <p className="text-muted text-sm mt-1">Manage the headline, text description, and feature images for the Homepage #portfolio section.</p>
+                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">3. Project Portfolio (Homepage Grid)</h2>
+                            <p className="text-muted text-sm mt-1">Manage the headline, text description, and featured media for the Homepage #portfolio section.</p>
                         </div>
                     </div>
 
@@ -1341,6 +1395,54 @@ const Admin = () => {
                 </section>
                 )}
 
+                {/* Section: Brands & Logos */}
+                {(activeTab === 'homepage' || activeTab === 'brands') && (
+                <section id="admin-brands" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+                        <div>
+                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">4. Brands & Logos (Marquee)</h2>
+                            <p className="text-muted text-sm mt-1 font-light">Manage brand logos displayed in the marquee banner on the Homepage.</p>
+                        </div>
+                        <label className="cursor-pointer bg-accent text-background px-4 py-2 rounded-full font-bold uppercase tracking-wider flex items-center gap-2 hover:scale-105 transition-all text-xs self-start sm:self-auto">
+                            <Plus size={14} /> Add Brand Logo
+                            <input 
+                                type="file" 
+                                className="hidden" 
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if (!file) return;
+                                    const newIdx = data.brands?.length || 0;
+                                    processUploadedFile(file, 'brands', newIdx, null, 'brandLogo');
+                                }} 
+                                accept="image/*" 
+                            />
+                        </label>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+                        {(data.brands || []).map((brandUrl, index) => (
+                            <div key={index} className="relative group bg-black/40 border border-white/10 rounded-xl p-3 flex flex-col items-center justify-center h-28">
+                                <img src={brandUrl} alt={`Brand ${index + 1}`} className="max-h-12 max-w-full object-contain filter invert opacity-80" />
+                                <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button 
+                                        onClick={() => {
+                                            setData(prev => ({
+                                                ...prev,
+                                                brands: (prev.brands || []).filter((_, i) => i !== index)
+                                            }));
+                                        }}
+                                        className="bg-red-500/80 hover:bg-red-500 text-white p-1 rounded-md"
+                                        title="Delete Logo"
+                                    >
+                                        <Trash2 size={12} />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+                )}
+
                 {/* Section: Visual Gallery Slideshow */}
                 {activeTab === 'slideshow' && (
                 <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
@@ -1425,25 +1527,29 @@ const Admin = () => {
                 )}
 
                 {/* Section: Contact */}
-                {activeTab === 'contact' && (
-                <section className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">Contact Section</h2>
+                {(activeTab === 'homepage' || activeTab === 'contact') && (
+                <section id="admin-contact" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">8. Contact Section</h2>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                         <div>
-                            <label className="block text-muted text-sm mb-2">Headline</label>
+                            <label className="block text-muted text-sm mb-2 font-medium">Headline</label>
                             <input value={data.contact?.headline || ''} onChange={(e) => handleTextChange(e, 'contact', 'headline')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
                         </div>
                         <div className="md:row-span-2">
-                            <label className="block text-muted text-sm mb-2">Contact Portrait</label>
-                            <img src={data.contact?.image} alt="Contact" className="w-full h-48 object-cover rounded-xl mb-3" />
+                            <label className="block text-muted text-sm mb-2 font-medium">Contact Portrait (Image or Video)</label>
+                            {isVideoUrl(data.contact?.image) ? (
+                                <video src={data.contact?.image} autoPlay loop muted playsInline className="w-full h-48 object-cover rounded-xl mb-3" />
+                            ) : (
+                                <img src={data.contact?.image} alt="Contact" className="w-full h-48 object-cover rounded-xl mb-3" />
+                            )}
                             <div className="flex gap-2">
-                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                     <Upload size={16} /> Replace
                                     <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'contact', 'image', null, 'contactImage')} accept="image/*,video/*" />
                                 </label>
-                                {data.contact?.image && (
-                                    <button onClick={() => handleEditImage(data.contact.image, 'contact', 'image', null, 'contactImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                {data.contact?.image && !isVideoUrl(data.contact?.image) && (
+                                    <button onClick={() => handleEditImage(data.contact.image, 'contact', 'image', null, 'contactImage')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                         <Crop size={16} /> Edit
                                     </button>
                                 )}
