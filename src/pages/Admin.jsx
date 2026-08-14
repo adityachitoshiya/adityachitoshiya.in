@@ -768,7 +768,16 @@ const Admin = () => {
                 {/* Section: Hero */}
                 {(activeTab === 'homepage' || activeTab === 'hero') && (
                 <section id="admin-hero" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">1. Hero Section</h2>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+                        <div>
+                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">1. Hero Section</h2>
+                            <p className="text-muted text-sm mt-1 font-light">Main hero section displayed at the top of the homepage.</p>
+                        </div>
+                        <span className="bg-accent/15 border border-accent/30 text-accent px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider self-start sm:self-auto">
+                            Aspect Ratio: 16:9 (Landscape) or 4:5 (Portrait)
+                        </span>
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-muted text-sm mb-2 font-medium">Headline</label>
@@ -778,20 +787,23 @@ const Admin = () => {
                             <label className="block text-muted text-sm mb-2 font-medium">Accent Word</label>
                             <input value={data.hero.accentWord} onChange={(e) => handleTextChange(e, 'hero', 'accentWord')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
                         </div>
-                        <div>
-                            <label className="block text-muted text-sm mb-2 font-medium">Hero Media (Image or Video)</label>
+                        <div className="md:col-span-2">
+                            <div className="flex items-center justify-between mb-2">
+                                <label className="block text-muted text-sm font-medium">Hero Media (Image or Video)</label>
+                                <span className="text-xs text-accent font-mono">Recommended: 16:9 (1920x1080) or 4:5 (1080x1350)</span>
+                            </div>
                             {isVideoUrl(data.hero.heroImage) ? (
-                                <video src={data.hero.heroImage} autoPlay loop muted playsInline className="w-full h-48 object-cover rounded-xl mb-3" />
+                                <video src={data.hero.heroImage} autoPlay loop muted playsInline className="w-full h-56 object-cover rounded-xl mb-3" />
                             ) : (
-                                <img src={data.hero.heroImage} alt="Hero" className="w-full h-48 object-cover rounded-xl mb-3" />
+                                <img src={data.hero.heroImage} alt="Hero" className="w-full h-56 object-cover rounded-xl mb-3" />
                             )}
                             <div className="flex gap-2">
-                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                     <Upload size={16} /> Replace
                                     <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'hero', 'heroImage', null, 'heroPhoto')} accept="image/*,video/*" />
                                 </label>
                                 {data.hero.heroImage && !isVideoUrl(data.hero.heroImage) && (
-                                    <button onClick={() => handleEditImage(data.hero.heroImage, 'hero', 'heroImage', null, 'heroPhoto')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm">
+                                    <button onClick={() => handleEditImage(data.hero.heroImage, 'hero', 'heroImage', null, 'heroPhoto')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-semibold uppercase tracking-wider">
                                         <Crop size={16} /> Edit
                                     </button>
                                 )}
@@ -939,7 +951,15 @@ const Admin = () => {
                 {/* Section: About Us */}
                 {(activeTab === 'homepage' || activeTab === 'about') && (
                 <section id="admin-about" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">5. About Me Section</h2>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+                        <div>
+                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">5. About Me Section</h2>
+                            <p className="text-muted text-sm mt-1 font-light">Biography text and featured portrait media.</p>
+                        </div>
+                        <span className="bg-accent/15 border border-accent/30 text-accent px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider self-start sm:self-auto">
+                            Aspect Ratio: 1:1 Square (1080x1080) or 4:5 Portrait
+                        </span>
+                    </div>
                     <div className="grid grid-cols-1 gap-6">
                         <div>
                             <label className="block text-muted text-sm mb-2 font-medium">Headline</label>
@@ -979,7 +999,15 @@ const Admin = () => {
                 {/* Section: Work Experience */}
                 {(activeTab === 'homepage' || activeTab === 'work') && (
                 <section id="admin-work" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <h2 className="text-2xl font-heading text-accent mb-6 uppercase tracking-wider">6. Work Experience Section</h2>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+                        <div>
+                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">6. Work Experience Section</h2>
+                            <p className="text-muted text-sm mt-1 font-light">Timeline items and featured experience cards.</p>
+                        </div>
+                        <span className="bg-accent/15 border border-accent/30 text-accent px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider self-start sm:self-auto">
+                            Aspect Ratio: 16:9 Landscape (1920x1080)
+                        </span>
+                    </div>
                     <div className="grid grid-cols-1 gap-6">
                         <div>
                             <label className="block text-muted text-sm mb-2 font-medium">Section Headline</label>
@@ -1083,8 +1111,14 @@ const Admin = () => {
                 {/* Section: Education */}
                 {(activeTab === 'homepage' || activeTab === 'education') && (
                 <section id="admin-education" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">7. Education Section</h2>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+                        <div>
+                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">7. Education Section</h2>
+                            <p className="text-muted text-sm mt-1 font-light">Academic background items and banner media.</p>
+                        </div>
+                        <span className="bg-accent/15 border border-accent/30 text-accent px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider self-start sm:self-auto">
+                            Aspect Ratio: 16:9 Landscape (1920x1080)
+                        </span>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -1266,6 +1300,9 @@ const Admin = () => {
                             <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">3. Gigs & Project Portfolio (Homepage Cards)</h2>
                             <p className="text-muted text-sm mt-1 font-light">Manage headline, description, drag & drop media cards, and crop aspect ratio for the homepage portfolio section.</p>
                         </div>
+                        <span className="bg-accent/15 border border-accent/30 text-accent px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider self-start sm:self-auto">
+                            Aspect Ratio: 1:1 Square (1080x1080) or 16:9 Landscape
+                        </span>
                     </div>
 
                     {/* Headline & Description Editor */}
