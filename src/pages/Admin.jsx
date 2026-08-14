@@ -462,12 +462,20 @@ const Admin = () => {
                          return { ...prev, brands: currentBrands };
                     }
                     
+                    const currentSection = prev[section] ? { ...prev[section] } : {};
+                    
                     if (index !== null) {
-                        newData[section][key][index] = uploadedUrl;
+                        const currentArr = Array.isArray(currentSection[key]) ? [...currentSection[key]] : [];
+                        currentArr[index] = uploadedUrl;
+                        currentSection[key] = currentArr;
                     } else {
-                        newData[section][key] = uploadedUrl;
+                        currentSection[key] = uploadedUrl;
                     }
-                    return newData;
+
+                    return {
+                        ...prev,
+                        [section]: currentSection
+                    };
                 });
             }
         } catch (err) {
