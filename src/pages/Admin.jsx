@@ -609,6 +609,7 @@ const Admin = () => {
                             { id: 'admin-work', label: '6. Work Exp' },
                             { id: 'admin-education', label: '7. Education' },
                             { id: 'admin-contact', label: '8. Contact' },
+                            { id: 'admin-latest', label: '9. Latest Project' },
                         ].map(item => (
                             <a
                                 key={item.id}
@@ -1773,6 +1774,183 @@ const Admin = () => {
                         <div>
                             <label className="block text-muted text-sm mb-2">Phone Number</label>
                             <input value={data.global?.phone || ''} onChange={(e) => handleTextChange(e, 'global', 'phone')} className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" />
+                        </div>
+                    </div>
+                </section>
+                )}
+
+                {/* Section 9: Latest Project */}
+                {(activeTab === 'homepage' || activeTab === 'latest') && (
+                <section id="admin-latest" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+                        <div>
+                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">9. Latest Project Section</h2>
+                            <p className="text-muted text-sm mt-1 font-light">Featured latest showcase section on Homepage with main hero media, 2 detail media, and project descriptions.</p>
+                        </div>
+                        <span className="bg-accent/15 border border-accent/30 text-accent px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider self-start sm:self-auto">
+                            Aspect Ratio: 3:4 (Main) & 1:1 (Sub)
+                        </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-6 mb-8">
+                        <div>
+                            <label className="block text-muted text-sm mb-2 font-medium">Section Headline</label>
+                            <input 
+                                value={data.latestProject?.headline || ''} 
+                                onChange={(e) => handleTextChange(e, 'latestProject', 'headline')} 
+                                className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none font-heading text-lg" 
+                            />
+                        </div>
+                    </div>
+
+                    {/* Media Row */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 border-b border-white/10 pb-8">
+                        {/* Main Hero Media */}
+                        <div>
+                            <label className="block text-muted text-sm mb-2 font-medium">Main Hero Media (Left)</label>
+                            {isVideoUrl(data.latestProject?.mainImage) ? (
+                                <video src={data.latestProject?.mainImage} autoPlay loop muted playsInline className="w-full h-56 object-cover rounded-xl mb-3" />
+                            ) : (
+                                <img src={data.latestProject?.mainImage} alt="Latest Main" className="w-full h-56 object-cover rounded-xl mb-3" />
+                            )}
+                            <div className="flex gap-2">
+                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
+                                    <Upload size={14} /> Replace
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'latestProject', 'mainImage', null, 'latestProjectMain')} accept="image/*,video/*" />
+                                </label>
+                                {data.latestProject?.mainImage && !isVideoUrl(data.latestProject?.mainImage) && (
+                                    <button onClick={() => handleEditImage(data.latestProject.mainImage, 'latestProject', 'mainImage', null, 'latestProjectMain')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
+                                        <Crop size={14} /> Edit
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Sub Media 1 */}
+                        <div>
+                            <label className="block text-muted text-sm mb-2 font-medium">Detail Media 1 (Center Left)</label>
+                            {isVideoUrl(data.latestProject?.image1) ? (
+                                <video src={data.latestProject?.image1} autoPlay loop muted playsInline className="w-full h-56 object-cover rounded-xl mb-3" />
+                            ) : (
+                                <img src={data.latestProject?.image1} alt="Detail 1" className="w-full h-56 object-cover rounded-xl mb-3" />
+                            )}
+                            <div className="flex gap-2">
+                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
+                                    <Upload size={14} /> Replace
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'latestProject', 'image1', null, 'latestProjectSub')} accept="image/*,video/*" />
+                                </label>
+                                {data.latestProject?.image1 && !isVideoUrl(data.latestProject?.image1) && (
+                                    <button onClick={() => handleEditImage(data.latestProject.image1, 'latestProject', 'image1', null, 'latestProjectSub')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
+                                        <Crop size={14} /> Edit
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Sub Media 2 */}
+                        <div>
+                            <label className="block text-muted text-sm mb-2 font-medium">Detail Media 2 (Center Right)</label>
+                            {isVideoUrl(data.latestProject?.image2) ? (
+                                <video src={data.latestProject?.image2} autoPlay loop muted playsInline className="w-full h-56 object-cover rounded-xl mb-3" />
+                            ) : (
+                                <img src={data.latestProject?.image2} alt="Detail 2" className="w-full h-56 object-cover rounded-xl mb-3" />
+                            )}
+                            <div className="flex gap-2">
+                                <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
+                                    <Upload size={14} /> Replace
+                                    <input type="file" className="hidden" onChange={(e) => handleFileSelect(e, 'latestProject', 'image2', null, 'latestProjectSub')} accept="image/*,video/*" />
+                                </label>
+                                {data.latestProject?.image2 && !isVideoUrl(data.latestProject?.image2) && (
+                                    <button onClick={() => handleEditImage(data.latestProject.image2, 'latestProject', 'image2', null, 'latestProjectSub')} className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors text-xs font-semibold uppercase tracking-wider">
+                                        <Crop size={14} /> Edit
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Project Writeups */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Project 1 */}
+                        <div className="bg-background border border-white/10 p-5 rounded-2xl">
+                            <h3 className="text-sm font-bold text-accent uppercase mb-3">Project 1 Details</h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-white/50 text-xs mb-1 font-medium">Title</label>
+                                    <input 
+                                        value={data.latestProject?.project1?.title || ''} 
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setData(prev => ({
+                                                ...prev,
+                                                latestProject: {
+                                                    ...prev.latestProject,
+                                                    project1: { ...prev.latestProject?.project1, title: val }
+                                                }
+                                            }));
+                                        }} 
+                                        className="w-full bg-white/5 border border-white/20 rounded-lg p-2.5 text-white text-sm focus:border-accent outline-none" 
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-white/50 text-xs mb-1 font-medium">Description</label>
+                                    <textarea 
+                                        value={data.latestProject?.project1?.description || ''} 
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setData(prev => ({
+                                                ...prev,
+                                                latestProject: {
+                                                    ...prev.latestProject,
+                                                    project1: { ...prev.latestProject?.project1, description: val }
+                                                }
+                                            }));
+                                        }} 
+                                        className="w-full bg-white/5 border border-white/20 rounded-lg p-2.5 text-white text-sm focus:border-accent outline-none h-24 resize-y" 
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Project 2 */}
+                        <div className="bg-background border border-white/10 p-5 rounded-2xl">
+                            <h3 className="text-sm font-bold text-accent uppercase mb-3">Project 2 Details</h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-white/50 text-xs mb-1 font-medium">Title</label>
+                                    <input 
+                                        value={data.latestProject?.project2?.title || ''} 
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setData(prev => ({
+                                                ...prev,
+                                                latestProject: {
+                                                    ...prev.latestProject,
+                                                    project2: { ...prev.latestProject?.project2, title: val }
+                                                }
+                                            }));
+                                        }} 
+                                        className="w-full bg-white/5 border border-white/20 rounded-lg p-2.5 text-white text-sm focus:border-accent outline-none" 
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-white/50 text-xs mb-1 font-medium">Description</label>
+                                    <textarea 
+                                        value={data.latestProject?.project2?.description || ''} 
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setData(prev => ({
+                                                ...prev,
+                                                latestProject: {
+                                                    ...prev.latestProject,
+                                                    project2: { ...prev.latestProject?.project2, description: val }
+                                                }
+                                            }));
+                                        }} 
+                                        className="w-full bg-white/5 border border-white/20 rounded-lg p-2.5 text-white text-sm focus:border-accent outline-none h-24 resize-y" 
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
