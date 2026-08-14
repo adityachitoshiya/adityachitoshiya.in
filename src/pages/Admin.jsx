@@ -349,54 +349,100 @@ const Admin = () => {
         });
     };
 
+    const uploadDirectToCloudinary = async (blob) => {
+        const sigRes = await fetch('/api/cloudinary-signature', {
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}`
+            }
+        });
+
+        if (!sigRes.ok) {
+            throw new Error("Signature endpoint unavailable");
+        }
+
+        const sigData = await sigRes.json();
+        if (!sigData.success || !sigData.cloudName || !sigData.apiKey || !sigData.signature) {
+            throw new Error(sigData.message || "Cloudinary configuration incomplete");
+        }
+
+        const formData = new FormData();
+        const isVid = blob.type && blob.type.includes('video');
+        const filename = isVid ? 'upload.mp4' : 'upload.webp';
+
+        formData.append('file', blob, filename);
+        formData.append('api_key', sigData.apiKey);
+        formData.append('timestamp', sigData.timestamp);
+        formData.append('signature', sigData.signature);
+        formData.append('folder', sigData.folder);
+
+        const resourceType = isVid ? 'video' : 'auto';
+        const cloudUrl = `https://api.cloudinary.com/v1_1/${sigData.cloudName}/${resourceType}/upload`;
+
+        const cloudRes = await fetch(cloudUrl, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!cloudRes.ok) {
+            const errJson = await cloudRes.json().catch(() => ({}));
+            throw new Error(errJson.error?.message || `Cloudinary direct upload failed (${cloudRes.status})`);
+        }
+
+        const cloudResult = await cloudRes.json();
+        return cloudResult.secure_url;
+    };
+
     const uploadMediaBlob = async (rawBlob, section, key, index = null) => {
         setUploading(true);
         try {
             const blob = await compressImageBlobIfNeeded(rawBlob);
+            let uploadedUrl = null;
 
-            if (blob.size > 4.5 * 1024 * 1024) {
-                alert(`File size (${(blob.size / (1024 * 1024)).toFixed(1)}MB) exceeds the 4.5MB limit for live server uploads. Please compress your file/video under 4.5MB before uploading.`);
-                setUploading(false);
-                return;
-            }
-
-            const formData = new FormData();
-            const filename = blob.type && blob.type.includes('video') ? 'upload.mp4' : 'upload.webp';
-            formData.append('media', blob, filename);
-
-            const res = await fetch('/api/upload', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}`
-                },
-                body: formData
-            });
-
-            if (!res.ok) {
-                if (res.status === 413) {
-                    alert("File payload too large (413). Please upload a file smaller than 4.5MB.");
-                } else {
-                    alert(`Upload failed with server status ${res.status}.`);
+            try {
+                uploadedUrl = await uploadDirectToCloudinary(blob);
+            } catch (directErr) {
+                console.warn("Direct Cloudinary upload failed/unavailable, trying backend fallback:", directErr.message);
+                
+                if (blob.size > 4.5 * 1024 * 1024) {
+                    alert(`File size (${(blob.size / (1024 * 1024)).toFixed(1)}MB) exceeds the 4.5MB server limit. ${directErr.message}`);
+                    setUploading(false);
+                    return;
                 }
-                setUploading(false);
-                return;
+
+                const formData = new FormData();
+                const filename = blob.type && blob.type.includes('video') ? 'upload.mp4' : 'upload.webp';
+                formData.append('media', blob, filename);
+
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}` },
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    alert(`Upload failed with server status ${res.status}.`);
+                    setUploading(false);
+                    return;
+                }
+
+                const result = await res.json();
+                if (result.success) {
+                    uploadedUrl = result.url;
+                }
             }
 
-            const result = await res.json();
-            
-            if (result.success) {
+            if (uploadedUrl) {
                 setData(prev => {
                     const newData = { ...prev };
                     
                     if (section === 'aboutMe' && key === 'slideshowImages') {
-                        // Special handling for slideshow images
                          const currentImages = [...(prev.aboutMe?.slideshowImages || [])];
                          if (index !== null) {
                              currentImages[index] = typeof currentImages[index] === 'string' 
-                                ? { url: result.url, title: '', caption: '' }
-                                : { ...currentImages[index], url: result.url };
+                                ? { url: uploadedUrl, title: '', caption: '' }
+                                : { ...currentImages[index], url: uploadedUrl };
                          } else {
-                             currentImages.push({ url: result.url, title: '', caption: '' });
+                             currentImages.push({ url: uploadedUrl, title: '', caption: '' });
                          }
                          return { ...prev, aboutMe: { ...prev.aboutMe, slideshowImages: currentImages } };
                     }
@@ -405,28 +451,28 @@ const Admin = () => {
                          const currentBrands = [...(prev.brands || [])];
                          if (index !== null) {
                              currentBrands[index] = typeof currentBrands[index] === 'string'
-                                ? { name: currentBrands[index], logo: result.url }
-                                : { ...currentBrands[index], logo: result.url };
+                                ? { name: currentBrands[index], logo: uploadedUrl }
+                                : { ...currentBrands[index], logo: uploadedUrl };
                          } else {
-                             currentBrands.push({ name: 'New Brand', logo: result.url });
+                             currentBrands.push({ name: 'New Brand', logo: uploadedUrl });
                          }
                          return { ...prev, brands: currentBrands };
                     }
                     
                     if (index !== null) {
-                        newData[section][key][index] = result.url;
+                        newData[section][key][index] = uploadedUrl;
                     } else {
-                        newData[section][key] = result.url;
+                        newData[section][key] = uploadedUrl;
                     }
                     return newData;
                 });
             }
         } catch (err) {
             console.error("Upload failed:", err);
-            alert("File upload failed. Please try a smaller file.");
+            alert(`File upload failed: ${err.message}`);
         } finally {
             setUploading(false);
-            setCropModal({ isOpen: false, imageSrc: null }); // Close modal
+            setCropModal({ isOpen: false, imageSrc: null });
         }
     };
 
@@ -434,52 +480,58 @@ const Admin = () => {
         setUploading(true);
         try {
             const blob = await compressImageBlobIfNeeded(rawBlob);
+            let uploadedUrl = null;
 
-            if (blob.size > 4.5 * 1024 * 1024) {
-                alert(`File size (${(blob.size / (1024 * 1024)).toFixed(1)}MB) exceeds the 4.5MB limit for live server uploads. Please compress your file/video under 4.5MB before uploading.`);
-                setUploading(false);
-                return;
-            }
+            try {
+                uploadedUrl = await uploadDirectToCloudinary(blob);
+            } catch (directErr) {
+                console.warn("Direct Cloudinary upload failed/unavailable, trying backend fallback:", directErr.message);
 
-            const formData = new FormData();
-            const filename = blob.type && blob.type.includes('video') ? 'upload.mp4' : 'upload.webp';
-            formData.append('media', blob, filename);
-
-            const res = await fetch('/api/upload', { 
-                method: 'POST', 
-                headers: { 'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}` },
-                body: formData 
-            });
-
-            if (!res.ok) {
-                if (res.status === 413) {
-                    alert("File payload too large (413). Please upload a file smaller than 4.5MB.");
-                } else {
-                    alert(`Upload failed with server status ${res.status}.`);
+                if (blob.size > 4.5 * 1024 * 1024) {
+                    alert(`File size (${(blob.size / (1024 * 1024)).toFixed(1)}MB) exceeds the 4.5MB server limit. ${directErr.message}`);
+                    setUploading(false);
+                    return;
                 }
-                setUploading(false);
-                return;
+
+                const formData = new FormData();
+                const filename = blob.type && blob.type.includes('video') ? 'upload.mp4' : 'upload.webp';
+                formData.append('media', blob, filename);
+
+                const res = await fetch('/api/upload', { 
+                    method: 'POST', 
+                    headers: { 'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}` },
+                    body: formData 
+                });
+
+                if (!res.ok) {
+                    alert(`Upload failed with server status ${res.status}.`);
+                    setUploading(false);
+                    return;
+                }
+
+                const result = await res.json();
+                if (result.success) {
+                    uploadedUrl = result.url;
+                }
             }
 
-            const result = await res.json();
-            
-            if (result.success) {
+            if (uploadedUrl) {
                 setData(prev => {
                     const newProjects = [...prev.projectPortfolio.projects];
                     if (isCover) {
-                        newProjects[index].coverImage = result.url;
+                        newProjects[index].coverImage = uploadedUrl;
                     } else if (galleryIndex !== null) {
-                        newProjects[index].gallery[galleryIndex] = result.url;
+                        newProjects[index].gallery[galleryIndex] = uploadedUrl;
                     } else {
                         if (!newProjects[index].gallery) newProjects[index].gallery = [];
-                        newProjects[index].gallery.push(result.url);
+                        newProjects[index].gallery.push(uploadedUrl);
                     }
                     return { ...prev, projectPortfolio: { ...prev.projectPortfolio, projects: newProjects } };
                 });
             }
         } catch (err) {
             console.error("Upload failed:", err);
-            alert("File upload failed. Please try a smaller file.");
+            alert(`File upload failed: ${err.message}`);
         } finally {
             setUploading(false);
             setCropModal({ isOpen: false, imageSrc: null });

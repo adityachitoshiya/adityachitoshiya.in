@@ -188,7 +188,38 @@ app.post('/api/login', (req, res) => {
     }
 });
 
-// POST for single file upload to Cloudinary
+// GET signed parameters for direct browser-to-Cloudinary upload (bypasses Vercel 4.5MB limit)
+app.get('/api/cloudinary-signature', requireAuth, (req, res) => {
+    try {
+        if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+            return res.status(400).json({ success: false, message: 'Cloudinary environment variables missing' });
+        }
+
+        const timestamp = Math.round(new Date().getTime() / 1000);
+        const folder = 'portfolio_uploads';
+        const signature = cloudinary.utils.api_sign_request(
+            {
+                timestamp: timestamp,
+                folder: folder
+            },
+            process.env.CLOUDINARY_API_SECRET
+        );
+
+        res.json({
+            success: true,
+            signature,
+            timestamp,
+            folder,
+            cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+            apiKey: process.env.CLOUDINARY_API_KEY
+        });
+    } catch (err) {
+        console.error("Signature generation error:", err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// POST for single file upload to Cloudinary (fallback)
 app.post('/api/upload', requireAuth, upload.single('media'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ success: false, message: 'No file uploaded' });
