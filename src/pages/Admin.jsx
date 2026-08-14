@@ -602,14 +602,15 @@ const Admin = () => {
                         </span>
                         {[
                             { id: 'admin-hero', label: '1. Hero' },
-                            { id: 'admin-welcome', label: '2. Welcome 1:1' },
-                            { id: 'admin-portfolio', label: '3. Gigs / Portfolio' },
-                            { id: 'admin-brands', label: '4. Brands & Logos' },
-                            { id: 'admin-about', label: '5. About Me' },
-                            { id: 'admin-work', label: '6. Work Exp' },
-                            { id: 'admin-education', label: '7. Education' },
-                            { id: 'admin-contact', label: '8. Contact' },
-                            { id: 'admin-latest', label: '9. Latest Project' },
+                            { id: 'admin-welcome', label: '2. Welcome' },
+                            { id: 'admin-intro', label: '3. Introduction' },
+                            { id: 'admin-portfolio', label: '4. Gigs / Portfolio' },
+                            { id: 'admin-brands', label: '5. Brands & Logos' },
+                            { id: 'admin-about', label: '6. About Me' },
+                            { id: 'admin-work', label: '7. Work Exp' },
+                            { id: 'admin-education', label: '8. Education' },
+                            { id: 'admin-contact', label: '9. Contact' },
+                            { id: 'admin-latest', label: '10. Latest Project' },
                         ].map(item => (
                             <a
                                 key={item.id}
@@ -1043,6 +1044,116 @@ const Admin = () => {
                                                 className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors text-xs font-semibold uppercase tracking-wider"
                                             >
                                                 <Crop size={14} /> Crop (1:1)
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
+                )}
+
+                {/* Section: Introduction (Capsule Media) */}
+                {(activeTab === 'homepage' || activeTab === 'intro') && (
+                <section id="admin-intro" className="mb-12 bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+                        <div>
+                            <h2 className="text-2xl font-heading text-accent uppercase tracking-wider">3. Introduction Section (Capsule Media)</h2>
+                            <p className="text-muted text-sm mt-1 font-light">Manage Introduction section headline, text, and 2 Capsule portrait images/videos.</p>
+                        </div>
+                        <span className="bg-accent/10 border border-accent/30 text-accent px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 self-start sm:self-auto">
+                            <Video size={14} /> 4:5 Capsule Media Enabled
+                        </span>
+                    </div>
+
+                    {/* Headline & Description */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label className="block text-muted text-sm mb-2 font-medium">Headline</label>
+                            <input 
+                                value={data.introduction?.headline || ''} 
+                                onChange={(e) => handleTextChange(e, 'introduction', 'headline')} 
+                                className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none" 
+                                placeholder="CRAFTING DIGITAL EXPERIENCES"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-muted text-sm mb-2 font-medium">Section Text / Bio Snippet</label>
+                            <textarea 
+                                value={data.introduction?.text || ''} 
+                                onChange={(e) => handleTextChange(e, 'introduction', 'text')} 
+                                className="w-full bg-background border border-white/20 rounded-lg p-3 text-white focus:border-accent outline-none h-24 resize-none" 
+                            />
+                        </div>
+                    </div>
+
+                    {/* 2 Capsule Images/Videos */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {[
+                            { key: 'imageTall', title: 'Tall Capsule Portrait (Left)', ratio: 'Aspect Ratio: 4:5 or 9:16 (Tall Capsule)' },
+                            { key: 'imageShort', title: 'Short Capsule Portrait (Right)', ratio: 'Aspect Ratio: 4:5 or 1:1 (Short Capsule)' }
+                        ].map((capsule) => {
+                            const mediaUrl = data.introduction?.[capsule.key];
+                            const isVid = isVideoUrl(mediaUrl);
+                            const isDragActive = dragActiveField === `introduction-${capsule.key}`;
+
+                            return (
+                                <div key={capsule.key} className="bg-black/30 border border-white/10 rounded-2xl p-5 flex flex-col">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <label className="text-sm font-bold text-white uppercase tracking-wider">{capsule.title}</label>
+                                        <span className="text-[10px] bg-accent/15 border border-accent/30 text-accent font-mono px-2.5 py-0.5 rounded-full font-bold uppercase">
+                                            {capsule.ratio}
+                                        </span>
+                                    </div>
+
+                                    <div 
+                                        onDragOver={(e) => handleDragOver(e, `introduction-${capsule.key}`)}
+                                        onDragLeave={handleDragLeave}
+                                        onDrop={(e) => handleDropFile(e, 'introduction', capsule.key, null, 'introductionMedia')}
+                                        className={`relative w-full h-64 rounded-2xl border-2 border-dashed overflow-hidden flex flex-col items-center justify-center transition-all duration-300 ${
+                                            isDragActive 
+                                                ? 'border-accent bg-accent/20 scale-[1.02]' 
+                                                : 'border-white/20 bg-white/5 hover:border-accent/60'
+                                        }`}
+                                    >
+                                        {mediaUrl ? (
+                                            isVid ? (
+                                                <video src={mediaUrl} autoPlay loop muted playsInline className="w-full h-full object-cover rounded-xl" />
+                                            ) : (
+                                                <img src={mediaUrl} alt={capsule.title} className="w-full h-full object-cover rounded-xl" />
+                                            )
+                                        ) : (
+                                            <div className="text-center p-6">
+                                                <Upload size={36} className="text-accent mb-2 animate-bounce mx-auto" />
+                                                <p className="text-white text-sm font-medium">Drag & Drop Image or Video</p>
+                                            </div>
+                                        )}
+
+                                        {isDragActive && (
+                                            <div className="absolute inset-0 bg-black/85 backdrop-blur-sm flex flex-col items-center justify-center text-accent z-30 font-bold border-2 border-accent rounded-2xl">
+                                                <Upload size={40} className="mb-2 animate-bounce text-accent" />
+                                                <p className="uppercase tracking-widest text-xs text-white">Drop File to Upload</p>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex gap-2 mt-4">
+                                        <label className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors text-xs font-semibold uppercase tracking-wider">
+                                            <Upload size={14} /> Replace
+                                            <input 
+                                                type="file" 
+                                                className="hidden" 
+                                                onChange={(e) => handleFileSelect(e, 'introduction', capsule.key, null, 'introductionMedia')} 
+                                                accept="image/*,video/*" 
+                                            />
+                                        </label>
+                                        {mediaUrl && !isVid && (
+                                            <button 
+                                                onClick={() => handleEditImage(mediaUrl, 'introduction', capsule.key, null, 'introductionMedia')} 
+                                                className="flex-1 cursor-pointer bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors text-xs font-semibold uppercase tracking-wider"
+                                            >
+                                                <Crop size={14} /> Edit & Crop
                                             </button>
                                         )}
                                     </div>
