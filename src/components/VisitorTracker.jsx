@@ -33,26 +33,28 @@ const VisitorTracker = () => {
         const visitorId = getOrCreateVisitorId();
         const { sessionId } = getOrCreateSessionId();
 
-        const payload = JSON.stringify({
+        const payloadObj = {
             visitorId,
             sessionId,
             currentPath: location.pathname || '/',
             pageTitle: document.title || 'Portfolio',
             durationIncrement: durationSec,
             isNewSession
-        });
+        };
 
-        if (navigator.sendBeacon) {
-            const blob = new Blob([payload], { type: 'application/json' });
-            navigator.sendBeacon('/api/track-visitor', blob);
-        } else {
-            fetch('/api/track-visitor', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: payload,
-                keepalive: true
-            }).catch(() => {});
-        }
+        const payload = JSON.stringify(payloadObj);
+
+        fetch('/api/track-visitor', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true
+        }).catch(() => {
+            if (navigator.sendBeacon) {
+                const blob = new Blob([payload], { type: 'application/json' });
+                navigator.sendBeacon('/api/track-visitor', blob);
+            }
+        });
     };
 
     useEffect(() => {

@@ -50,7 +50,14 @@ export default async function handler(req, res) {
     try {
         await connectDB();
 
-        const { visitorId, sessionId, currentPath = '/', pageTitle = 'Portfolio', durationIncrement = 0, isNewSession = false } = req.body || {};
+        let body = req.body || {};
+        if (typeof body === 'string') {
+            try { body = JSON.parse(body); } catch (e) {}
+        } else if (Buffer.isBuffer(body)) {
+            try { body = JSON.parse(body.toString('utf-8')); } catch (e) {}
+        }
+
+        const { visitorId, sessionId, currentPath = '/', pageTitle = 'Portfolio', durationIncrement = 0, isNewSession = false } = body || {};
 
         if (!visitorId) {
             return res.status(400).json({ error: 'visitorId is required' });
@@ -101,7 +108,6 @@ export default async function handler(req, res) {
                 lastPage.duration += durationSec;
                 lastPage.timestamp = new Date();
             } else {
-                // Limit max stored page views to 100 per visitor to prevent infinite bloat
                 if (visitor.pagesViewed.length >= 100) {
                     visitor.pagesViewed.shift();
                 }
