@@ -57,23 +57,24 @@ export default async function handler(req, res) {
             try { body = JSON.parse(body.toString('utf-8')); } catch (e) {}
         }
 
-        const { visitorId, sessionId, currentPath = '/', pageTitle = 'Portfolio', durationIncrement = 0, isNewSession = false } = body || {};
-
-        if (!visitorId) {
-            return res.status(400).json({ error: 'visitorId is required' });
-        }
+        const { visitorId = '', sessionId, currentPath = '/', pageTitle = 'Portfolio', durationIncrement = 0, isNewSession = false } = body || {};
 
         const ip = getClientIp(req);
+        if (!ip || ip === 'Unknown') {
+            return res.status(400).json({ error: 'Valid IP is required' });
+        }
+
         const userAgent = req.headers['user-agent'] || '';
         const deviceType = detectDevice(userAgent);
         const durationSec = Math.max(0, parseInt(durationIncrement, 10) || 0);
 
-        let visitor = await Visitor.findOne({ visitorId });
+        // Enforce STRICT 1 IP = 1 Database Entry by finding document by IP
+        let visitor = await Visitor.findOne({ ip });
 
         if (!visitor) {
             visitor = new Visitor({
-                visitorId,
                 ip,
+                visitorId: visitorId || ip,
                 userAgent,
                 deviceType,
                 visitCount: 1,
@@ -88,8 +89,8 @@ export default async function handler(req, res) {
                 }]
             });
         } else {
-            // Update existing visitor
-            visitor.ip = ip || visitor.ip;
+            // Update existing single entry for this IP
+            visitor.visitorId = visitorId || visitor.visitorId || ip;
             visitor.userAgent = userAgent || visitor.userAgent;
             visitor.deviceType = deviceType || visitor.deviceType;
             visitor.lastActive = new Date();
@@ -122,7 +123,7 @@ export default async function handler(req, res) {
 
         await visitor.save();
 
-        return res.status(200).json({ success: true, visitorId: visitor.visitorId });
+        return res.status(200).json({ success: true, ip: visitor.ip });
     } catch (error) {
         console.error("Error tracking visitor:", error);
         return res.status(500).json({ error: 'Internal server error' });

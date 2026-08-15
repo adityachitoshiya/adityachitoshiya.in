@@ -50,10 +50,42 @@ export default async function handler(req, res) {
         await connectDB();
 
         if (req.method === 'GET') {
-            const visitors = await Visitor.find()
+            const rawVisitors = await Visitor.find()
                 .sort({ lastActive: -1 })
-                .limit(200)
                 .lean();
+
+            // Deduplicate in memory by IP & auto-merge any legacy duplicate IP records
+            const ipMap = new Map();
+            const duplicateIdsToDelete = [];
+
+            rawVisitors.forEach(v => {
+                const visitorIp = v.ip || 'Unknown';
+                if (!ipMap.has(visitorIp)) {
+                    ipMap.set(visitorIp, { ...v });
+                } else {
+                    // Merge duplicate entry into primary entry for this IP
+                    const existing = ipMap.get(visitorIp);
+                    existing.visitCount = Math.max(existing.visitCount || 1, v.visitCount || 1) + 1;
+                    existing.totalDuration = (existing.totalDuration || 0) + (v.totalDuration || 0);
+                    if (new Date(v.lastActive) > new Date(existing.lastActive)) {
+                        existing.lastActive = v.lastActive;
+                    }
+                    if (new Date(v.firstVisit) < new Date(existing.firstVisit)) {
+                        existing.firstVisit = v.firstVisit;
+                    }
+                    if (Array.isArray(v.pagesViewed)) {
+                        existing.pagesViewed = [...(existing.pagesViewed || []), ...v.pagesViewed];
+                    }
+                    if (v._id) duplicateIdsToDelete.push(v._id);
+                }
+            });
+
+            // Asynchronously delete duplicate entries from MongoDB so database stays clean (1 IP = 1 Document)
+            if (duplicateIdsToDelete.length > 0) {
+                Visitor.deleteMany({ _id: { $in: duplicateIdsToDelete } }).catch(() => {});
+            }
+
+            const visitors = Array.from(ipMap.values());
 
             const now = new Date();
             const threeMinutesAgo = new Date(now.getTime() - 3 * 60 * 1000);
@@ -94,8 +126,10 @@ export default async function handler(req, res) {
         }
 
         if (req.method === 'DELETE') {
-            const { visitorId } = req.query || {};
-            if (visitorId) {
+            const { ip, visitorId } = req.query || {};
+            if (ip) {
+                await Visitor.deleteOne({ ip });
+            } else if (visitorId) {
                 await Visitor.deleteOne({ visitorId });
             } else {
                 // Clear all visitors

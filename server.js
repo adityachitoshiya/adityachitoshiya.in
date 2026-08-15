@@ -251,24 +251,24 @@ import Visitor from './models/Visitor.js';
 
 app.post('/api/track-visitor', async (req, res) => {
     try {
-        const { visitorId, sessionId, currentPath = '/', pageTitle = 'Portfolio', durationIncrement = 0, isNewSession = false } = req.body || {};
-        if (!visitorId) return res.status(400).json({ error: 'visitorId required' });
-
+        const { visitorId = '', sessionId, currentPath = '/', pageTitle = 'Portfolio', durationIncrement = 0, isNewSession = false } = req.body || {};
         const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || '127.0.0.1';
+        if (!ip) return res.status(400).json({ error: 'IP required' });
+
         const userAgent = req.headers['user-agent'] || '';
         const deviceType = /mobile|android|iphone/i.test(userAgent) ? 'Mobile' : 'Desktop';
         const durationSec = Math.max(0, parseInt(durationIncrement, 10) || 0);
 
-        let visitor = await Visitor.findOne({ visitorId });
+        let visitor = await Visitor.findOne({ ip });
         if (!visitor) {
             visitor = new Visitor({
-                visitorId, ip, userAgent, deviceType,
+                ip, visitorId: visitorId || ip, userAgent, deviceType,
                 visitCount: 1, totalDuration: durationSec,
                 lastActive: new Date(), firstVisit: new Date(),
                 pagesViewed: [{ path: currentPath, title: pageTitle, timestamp: new Date(), duration: durationSec }]
             });
         } else {
-            visitor.ip = ip || visitor.ip;
+            visitor.visitorId = visitorId || visitor.visitorId || ip;
             visitor.userAgent = userAgent || visitor.userAgent;
             visitor.deviceType = deviceType || visitor.deviceType;
             visitor.lastActive = new Date();
@@ -285,7 +285,7 @@ app.post('/api/track-visitor', async (req, res) => {
             }
         }
         await visitor.save();
-        res.json({ success: true });
+        res.json({ success: true, ip: visitor.ip });
     } catch (err) {
         console.error("Track error:", err);
         res.status(500).json({ error: err.message });
@@ -294,7 +294,30 @@ app.post('/api/track-visitor', async (req, res) => {
 
 app.get('/api/visitors', requireAuth, async (req, res) => {
     try {
-        const visitors = await Visitor.find().sort({ lastActive: -1 }).limit(200).lean();
+        const rawVisitors = await Visitor.find().sort({ lastActive: -1 }).lean();
+        const ipMap = new Map();
+        const duplicateIdsToDelete = [];
+
+        rawVisitors.forEach(v => {
+            const visitorIp = v.ip || 'Unknown';
+            if (!ipMap.has(visitorIp)) {
+                ipMap.set(visitorIp, { ...v });
+            } else {
+                const existing = ipMap.get(visitorIp);
+                existing.visitCount = Math.max(existing.visitCount || 1, v.visitCount || 1) + 1;
+                existing.totalDuration = (existing.totalDuration || 0) + (v.totalDuration || 0);
+                if (new Date(v.lastActive) > new Date(existing.lastActive)) existing.lastActive = v.lastActive;
+                if (new Date(v.firstVisit) < new Date(existing.firstVisit)) existing.firstVisit = v.firstVisit;
+                if (Array.isArray(v.pagesViewed)) existing.pagesViewed = [...(existing.pagesViewed || []), ...v.pagesViewed];
+                if (v._id) duplicateIdsToDelete.push(v._id);
+            }
+        });
+
+        if (duplicateIdsToDelete.length > 0) {
+            Visitor.deleteMany({ _id: { $in: duplicateIdsToDelete } }).catch(() => {});
+        }
+
+        const visitors = Array.from(ipMap.values());
         const now = new Date();
         const threeMinAgo = new Date(now.getTime() - 3 * 60 * 1000);
 
@@ -327,8 +350,9 @@ app.get('/api/visitors', requireAuth, async (req, res) => {
 
 app.delete('/api/visitors', requireAuth, async (req, res) => {
     try {
-        const { visitorId } = req.query;
-        if (visitorId) await Visitor.deleteOne({ visitorId });
+        const { ip, visitorId } = req.query;
+        if (ip) await Visitor.deleteOne({ ip });
+        else if (visitorId) await Visitor.deleteOne({ visitorId });
         else await Visitor.deleteMany({});
         res.json({ success: true });
     } catch (err) {

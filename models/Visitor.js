@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
 const visitorSchema = new mongoose.Schema({
-    visitorId: { type: String, required: true, unique: true, index: true },
-    ip: { type: String, default: 'Unknown' },
+    ip: { type: String, required: true, unique: true, index: true },
+    visitorId: { type: String, default: '' },
     userAgent: { type: String, default: '' },
     deviceType: { type: String, default: 'Desktop' },
     country: { type: String, default: 'Unknown' },
