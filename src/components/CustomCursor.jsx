@@ -45,8 +45,8 @@ const CustomCursor = () => {
         el.addEventListener('mouseenter', () => {
           activeTextElement = el;
           gsap.to(cursor, {
-            scale: 1.25, // Exactly 25% bigger on hover/reaction
-            duration: 0.3,
+            scale: 1.2, // Subtle 20% expansion on hover/reaction
+            duration: 0.25,
             ease: "power2.out",
           });
 
