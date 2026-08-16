@@ -19,6 +19,7 @@ import { initHeroParallax, initTextHighlight, initFadeUp, initStaggerList } from
 import FloatingSpotify from './components/FloatingSpotify';
 import Preloader from './components/Preloader';
 import SearchOverlay from './components/SearchOverlay';
+import CustomCursor from './components/CustomCursor';
 import Navbar from './components/Navbar';
 import BrandMarquee from './components/BrandMarquee';
 
@@ -207,6 +208,7 @@ function App() {
 
   return (
     <div className="bg-background min-h-screen text-primary selection:bg-accent selection:text-background overflow-x-hidden">
+      <CustomCursor />
       <AnimatePresence mode="wait">
         {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
       </AnimatePresence>

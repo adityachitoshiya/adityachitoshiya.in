@@ -49,3 +49,36 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #F5A623;
 }
+
+/* Hide native stock cursor completely on desktop fine-pointer devices */
+@media (pointer: fine) {
+  html, body, *, a, button, input, textarea, select, label {
+    cursor: none !important;
+  }
+
+  .custom-gsap-cursor {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 28px;
+    height: 28px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    mix-blend-mode: difference;
+    transform: translate(-50%, -50%);
+    will-change: transform;
+    z-index: 999999;
+  }
+
+  .hover-this {
+    display: inline-block;
+  }
+
+  .hover-this span {
+    display: inline-block;
+    pointer-events: none;
+  }
+}
+
+
