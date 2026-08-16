@@ -52,7 +52,7 @@ const OnboardingScreen = ({ global = {}, pageName = '' }) => {
           transition={{ duration: 0.5 }}
           className="inline-flex items-center gap-2 bg-[#f5a623]/15 border border-[#f5a623]/30 text-[#f5a623] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6"
         >
-          <Sparkles size={14} /> System Onboarding & Updates
+          System Onboarding & Updates
         </motion.div>
 
         {/* Main Title */}
