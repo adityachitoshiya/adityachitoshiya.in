@@ -173,26 +173,18 @@ const OnboardingGuard = ({ pageKey, pageName, children }) => {
   const { portfolioData } = usePortfolio();
   const location = useLocation();
 
-  const hostname = window.location.hostname;
-  const isLocalhost = 
-    hostname === 'localhost' || 
-    hostname === '127.0.0.1' || 
-    hostname.startsWith('192.168.') ||
-    hostname.endsWith('.local');
-
   const searchParams = new URLSearchParams(location.search);
   const isPreview = searchParams.get('preview') === 'true';
-  const isAdminLoggedIn = !!localStorage.getItem('adminToken');
 
-  // Check overall onboarding mode AND per-page visibility
-  const masterOnboarding = portfolioData?.global?.onboardingMode;
-  const pageVisibility = portfolioData?.global?.pageVisibility || {};
-  
-  // Page is live if master switch is NOT false AND specific pageKey is NOT false
-  const isPageLive = masterOnboarding === false || pageVisibility[pageKey] !== false;
+  // Master lock (all pages) and per-page lock check
+  const isMasterLocked = portfolioData?.global?.onboardingMode === true;
+  const isPageLocked = portfolioData?.global?.pageVisibility?.[pageKey] === false;
 
-  // On localhost, or if logged in as admin, or if URL has ?preview=true, or if page is live -> allow access!
-  if (isLocalhost || isAdminLoggedIn || isPreview || isPageLive) {
+  // Page is live only if neither master lock nor per-page lock is enabled
+  const isPageLive = !isMasterLocked && !isPageLocked;
+
+  // Allow access if explicitly previewing or if page is live
+  if (isPreview || isPageLive) {
     return children;
   }
 
