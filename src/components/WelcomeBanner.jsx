@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import Button from './Button';
+import MediaRenderer from './MediaRenderer';
 
 const isVideo = (url) => {
   if (typeof url !== 'string' || !url) return false;
