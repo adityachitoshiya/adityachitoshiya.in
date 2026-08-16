@@ -97,7 +97,7 @@ export default function ProjectDetail({ project, allProjects, global, onBack, on
                   <MediaRenderer 
                     src={imgSrc} 
                     alt={`${project.name} Gallery ${idx + 1}`} 
-                    className="w-full h-auto object-cover"
+                    className="w-full h-full max-h-[85vh] object-cover rounded-xl"
                   />
                 </motion.div>
               ))}

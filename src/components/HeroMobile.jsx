@@ -92,12 +92,12 @@ export default function HeroMobile({
         </div>
 
         {/* Hero Image (normal inline flow, no absolute positioning) */}
-        <div className="w-full max-w-[260px] px-4 flex justify-center">
+        <div className="w-full max-w-[280px] h-[350px] px-2 flex justify-center overflow-hidden rounded-[32px] border border-white/10 shadow-2xl">
           <MediaRenderer
             ref={photoRef}
             src={hero.heroImage}
             alt={global.name}
-            className="w-full h-auto rounded-[32px]"
+            className="w-full h-full object-cover rounded-[32px]"
           />
         </div>
       </div>

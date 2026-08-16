@@ -74,22 +74,11 @@ const WelcomeBanner = () => {
                 transition={{ duration: 0.6, ease: "easeInOut" }}
                 className="w-full h-full aspect-square relative"
               >
-                {isVideo(currentMedia) ? (
-                  <video
-                    src={currentMedia}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover rounded-[32px] aspect-square"
-                  />
-                ) : (
-                  <img 
-                    src={currentMedia} 
-                    alt={`Welcome Banner Slide ${currentIndex + 1}`} 
-                    className="w-full h-full object-cover rounded-[32px] aspect-square"
-                  />
-                )}
+                <MediaRenderer
+                  src={currentMedia}
+                  alt={`Welcome Banner Slide ${currentIndex + 1}`}
+                  className="w-full h-full object-cover rounded-[32px] aspect-square"
+                />
               </motion.div>
             </AnimatePresence>
 
