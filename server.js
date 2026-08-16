@@ -88,10 +88,13 @@ const upload = multer({
 // GET all portfolio data
 app.get('/api/portfolio', async (req, res) => {
     try {
-        if (process.env.USE_LOCAL_JSON === 'true' || mongoose.connection.readyState !== 1) {
+        await connectDB();
+        
+        if (process.env.USE_LOCAL_JSON === 'true') {
             const rawData = fs.readFileSync(path.join(__dirname, 'current_data.json'), 'utf-8');
             return res.json(JSON.parse(rawData));
         }
+
         const data = await Portfolio.findOne();
         if (!data) {
             const rawData = fs.readFileSync(path.join(__dirname, 'current_data.json'), 'utf-8');

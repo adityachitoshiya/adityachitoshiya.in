@@ -3,23 +3,21 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-mongoose.set('bufferCommands', false);
-
 const connectDB = async () => {
     try {
         if (!process.env.MONGODB_URI) {
-            console.log("No MONGODB_URI found, skipping database connection for local dev.");
+            console.log("No MONGODB_URI found in environment.");
             return;
         }
         if (mongoose.connection.readyState >= 1) {
             return;
         }
         await mongoose.connect(process.env.MONGODB_URI, {
-            serverSelectionTimeoutMS: 5000
+            serverSelectionTimeoutMS: 10000
         });
-        console.log("MongoDB Connected Successfully!");
+        console.log("MongoDB Connected Successfully to Database!");
     } catch (error) {
-        console.warn("MongoDB connection failed (Network/IP Whitelist issue):", error.message);
+        console.warn("MongoDB connection failed:", error.message);
     }
 };
 
