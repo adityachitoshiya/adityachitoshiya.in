@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Save, Loader2, ArrowLeft, Plus, Trash2, X as XIcon, Music, Crop, Video, Play, Film, Image as ImageIcon, Check, AlertCircle, Users, Activity, Clock, Eye, Monitor, Smartphone, RefreshCw, Search, Globe, ChevronRight, BarChart3, ExternalLink } from 'lucide-react';
+import { Upload, Save, Loader2, ArrowLeft, Plus, Trash2, X as XIcon, Music, Crop, Video, Play, Film, Image as ImageIcon, Check, AlertCircle, Users, Activity, Clock, Eye, Monitor, Smartphone, RefreshCw, Search, Globe, ChevronRight, BarChart3, ExternalLink, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import LoadingScreen from '../components/LoadingScreen';
 import ImageCropModal from '../components/ImageCropModal';
@@ -2586,7 +2586,7 @@ const Admin = () => {
                                     type="text"
                                     value={visitorSearch}
                                     onChange={(e) => setVisitorSearch(e.target.value)}
-                                    placeholder="Search by IP, Device, Page..."
+                                    placeholder="Search by IP, City, State, Device, Page..."
                                     className="w-full bg-black/40 border border-white/20 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder:text-white/40 outline-none focus:border-accent"
                                 />
                             </div>
@@ -2607,6 +2607,7 @@ const Admin = () => {
                                     <thead>
                                         <tr className="border-b border-white/10 text-[11px] font-bold text-white/50 uppercase tracking-wider font-mono">
                                             <th className="py-3 px-4">Visitor IP & Device</th>
+                                            <th className="py-3 px-4">Location (City, State)</th>
                                             <th className="py-3 px-4">Visits</th>
                                             <th className="py-3 px-4">Total Time Spent</th>
                                             <th className="py-3 px-4">Tabs / Pages Visited</th>
@@ -2621,6 +2622,9 @@ const Admin = () => {
                                                 const q = visitorSearch.toLowerCase();
                                                 return (
                                                     (v.ip || '').toLowerCase().includes(q) ||
+                                                    (v.city || '').toLowerCase().includes(q) ||
+                                                    (v.state || '').toLowerCase().includes(q) ||
+                                                    (v.country || '').toLowerCase().includes(q) ||
                                                     (v.deviceType || '').toLowerCase().includes(q) ||
                                                     (v.pagesViewed || []).some(pv => (pv.path || '').toLowerCase().includes(q))
                                                 );
@@ -2639,6 +2643,18 @@ const Admin = () => {
                                                                     {v.deviceType === 'Mobile' ? <Smartphone size={10} /> : <Monitor size={10} />}
                                                                     {v.deviceType || 'Desktop'}
                                                                 </span>
+                                                            </div>
+                                                        </td>
+
+                                                        <td className="py-3.5 px-4">
+                                                            <div className="flex items-center gap-1.5 text-white/90">
+                                                                <MapPin size={12} className="text-accent flex-shrink-0" />
+                                                                <span className="font-bold">{v.city || 'Unknown'}</span>
+                                                                {(v.state || v.country) && (
+                                                                    <span className="text-white/50 text-[11px]">
+                                                                        , {v.state && v.state !== 'Unknown' ? v.state : v.country}
+                                                                    </span>
+                                                                )}
                                                             </div>
                                                         </td>
 

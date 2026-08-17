@@ -6,6 +6,7 @@ const visitorSchema = new mongoose.Schema({
     userAgent: { type: String, default: '' },
     deviceType: { type: String, default: 'Desktop' },
     country: { type: String, default: 'Unknown' },
+    state: { type: String, default: 'Unknown' },
     city: { type: String, default: 'Unknown' },
     visitCount: { type: Number, default: 1 },
     totalDuration: { type: Number, default: 0 }, // in seconds

@@ -262,10 +262,30 @@ app.post('/api/track-visitor', async (req, res) => {
         const deviceType = /mobile|android|iphone/i.test(userAgent) ? 'Mobile' : 'Desktop';
         const durationSec = Math.max(0, parseInt(durationIncrement, 10) || 0);
 
+        // Fetch location (City, State, Country)
+        let location = { city: 'Unknown', state: 'Unknown', country: 'Unknown' };
+        if (ip === '127.0.0.1' || ip === '::1' || ip.startsWith('192.168.')) {
+            location = { city: 'Localhost', state: 'Local', country: 'India' };
+        } else {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000);
+                const geoRes = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,regionName,city`, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (geoRes.ok) {
+                    const geoData = await geoRes.json();
+                    if (geoData && geoData.status === 'success') {
+                        location = { city: geoData.city || 'Unknown', state: geoData.regionName || 'Unknown', country: geoData.country || 'Unknown' };
+                    }
+                }
+            } catch (e) {}
+        }
+
         let visitor = await Visitor.findOne({ ip });
         if (!visitor) {
             visitor = new Visitor({
                 ip, visitorId: visitorId || ip, userAgent, deviceType,
+                city: location.city, state: location.state, country: location.country,
                 visitCount: 1, totalDuration: durationSec,
                 lastActive: new Date(), firstVisit: new Date(),
                 pagesViewed: [{ path: currentPath, title: pageTitle, timestamp: new Date(), duration: durationSec }]
@@ -276,6 +296,11 @@ app.post('/api/track-visitor', async (req, res) => {
             visitor.deviceType = deviceType || visitor.deviceType;
             visitor.lastActive = new Date();
             visitor.totalDuration += durationSec;
+
+            if (!visitor.city || visitor.city === 'Unknown') visitor.city = location.city;
+            if (!visitor.state || visitor.state === 'Unknown') visitor.state = location.state;
+            if (!visitor.country || visitor.country === 'Unknown') visitor.country = location.country;
+
             if (isNewSession) visitor.visitCount = (visitor.visitCount || 1) + 1;
 
             const lastPage = visitor.pagesViewed?.[visitor.pagesViewed.length - 1];

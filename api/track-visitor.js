@@ -32,6 +32,50 @@ const detectDevice = (ua = '') => {
     return 'Desktop';
 };
 
+const fetchIpLocation = async (req, ip) => {
+    // 1. Check Vercel headers (0ms latency)
+    const vercelCity = req.headers['x-vercel-ip-city'];
+    const vercelState = req.headers['x-vercel-ip-country-region'];
+    const vercelCountry = req.headers['x-vercel-ip-country'];
+
+    if (vercelCity || vercelState || vercelCountry) {
+        return {
+            city: vercelCity ? decodeURIComponent(vercelCity) : 'Unknown',
+            state: vercelState ? decodeURIComponent(vercelState) : 'Unknown',
+            country: vercelCountry ? decodeURIComponent(vercelCountry) : 'Unknown'
+        };
+    }
+
+    // 2. Localhost check
+    if (!ip || ip === '127.0.0.1' || ip === '::1' || ip.startsWith('192.168.') || ip.startsWith('10.')) {
+        return { city: 'Localhost', state: 'Local', country: 'India' };
+    }
+
+    // 3. Fallback IP geolocation lookup via ip-api.com
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        const res = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,regionName,city`, {
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data.status === 'success') {
+                return {
+                    city: data.city || 'Unknown',
+                    state: data.regionName || 'Unknown',
+                    country: data.country || 'Unknown'
+                };
+            }
+        }
+    } catch (e) {
+        // Silently handle timeouts or network blocks
+    }
+
+    return { city: 'Unknown', state: 'Unknown', country: 'Unknown' };
+};
+
 export default async function handler(req, res) {
     // Handle CORS
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -68,6 +112,9 @@ export default async function handler(req, res) {
         const deviceType = detectDevice(userAgent);
         const durationSec = Math.max(0, parseInt(durationIncrement, 10) || 0);
 
+        // Fetch Location (City, State, Country)
+        const location = await fetchIpLocation(req, ip);
+
         // Enforce STRICT 1 IP = 1 Database Entry by finding document by IP
         let visitor = await Visitor.findOne({ ip });
 
@@ -77,6 +124,9 @@ export default async function handler(req, res) {
                 visitorId: visitorId || ip,
                 userAgent,
                 deviceType,
+                city: location.city,
+                state: location.state,
+                country: location.country,
                 visitCount: 1,
                 totalDuration: durationSec,
                 lastActive: new Date(),
@@ -95,6 +145,11 @@ export default async function handler(req, res) {
             visitor.deviceType = deviceType || visitor.deviceType;
             visitor.lastActive = new Date();
             visitor.totalDuration += durationSec;
+
+            // Fill location if missing or Unknown
+            if (!visitor.city || visitor.city === 'Unknown') visitor.city = location.city;
+            if (!visitor.state || visitor.state === 'Unknown') visitor.state = location.state;
+            if (!visitor.country || visitor.country === 'Unknown') visitor.country = location.country;
 
             if (isNewSession) {
                 visitor.visitCount = (visitor.visitCount || 1) + 1;
