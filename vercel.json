@@ -1,8 +1,6 @@
 {
-  "rewrites": [
-    {
-      "source": "/((?!api/|uploads/).*)",
-      "destination": "/index.html"
-    }
+  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
+  "headers": [
+    { "source": "/admin(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] }
   ]
 }

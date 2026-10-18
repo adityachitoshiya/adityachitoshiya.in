@@ -3,81 +3,82 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- Primary Favicons for Google Search Snippets & Browsers -->
+    <meta name="theme-color" content="#0b0a09" />
+
+    <!-- Favicons (also used for Google/Brave result icons) -->
     <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png" />
-    <link rel="shortcut icon" href="/favicon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://adityachitoshiya.in/" />
+    <!-- www is the address the domain actually serves (the apex redirects to it) -->
+    <link rel="canonical" href="https://www.adityachitoshiya.in/" />
 
-    <!-- Primary SEO Meta Tags -->
-    <title>Aditya Chitoshiya | Product Designer & Visual Designer</title>
-    <meta name="title" content="Aditya Chitoshiya | Product Designer & Visual Designer" />
-    <meta name="description" content="Official Portfolio of Aditya Chitoshiya, a multidisciplinary creative professional specializing in Product Design, Brand Identity, and Visual Storytelling." />
-    <meta name="keywords" content="Aditya Chitoshiya, Portfolio, Product Designer, Visual Designer, Brand Identity, Storytelling, UI/UX, India" />
+    <title>Aditya Chitoshiya | Visual &amp; Product Designer</title>
+    <meta name="description" content="Portfolio of Aditya Chitoshiya, a Visual &amp; Product Designer in Jaipur, India. Brand campaigns, motion graphics, UI/UX and brand identity for founders and creators." />
     <meta name="author" content="Aditya Chitoshiya" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="google-site-verification" content="2-Keq9S5HL4RYl4ZXue93VhYE5XFw1C3-5STvoZ_R7I" />
 
-    <!-- Open Graph / Facebook / Google Site Name -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Aditya Chitoshiya" />
-    <meta property="og:url" content="https://adityachitoshiya.in/" />
-    <meta property="og:title" content="Aditya Chitoshiya | Product Designer & Visual Designer" />
-    <meta property="og:description" content="Portfolio of Aditya Chitoshiya, a multidisciplinary creative professional specializing in Product Design, Brand Identity, and Visual Storytelling." />
-    <meta property="og:image" content="https://adityachitoshiya.in/favicon-512x512.png" />
+    <meta property="og:url" content="https://www.adityachitoshiya.in/" />
+    <meta property="og:title" content="Aditya Chitoshiya | Visual &amp; Product Designer" />
+    <meta property="og:description" content="Brand campaigns, motion graphics, UI/UX and brand identity. Worked with Suniel Shetty, Aman Dhattarwal, boAt and more." />
+    <meta property="og:image" content="https://www.adityachitoshiya.in/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Aditya Chitoshiya, Visual and Product Designer" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Aditya Chitoshiya | Visual &amp; Product Designer" />
+    <meta name="twitter:description" content="Brand campaigns, motion graphics, UI/UX and brand identity. Worked with Suniel Shetty, Aman Dhattarwal, boAt and more." />
+    <meta name="twitter:image" content="https://www.adityachitoshiya.in/og.jpg" />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://adityachitoshiya.in/" />
-    <meta property="twitter:title" content="Aditya Chitoshiya | Product Designer & Visual Designer" />
-    <meta property="twitter:description" content="Portfolio of Aditya Chitoshiya, a multidisciplinary creative professional specializing in Product Design, Brand Identity, and Visual Storytelling." />
-    <meta property="twitter:image" content="https://adityachitoshiya.in/favicon-512x512.png" />
-
-    <!-- Google Structured Data (Schema.org) for Site Name & Logo -->
+    <!-- Structured data: read straight from the HTML, no JavaScript needed -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Aditya Chitoshiya",
-      "alternateName": [
-        "Aditya Chitoshiya Portfolio",
-        "adityachitoshiya.in",
-        "Aditya Chitoshiya Official"
-      ],
-      "url": "https://adityachitoshiya.in/",
-      "publisher": {
-        "@type": "Person",
-        "name": "Aditya Chitoshiya",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://adityachitoshiya.in/favicon-512x512.png"
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://www.adityachitoshiya.in/#website",
+          "url": "https://www.adityachitoshiya.in/",
+          "name": "Aditya Chitoshiya",
+          "alternateName": ["Aditya Chitoshiya Portfolio", "adityachitoshiya.in"],
+          "inLanguage": "en",
+          "publisher": { "@id": "https://www.adityachitoshiya.in/#person" }
+        },
+        {
+          "@type": "Person",
+          "@id": "https://www.adityachitoshiya.in/#person",
+          "name": "Aditya Chitoshiya",
+          "url": "https://www.adityachitoshiya.in/",
+          "image": "https://www.adityachitoshiya.in/og.jpg",
+          "jobTitle": "Visual & Product Designer",
+          "description": "Visual & Product Designer in Jaipur, India working across brand identity, motion graphics, UI/UX and advertising campaigns.",
+          "homeLocation": { "@type": "Place", "name": "Jaipur, India" },
+          "worksFor": { "@type": "Organization", "name": "Regrip India" },
+          "alumniOf": { "@type": "CollegeOrUniversity", "name": "Anand ICE, Jaipur" },
+          "knowsAbout": ["Brand identity", "Product design", "UI/UX design", "Motion graphics", "Advertising campaigns", "Visual storytelling"],
+          "sameAs": [
+            "https://www.linkedin.com/in/adityachitoshiya",
+            "https://www.behance.net/adityachitosh",
+            "https://github.com/adityachitoshiya"
+          ]
         }
-      }
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Aditya Chitoshiya",
-      "url": "https://adityachitoshiya.in/",
-      "image": "https://adityachitoshiya.in/favicon-512x512.png",
-      "jobTitle": "Product Designer & Visual Designer",
-      "sameAs": [
-        "https://www.linkedin.com/in/adityachitoshiya"
       ]
     }
     </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="root"></div>
+    <!-- SEO_FALLBACK -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

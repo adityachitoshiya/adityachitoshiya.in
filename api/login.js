@@ -1,34 +1,29 @@
-export default function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
+import { checkPassword, configError, issueToken } from './_lib/auth.js'
 
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
+// Password-only login; the password lives in ADMIN_PASSWORD on the server.
+// A short delay on failure slows down guessing.
+export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store')
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST')
+    return res.status(405).json({ error: 'Method not allowed' })
+  }
 
-    if (req.method !== 'POST') {
-        return res.status(405).json({ message: "Method Not Allowed" });
-    }
+  if (process.env.DISABLE_PASSWORD_LOGIN === '1') {
+    return res.status(403).json({ error: 'Password login is turned off. Use your passkey.' })
+  }
 
-    let body = req.body || {};
-    if (typeof body === 'string') {
-        try { body = JSON.parse(body); } catch (e) {}
-    }
+  const problem = configError()
+  if (problem) return res.status(503).json({ error: `Admin is not configured: ${problem}` })
 
-    const { username, password } = body;
-    
-    const adminUsername = process.env.ADMIN_USERNAME || "aditya";
-    const adminPassword = process.env.ADMIN_PASSWORD || "chitoshiya";
-    const adminToken = process.env.ADMIN_TOKEN || process.env.ADMIN_PASSWORD || 'secure-admin-token-123';
+  let body = req.body ?? {}
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body) } catch { body = {} }
+  }
 
-    if (
-        (username === adminUsername && password === adminPassword) ||
-        (username === "admin" && password === "password")
-    ) {
-        res.status(200).json({ success: true, token: adminToken });
-    } else {
-        res.status(401).json({ success: false, message: "Invalid credentials" });
-    }
+  if (!checkPassword(body.password)) {
+    await new Promise((r) => setTimeout(r, 800))
+    return res.status(401).json({ error: 'Wrong password' })
+  }
+  return res.status(200).json({ token: issueToken() })
 }

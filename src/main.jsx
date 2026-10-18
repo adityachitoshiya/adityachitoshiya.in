@@ -1,15 +1,18 @@
-import { StrictMode } from 'react'
+import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
-import { Analytics } from '@vercel/analytics/react'
 import './index.css'
 import App from './App.jsx'
-import ErrorBoundary from './components/ErrorBoundary.jsx'
+
+// /admin loads a separate chunk so visitors never download the editor.
+const Admin = lazy(() => import('./admin/Admin.jsx'))
+const isAdmin = window.location.pathname.replace(/\/+$/, '') === '/admin'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ErrorBoundary>
+    {isAdmin ? (
+      <Suspense fallback={null}><Admin /></Suspense>
+    ) : (
       <App />
-      <Analytics />
-    </ErrorBoundary>
+    )}
   </StrictMode>,
 )

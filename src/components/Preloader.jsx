@@ -1,67 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useRef, useState } from 'react'
+import { gsap, useGSAP } from '../lib/gsap'
 
-const Preloader = ({ onComplete }) => {
-  const [progress, setProgress] = useState(0);
+export default function Preloader({ onDone }) {
+  const root = useRef(null)
+  const count = useRef(null)
+  const [gone, setGone] = useState(false)
 
-  useEffect(() => {
-    // Simulate loading progress over 2.5 seconds
-    const duration = 2000;
-    const intervalTime = 30;
-    const steps = duration / intervalTime;
-    let currentStep = 0;
+  useGSAP(
+    () => {
+      const counter = { v: 0 }
+      const fonts = document.fonts?.ready ?? Promise.resolve()
+      const tl = gsap.timeline({ paused: true })
 
-    const interval = setInterval(() => {
-      currentStep++;
-      const newProgress = Math.min(Math.round((currentStep / steps) * 100), 100);
-      setProgress(newProgress);
+      tl.to(counter, {
+        v: 100,
+        duration: 2.2,
+        ease: 'power3.inOut',
+        onUpdate: () => {
+          count.current.textContent = String(Math.round(counter.v)).padStart(3, '0')
+        },
+      })
+        .to('.preloader__bar', { scaleX: 1, duration: 2.2, ease: 'power3.inOut' }, 0)
+        .to('.preloader__count, .preloader__top', { yPercent: -40, opacity: 0, duration: 0.6, ease: 'power2.in' })
+        .add(() => onDone?.())
+        .to(root.current, {
+          clipPath: 'inset(0% 0% 100% 0%)',
+          duration: 1.1,
+          ease: 'expo.inOut',
+          onComplete: () => setGone(true),
+        }, '<-0.1')
 
-      if (currentStep >= steps) {
-        clearInterval(interval);
-        setTimeout(() => {
-          if (onComplete) onComplete();
-        }, 300); // Small pause at 100% before firing complete
-      }
-    }, intervalTime);
+      fonts.then(() => tl.play())
+    },
+    { scope: root },
+  )
 
-    return () => clearInterval(interval);
-  }, [onComplete]);
-
+  if (gone) return null
   return (
-    <motion.div
-      initial={{ opacity: 1 }}
-      exit={{ opacity: 0, y: '-100%' }}
-      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0a0a0a]"
-    >
-      <div className="flex flex-col items-center gap-6 w-full max-w-[300px] px-6">
-        
-        {/* Game Style Text */}
-        <div className="w-full flex justify-between items-end text-[#f5a623] ac-display tracking-widest text-2xl md:text-3xl">
-          <span className="uppercase animate-pulse">Loading_</span>
-          <span>{progress}%</span>
-        </div>
-
-        {/* Loading Bar Container */}
-        <div className="w-full h-3 md:h-4 bg-white/10 rounded-full overflow-hidden border border-white/20 p-[2px]">
-          {/* Inner Loading Fill */}
-          <motion.div 
-            className="h-full bg-[#f5a623] rounded-full relative"
-            style={{ width: `${progress}%` }}
-            transition={{ duration: 0.1 }}
-          >
-            {/* Glossy overlay on loading bar for game feel */}
-            <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent"></div>
-          </motion.div>
-        </div>
-
-        {/* Pixel style hint text */}
-        <p className="text-white/40 text-xs md:text-sm ac-body tracking-wider uppercase mt-4 animate-pulse">
-          INITIALIZING ASSETS...
-        </p>
+    <div className="preloader" ref={root} style={{ clipPath: 'inset(0% 0% 0% 0%)' }}>
+      <div className="preloader__top mono">
+        <span>Aditya Chitoshiya</span>
+        <span className="muted">Portfolio — ©2026</span>
       </div>
-    </motion.div>
-  );
-};
-
-export default Preloader;
+      <div className="preloader__count" ref={count}>000</div>
+      <div className="preloader__bar" />
+    </div>
+  )
+}

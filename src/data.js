@@ -1,184 +1,141 @@
-export const portfolioData = {
-  "_id": "6a58cbbce679a91a876c90bd",
-  "global": {
-    "name": "Aditya Chitoshiya",
-    "email": "adityachitoshiya12@gmail.com",
-    "phone": "+91 77270 88810",
-    "website": "www.adityachitoshiya.in",
-    "social": "@adityachitosh",
-    "availableForWork": true,
-    "pageVisibility": {
-      "homepage": true,
-      "creatives": false
-    }
+// Content mirrors the live site (adityachitoshiya.in) data and the CV.
+export const profile = {
+  first: 'Aditya',
+  last: 'Chitoshiya',
+  email: 'adityachitoshiya12@gmail.com',
+  phone: '+91 77270 88810',
+  social: '@adityachitosh',
+  location: 'Jaipur, India',
+  behance: 'https://www.behance.net/adityachitosh',
+  github: 'https://github.com/adityachitoshiya',
+  tagline: 'Multidisciplinary Creator',
+  disciplines: 'Design × Technology × AI',
+  heroImage:
+    'https://res.cloudinary.com/dd5zrsmok/image/upload/f_auto,q_auto,w_1800/v1786686336/portfolio_uploads/htlmqiglvtbglcyey0oh.webp',
+  intro:
+    "I'm a multidisciplinary creator working across motion graphics, product design, UI/UX and AI-driven development. My work bridges bold brand storytelling with functional, technology-first execution — for founders, creators and EdTech brands alike.",
+  mission:
+    "My mission is to turn ideas into powerful digital experiences. I'm building a future-ready studio where designers, developers and AI systems work as one.",
+}
+
+export const brands = [
+  'Suniel Shetty', 'boAt', 'Aman Dhattarwal', 'Regrip', 'SleepyOwl', 'Dhruv Rathee',
+  'Biedx', 'Abhi & Niyu', 'Vande Bharat / Adani TV', 'Bharat Ke Super Founders',
+  'Mittsure', 'EA Jaipur', 'GetSetFly', 'Think Trail', 'Lumalearn', 'Pinaka',
+]
+
+export const projects = [
+  { name: 'Regrip', type: 'Brand Campaign', desc: 'Advertising, founder stories, influencer content.', img: '/img/gallery_1.jpg' },
+  { name: 'Biedx', type: 'EdTech Media', desc: 'Event capture, course design, visual education.', img: '/img/gallery_2.jpg' },
+  { name: 'Mittsure', type: 'Publishing Design', desc: 'Book covers, magazines, brand identity.', img: '/img/gallery_3.jpg' },
+  { name: 'Suniel Shetty', type: 'Celebrity Branding', desc: 'Face-of-brand creative coordination.', img: '/img/latest_main.jpg' },
+  { name: 'Dhruv Rathee', type: 'Creator Content', desc: 'High-quality visual content creation.', img: '/img/latest_1.jpg' },
+  { name: 'GetSetFly', type: 'Digital Campaigns', desc: 'Creative production & storytelling.', img: '/img/latest_2.jpg' },
+  { name: 'Think Trail', type: 'Logo Design', desc: 'Educational book company branding.', img: '/img/welcome_1.jpg' },
+  { name: 'Lumalearn', type: 'EdTech Branding', desc: 'Plantation-themed logo design.', img: '/img/welcome_2.jpg' },
+  { name: 'Luma', type: 'Product Design', desc: 'Stationery brand identity.', img: '/img/intro_tall.jpg' },
+  { name: 'Pinaka', type: 'Education Platform', desc: 'Visual identity & branding.', img: '/img/intro_short.jpg' },
+]
+
+export const experience = [
+  {
+    year: 'Sep 2025 — Now',
+    company: 'Regrip India',
+    place: 'Brand',
+    role: 'Brand Transformation Lead',
+    desc: 'Advertising campaigns, founder-focused storytelling, TED Talk-style influencer videos, celebrity coordination with Suniel Shetty.',
+    img: '/img/latest_main.jpg',
   },
-  "hero": {
-    "headline": "PORTFOLIO",
-    "accentWord": "Work",
-    "tagline": "Multidisciplinary Creator | Design × Technology × AI",
-    "presentedBy": "Presented By: Aditya Chitoshiya",
-    "heroImage": "https://res.cloudinary.com/dd5zrsmok/image/upload/v1786686336/portfolio_uploads/htlmqiglvtbglcyey0oh.webp"
+  {
+    year: '— 2025',
+    company: 'Biedx',
+    place: 'Singapore EdTech',
+    role: 'Media & Visual Education Specialist',
+    desc: 'Event documentation, visual storytelling, understanding-friendly course design, marketing & media production.',
+    img: '/img/work_1.jpg',
   },
-  "welcome": {
-    "headline": "WELCOME TO MY BRAND",
-    "introText": "I'm a multidisciplinary creator working across motion graphics, product design, UI/UX, and AI-driven development. My work bridges bold brand storytelling with functional, technology-first execution — for founders, creators, and EdTech brands alike.",
-    "image1": "https://res.cloudinary.com/dd5zrsmok/video/upload/v1786646812/portfolio_uploads/ucximqvfwmrzfcglwopz.mov",
-    "image2": "https://res.cloudinary.com/dd5zrsmok/video/upload/v1786647302/portfolio_uploads/lqkm6n5gfhfch83jtco9.mov"
+  {
+    year: '2022',
+    company: 'Mittsure Technology',
+    place: 'Publishing',
+    role: 'Brand Identity Designer',
+    desc: 'International & national book covers, magazine design & layout, premium brand identity upgrades for publishing and education.',
+    img: '/img/work_2.jpg',
   },
-  "introduction": {
-    "headline": "INTRODUCTION",
-    "text": "With a B.Tech in Computer Science and hands-on experience across brand advertising, motion storytelling, and AI development, I bring a rare mix of design sensibility and technical depth to every project I take on.",
-    "imageTall": "https://res.cloudinary.com/dd5zrsmok/image/upload/v1786732613/portfolio_uploads/tudknl9feoglkxospfe4.webp",
-    "imageShort": "/ai-images/intro_short_1784234685783.png"
+  {
+    year: '2018 — 2022',
+    company: 'Anand ICE, Jaipur',
+    place: 'Education',
+    role: 'B.Tech, Computer Science',
+    desc: 'Built the foundation for merging design thinking with technical development.',
+    img: '/img/edu_banner.jpg',
   },
-  "aboutMe": {
-    "headline": "ABOUT ME",
-    "text": "My mission is to turn ideas into powerful digital experiences. I combine design, technology, and AI into one integrated skillset — moving fluidly between motion graphics, UI/UX design, and Python-driven automation. I'm currently building a future-ready studio where designers, developers, and AI systems work as one.",
-    "image": "https://res.cloudinary.com/dd5zrsmok/image/upload/v1786703844/portfolio_uploads/c07kzt3ln0sbqpnrzau9.webp",
-    "slideshowImages": [
-      {
-        "url": "https://res.cloudinary.com/dd5zrsmok/image/upload/v1786704728/portfolio_uploads/y6k1qu2mrsodo88u9f89.webp",
-        "title": "Prahlad Modi",
-        "caption": ""
-      },
-      {
-        "url": "https://res.cloudinary.com/dd5zrsmok/image/upload/v1786704749/portfolio_uploads/dmj8q2us6vvlicbuayas.webp",
-        "title": "Suniel Shetty",
-        "caption": ""
-      }
-    ]
+]
+
+export const services = [
+  {
+    title: 'Motion Graphics',
+    body: 'Ad films, founder stories and TED-style creator videos — motion that carries a brand’s voice.',
+    tags: ['After Effects', 'Storyboards', 'Ad Films', 'Reels'],
   },
-  "education": {
-    "headline": "EDUCATION",
-    "bannerImage": "https://res.cloudinary.com/dd5zrsmok/image/upload/v1786691509/portfolio_uploads/faokuqdyh689g8pr991k.webp",
-    "items": [
-      {
-        "year": "2018 - 2022",
-        "institution": "ANAND ICE, JAIPUR",
-        "description": "B.Tech in Computer Science Engineering. Built the foundation for merging design thinking with technical development."
-      }
-    ]
+  {
+    title: 'Product & UI/UX',
+    body: 'Interfaces and product experiences designed to be understood at a glance and used with ease.',
+    tags: ['Figma', 'Design Systems', 'Prototyping', 'Web'],
   },
-  "workExperience": {
-    "headline": "WORK EXPERIENCE",
-    "image1": "https://res.cloudinary.com/dd5zrsmok/image/upload/v1786689143/portfolio_uploads/uychg4fvwnk6tuhw5stn.webp",
-    "image2": "https://res.cloudinary.com/dd5zrsmok/image/upload/v1786688964/portfolio_uploads/ngcbpkwdh0iddgxazy9p.webp",
-    "items": [
-      {
-        "year": "2022",
-        "institution": "MITTSURE TECHNOLOGY",
-        "description": "Brand Identity Designer — international & national book covers, magazine design & layout, premium brand identity upgrades for publishing and education.",
-        "company": "Mittsure"
-      },
-      {
-        "year": "2023-2025",
-        "institution": "REGRIP",
-        "description": "Brand Transformation Lead — advertising campaigns, founder-focused storytelling, TED Talk-style influencer videos, celebrity coordination with Suniel Shetty.",
-        "company": "Mittsure"
-      },
-      {
-        "year": "2025 - Present",
-        "institution": "BIEDX (SINGAPORE EDTECH)",
-        "description": "Media & Visual Education Specialist — event documentation, visual storytelling, understanding-friendly course design, marketing & media production.",
-        "company": "Regrip"
-      }
-    ]
+  {
+    title: 'Brand Identity',
+    body: 'Logos, book covers, editorial layouts and identity upgrades for publishing, education and D2C brands.',
+    tags: ['Logo', 'Editorial', 'Packaging', 'Campaigns'],
   },
-  "projectPortfolio": {
-    "headline": "PROJECT PORTFOLIO",
-    "text": "A mix of brand campaigns, celebrity collaborations, and product/logo design work.",
-    "images": [
-      "https://res.cloudinary.com/dd5zrsmok/video/upload/v1786704201/portfolio_uploads/rckwvylryzofmtrraeq3.mov",
-      "https://res.cloudinary.com/dd5zrsmok/video/upload/v1786702939/portfolio_uploads/dbtzab1ulvmjtigjtjj5.mov",
-      "https://res.cloudinary.com/dd5zrsmok/video/upload/v1786702952/portfolio_uploads/k51kwx7mvngyebik8mfg.mov"
-    ],
-    "projects": [
-      {
-        "name": "Regrip",
-        "type": "Brand Campaign",
-        "description": "Advertising, founder stories, influencer content.",
-        "image": "/ai-images/gallery_1_1784234838549.png"
-      },
-      {
-        "name": "Biedx",
-        "type": "EdTech Media",
-        "description": "Event capture, course design, visual education.",
-        "image": "/ai-images/gallery_2_1784234862332.png"
-      },
-      {
-        "name": "Mittsure",
-        "type": "Publishing Design",
-        "description": "Book covers, magazines, brand identity.",
-        "image": "/ai-images/gallery_3_1784234882940.png"
-      },
-      {
-        "name": "Suniel Shetty",
-        "type": "Celebrity Branding",
-        "description": "Face-of-brand creative coordination.",
-        "image": "/ai-images/latest_main_1784234978807.png"
-      },
-      {
-        "name": "Dhruv Rathee",
-        "type": "Creator Content",
-        "description": "High-quality visual content creation.",
-        "image": "/ai-images/latest_1_1784235000399.png"
-      },
-      {
-        "name": "GetSetFly",
-        "type": "Digital Campaigns",
-        "description": "Creative production & storytelling.",
-        "image": "/ai-images/latest_2_1784235023481.png"
-      },
-      {
-        "name": "Think Trail",
-        "type": "Logo Design",
-        "description": "Educational book company branding.",
-        "image": "/ai-images/welcome_1_1784234605245.png"
-      },
-      {
-        "name": "Lumalearn",
-        "type": "EdTech Branding",
-        "description": "Plantation-themed logo design.",
-        "image": "/ai-images/welcome_2_1784234625065.png"
-      },
-      {
-        "name": "Luma",
-        "type": "Product Design",
-        "description": "Stationery brand identity.",
-        "image": "/ai-images/intro_tall_1784234664999.png"
-      },
-      {
-        "name": "Pinaka",
-        "type": "Education Platform",
-        "description": "Visual identity & branding.",
-        "image": "/ai-images/intro_short_1784234685783.png"
-      }
-    ]
+  {
+    title: 'AI Development',
+    body: 'Python-driven automation and AI workflows that let design and engineering ship faster, together.',
+    tags: ['Python', 'Automation', 'Gen AI', 'Tooling'],
   },
-  "latestProject": {
-    "headline": "MY LATEST ACTIVITY",
-    "mainImage": "https://res.cloudinary.com/dd5zrsmok/image/upload/v1786693174/portfolio_uploads/hvilh4beukl6bovsyetm.png",
-    "image1": "https://res.cloudinary.com/dd5zrsmok/image/upload/v1786693373/portfolio_uploads/r2k36fnegwhhu8qpgihf.png",
-    "image2": "https://res.cloudinary.com/dd5zrsmok/image/upload/v1786693542/portfolio_uploads/ygix5i8gqgj94fj5716t.png",
-    "project1": {
-      "title": "Project 1 — Regrip: DigiFest ",
-      "description": "Designed and executed the DigiFest marketing cart/booth for maximum brand activation"
-    },
-    "project2": {
-      "title": "Project 2 — Biedx Visual Education",
-      "description": "Designed understanding-friendly, vision-oriented course content and handled event documentation & visual storytelling for a Singapore-based EdTech company."
-    }
-  },
-  "contact": {
-    "headline": "GET IN TOUCH",
-    "text": "Open for brand campaigns, motion graphics, UI/UX design, AI development, and creative collaborations.",
-    "image": "/ai-images/contact_1784235098810.png"
-  },
-  "thankYou": {
-    "headline": "THANK YOU",
-    "accentWord": "For Your Attention",
-    "text": "Let's turn your next idea into a powerful digital experience.",
-    "image": "/ai-images/thank_you_1784235123352.png"
-  },
-  "__v": 0
-};
+]
+
+const cld = (path, t = 'f_auto,q_auto,w_1400') =>
+  `https://res.cloudinary.com/dd5zrsmok/image/upload/${t}/${path}`
+const vid = (path) =>
+  `https://res.cloudinary.com/dd5zrsmok/video/upload/q_auto,w_1280/${path}.mp4`
+
+export const snapshot = {
+  role: 'Brand · Motion · Product designer who also codes',
+  years: `${new Date().getFullYear() - 2022}+ yrs`,
+  companies: ['Regrip India (now)', 'Biedx (Singapore)', 'Mittsure'],
+  names: ['Suniel Shetty', 'Aman Dhattarwal', 'Dhruv Rathee', 'boAt'],
+  tools: ['Photoshop', 'Illustrator', 'After Effects', 'Premiere Pro', 'Figma', 'AI tools'],
+  people: [
+    { name: 'Suniel Shetty', note: 'Face of Regrip — campaign shoot', img: cld('v1786704749/portfolio_uploads/dmj8q2us6vvlicbuayas.webp') },
+    { name: 'Prahlad Modi', note: 'Regrip brand storytelling', img: cld('v1786704728/portfolio_uploads/y6k1qu2mrsodo88u9f89.webp') },
+  ],
+}
+
+export const reels = [
+  { title: 'Nike — Just Do It', src: vid('v1786646812/portfolio_uploads/ucximqvfwmrzfcglwopz') },
+  { title: 'Ferrari SF90', src: vid('v1786647302/portfolio_uploads/lqkm6n5gfhfch83jtco9') },
+  { title: 'Storytelling', src: vid('v1786702939/portfolio_uploads/dbtzab1ulvmjtigjtjj5') },
+  { title: 'Product Can CGI', src: vid('v1786704201/portfolio_uploads/rckwvylryzofmtrraeq3') },
+  { title: 'ReachNext', src: vid('v1786702952/portfolio_uploads/k51kwx7mvngyebik8mfg') },
+]
+
+export const caseStudy = {
+  client: 'Regrip',
+  title: 'Regrip × Suniel Shetty',
+  role: 'Brand Transformation Lead',
+  years: 'Sep 2025 — Now',
+  brief:
+    'Transform how Regrip shows up — advertising campaigns, founder-led stories, influencer films and a Bollywood face of the brand.',
+  did: [
+    'Advertising campaigns end to end — concept, shoot, edit',
+    'Founder-focused storytelling for social',
+    'TED Talk-style influencer videos',
+    'Celebrity coordination with Suniel Shetty',
+    'DigiFest booth & marketing cart for on-ground activation',
+  ],
+  hero: cld('v1786689143/portfolio_uploads/uychg4fvwnk6tuhw5stn.webp', 'f_auto,q_auto,w_1800'),
+  shots: [
+    { img: cld('v1786693174/portfolio_uploads/hvilh4beukl6bovsyetm.png'), cap: 'DigiFest booth activation' },
+  ],
+}

@@ -1,240 +1,80 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, Navigate, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
-import gsap from 'gsap';
-import Hero from './components/Hero';
-import WelcomeBanner from './components/WelcomeBanner';
-import Introduction from './components/Introduction';
-import AboutMe from './components/AboutMe';
-import CurrentFocus from './components/CurrentFocus';
-import Education from './components/Education';
-import WorkExperience from './components/WorkExperience';
-import ProjectGallery from './components/ProjectGallery';
-import LatestProject from './components/LatestProject';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import BackToTop from './components/BackToTop';
-import ThemeProvider from './components/ThemeProvider';
-import { initHeroParallax, initTextHighlight, initFadeUp, initStaggerList } from './components/gsapAnimations';
-import FloatingSpotify from './components/FloatingSpotify';
-import Preloader from './components/Preloader';
-import SearchOverlay from './components/SearchOverlay';
-import CustomCursor from './components/CustomCursor';
-import Navbar from './components/Navbar';
-import BrandMarquee from './components/BrandMarquee';
+import { useCallback, useEffect, useState } from 'react'
+import Lenis from 'lenis'
+import { gsap, ScrollTrigger, reducedMotion } from './lib/gsap'
+import Preloader from './components/Preloader'
+import Cursor from './components/Cursor'
+import Nav from './components/Nav'
+import Hero from './components/Hero'
+import Marquee from './components/Marquee'
+import About from './components/About'
+import Work from './components/Work'
+import Experience from './components/Experience'
+import Services from './components/Services'
+import Contact from './components/Contact'
+import Snapshot from './components/Snapshot'
+import Showreel from './components/Showreel'
+import CaseStudy from './components/CaseStudy'
+import HireMe from './components/HireMe'
+import ContentProvider from './ContentProvider'
 
-import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
-import Admin from './pages/Admin';
-import CreativesPage from './pages/CreativesPage';
-import ProjectDetail from './pages/ProjectDetail';
-import AboutPage from './pages/AboutPage';
-import ContactPage from './pages/ContactPage';
-import GigsPage from './components/GigsPage';
-
-const CreativesRoute = () => {
-  const { portfolioData } = usePortfolio();
-  const navigate = useNavigate();
-  if (!portfolioData) return null;
-  return (
-    <CreativesPage
-      projects={portfolioData.projectPortfolio?.projects || []}
-      global={portfolioData.global}
-      onSelectProject={(p) => navigate(`/work/${p.slug || p.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`)}
-    />
-  );
-};
-
-const ProjectRoute = () => {
-  const { portfolioData } = usePortfolio();
-  const { slug } = useParams();
-  const navigate = useNavigate();
-  
-  if (!portfolioData) return null;
-
-  const projects = portfolioData.projectPortfolio?.projects || [];
-  const project = projects.find(p => 
-    p.slug === slug || 
-    p.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug
-  );
-
-  if (!project) {
-    return <Navigate to="/creatives" replace />;
-  }
-
-  return (
-    <ProjectDetail
-      project={project}
-      allProjects={projects}
-      global={portfolioData.global}
-      onBack={() => navigate('/creatives')}
-      onSelectProject={(p) => navigate(`/work/${p.slug || p.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`)}
-    />
-  );
-};
-
-const useMultiRef = () => {
-  const elements = useRef([]);
-  const callbackRef = useRef((el) => {
-    if (el && !elements.current.includes(el)) {
-      elements.current.push(el);
-    }
-  });
-  // Always expose the live array via .current
-  Object.defineProperty(callbackRef.current, 'current', {
-    get: () => elements.current,
-    configurable: true,
-  });
-  return callbackRef.current;
-};
-
-import GigList from './components/GigList';
-
-const Portfolio = () => {
-  const heroRef = useRef(null);
-  const welcomeRef = useRef(null);
-  
-  const photoRefs = useMultiRef();
-  const headlineRefs = useMultiRef();
-  const accentRefs = useMultiRef();
+export default function App() {
+  const [loaded, setLoaded] = useState(reducedMotion)
+  // Content renders a beat after mount; re-measure scroll triggers then.
+  const onContent = useCallback(() => requestAnimationFrame(() => ScrollTrigger.refresh()), [])
 
   useEffect(() => {
-    const ctx = initHeroParallax(
-      {
-        heroRef,
-        nextSectionRef: welcomeRef,
-        layers: [
-          { ref: photoRefs, speed: 0.3 },              
-          { ref: headlineRefs, speed: 0.6, fade: true }, 
-          { ref: accentRefs, speed: 1, fade: true },     
-        ],
-      },
-      window.innerHeight
-    );
-    return () => ctx?.revert();
-  }, []);
+    if (reducedMotion) return
+    const lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 0.9 })
+    window.__lenis = lenis
+    lenis.on('scroll', ScrollTrigger.update)
+    const tick = (time) => lenis.raf(time * 1000)
+    gsap.ticker.add(tick)
+    gsap.ticker.lagSmoothing(0)
+    const refresh = () => ScrollTrigger.refresh()
+    window.addEventListener('load', refresh)
+    return () => {
+      gsap.ticker.remove(tick)
+      window.removeEventListener('load', refresh)
+      lenis.destroy()
+      window.__lenis = null
+    }
+  }, [])
+
+  // Hold scroll while the preloader runs.
+  useEffect(() => {
+    const lenis = window.__lenis
+    if (!loaded) lenis?.stop()
+    else {
+      lenis?.start()
+      // The hero pin is created after the preloader, so re-order triggers
+      // to let its spacing shift everything below it.
+      ScrollTrigger.sort()
+      ScrollTrigger.refresh()
+    }
+  }, [loaded])
 
   return (
     <>
-      <Navbar />
-      <main>
-        <div ref={heroRef} className="sticky top-0 z-10 w-full min-h-screen">
-          <Hero 
-            photoRef={photoRefs} 
-            headlineRef={headlineRefs} 
-            accentRef={accentRefs} 
-          />
-        </div>
-        <div 
-          ref={welcomeRef} 
-          className="relative z-20 bg-[#0a0a0a] rounded-t-[32px] md:rounded-t-[48px] shadow-[0_-30px_80px_rgba(0,0,0,0.9)] border-t border-white/10"
-        >
-          <WelcomeBanner />
-          <BrandMarquee />
-          <Introduction />
-          <AboutMe />
-          <CurrentFocus />
-          <WorkExperience />
-          <Education />
-          <ProjectGallery />
-          <LatestProject />
-        </div>
-      </main>
-      <Footer />
-      <BackToTop />
+      {!reducedMotion && <Preloader onDone={() => setLoaded(true)} />}
+      <a className="skip" href="#main">Skip to content</a>
+      <div className="grain" aria-hidden="true" />
+      <Cursor />
+      <Nav />
+      <ContentProvider onReady={onContent}>
+        <HireMe />
+        <main id="main">
+          <Hero loaded={loaded} />
+          <Snapshot />
+          <Marquee />
+          <Showreel />
+          <About />
+          <Work />
+          <CaseStudy />
+          <Experience />
+          <Services />
+          <Contact />
+        </main>
+      </ContentProvider>
     </>
-  );
-};
-
-const ScrollEffectsRunner = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    let ctx;
-    // Small timeout to allow DOM to paint on route change
-    const timeoutId = setTimeout(() => {
-      ctx = gsap.context(() => {
-        initTextHighlight();
-        initFadeUp();
-        initStaggerList();
-      });
-    }, 100);
-
-    return () => {
-      clearTimeout(timeoutId);
-      ctx?.revert();
-    };
-  }, [location.pathname]);
-
-  return null;
-};
-
-import OnboardingScreen from './components/OnboardingScreen';
-
-const OnboardingGuard = ({ pageKey, pageName, children }) => {
-  const { portfolioData } = usePortfolio();
-  const location = useLocation();
-
-  const searchParams = new URLSearchParams(location.search);
-  const isPreview = searchParams.get('preview') === 'true';
-
-  // Master lock (all pages) and per-page lock check
-  const isMasterLocked = portfolioData?.global?.onboardingMode === true;
-  const isPageLocked = portfolioData?.global?.pageVisibility?.[pageKey] === false;
-
-  // Page is live only if neither master lock nor per-page lock is enabled
-  const isPageLive = !isMasterLocked && !isPageLocked;
-
-  // Allow access if explicitly previewing or if page is live
-  if (isPreview || isPageLive) {
-    return children;
-  }
-
-  // Otherwise show sleek onboarding maintenance screen for locked page
-  return <OnboardingScreen global={portfolioData?.global} pageName={pageName} />;
-};
-
-import VisitorTracker from './components/VisitorTracker';
-
-function App() {
-  const [isLoading, setIsLoading] = useState(() => {
-    // Show preloader only if it hasn't been loaded in this browser session
-    return !sessionStorage.getItem('hasLoadedPreloader');
-  });
-
-  const handlePreloaderComplete = () => {
-    sessionStorage.setItem('hasLoadedPreloader', 'true');
-    setIsLoading(false);
-  };
-
-  return (
-    <div className="bg-background min-h-screen text-primary selection:bg-accent selection:text-background overflow-x-hidden">
-      <CustomCursor />
-      <AnimatePresence mode="wait">
-        {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
-      </AnimatePresence>
-
-      <PortfolioProvider>
-        <ThemeProvider>
-          <Router>
-            <VisitorTracker />
-            <ScrollEffectsRunner />
-            <Routes>
-              <Route path="/" element={<OnboardingGuard pageKey="homepage" pageName="Homepage"><Portfolio /></OnboardingGuard>} />
-              <Route path="/about" element={<OnboardingGuard pageKey="about" pageName="About Section"><AboutPage /></OnboardingGuard>} />
-              <Route path="/gigs" element={<OnboardingGuard pageKey="gigs" pageName="Services & Gigs"><GigsPage /></OnboardingGuard>} />
-              <Route path="/contact" element={<OnboardingGuard pageKey="contact" pageName="Contact Page"><ContactPage /></OnboardingGuard>} />
-              <Route path="/creatives" element={<OnboardingGuard pageKey="creatives" pageName="Creatives & Projects"><CreativesRoute /></OnboardingGuard>} />
-              <Route path="/work/:slug" element={<OnboardingGuard pageKey="creatives" pageName="Creatives & Projects"><ProjectRoute /></OnboardingGuard>} />
-              <Route path="/admin" element={<Admin />} />
-            </Routes>
-            <SearchOverlay />
-          </Router>
-        </ThemeProvider>
-      </PortfolioProvider>
-      
-      {!isLoading && <FloatingSpotify />}
-    </div>
-  );
+  )
 }
-
-export default App;

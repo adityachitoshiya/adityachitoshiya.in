@@ -1,79 +1,83 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Mail, Globe, Phone, User } from 'lucide-react';
-import { usePortfolio } from '../context/PortfolioContext';
-import GigList from './GigList';
+import { useRef } from 'react'
+import { gsap, SplitText, useGSAP, reducedMotion } from '../lib/gsap'
+import { useContent } from '../content'
 
-import MediaRenderer from './MediaRenderer';
+function toTop(e) {
+  e.preventDefault()
+  if (window.__lenis) window.__lenis.scrollTo(0, { duration: 2 })
+  else window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 
-const Contact = () => {
-  const { portfolioData } = usePortfolio();
-  const { contact, global } = portfolioData;
+export default function Contact() {
+  const { profile } = useContent()
+  const root = useRef(null)
+  const mag = useRef(null)
 
-  const contactMethods = [
-    { icon: <Mail />, label: "Email", value: global.email },
-    { icon: <User />, label: "Social Media", value: global.social },
-    { icon: <Globe />, label: "Website", value: global.website },
-    { icon: <Phone />, label: "Phone Number", value: global.phone },
-  ];
+  useGSAP(
+    () => {
+      if (reducedMotion) return
+      const split = SplitText.create('.contact__big', { type: 'lines,chars', mask: 'lines', linesClass: 'ln' })
+      gsap.from(split.chars, {
+        yPercent: 120,
+        rotate: 8,
+        stagger: 0.025,
+        duration: 1.4,
+        ease: 'expo.out',
+        scrollTrigger: { trigger: '.contact__big', start: 'top 80%' },
+      })
+      gsap.from('.contact__row > *, .footer > *', {
+        y: 30, opacity: 0, duration: 1, stagger: 0.08, ease: 'expo.out',
+        scrollTrigger: { trigger: '.contact__row', start: 'top 92%' },
+      })
+
+      // Magnetic button: pulls toward the pointer, text pulls further.
+      if (!window.matchMedia('(hover: hover)').matches) return
+      const btn = mag.current
+      const label = btn.querySelector('span')
+      const bx = gsap.quickTo(btn, 'x', { duration: 0.45, ease: 'power3.out' })
+      const by = gsap.quickTo(btn, 'y', { duration: 0.45, ease: 'power3.out' })
+      const lx = gsap.quickTo(label, 'x', { duration: 0.45, ease: 'power3.out' })
+      const ly = gsap.quickTo(label, 'y', { duration: 0.45, ease: 'power3.out' })
+      const move = (e) => {
+        const r = btn.getBoundingClientRect()
+        const dx = e.clientX - (r.left + r.width / 2)
+        const dy = e.clientY - (r.top + r.height / 2)
+        bx(dx * 0.22); by(dy * 0.22); lx(dx * 0.12); ly(dy * 0.12)
+      }
+      const leave = () => { bx(0); by(0); lx(0); ly(0) }
+      btn.addEventListener('pointermove', move)
+      btn.addEventListener('pointerleave', leave)
+      return () => {
+        btn.removeEventListener('pointermove', move)
+        btn.removeEventListener('pointerleave', leave)
+      }
+    },
+    { scope: root },
+  )
 
   return (
-    <>
-      <section id="contact" className="py-24 md:py-32 w-full bg-background border-t border-white/5">
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
-          {/* Left Column - Contact Info */}
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="max-w-xl"
-          >
-            <h2 className="font-heading text-5xl md:text-7xl mb-8 leading-[0.9] uppercase text-primary">
-              {contact?.headline || 'GET IN TOUCH'}
-            </h2>
-            <p data-text-highlight className="text-muted text-lg md:text-xl leading-relaxed mb-12 font-light">
-              {contact?.text}
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-               {contactMethods.map((method, idx) => (
-                  <div key={idx} className="flex flex-col gap-3 group">
-                      <div className="w-12 h-12 rounded-xl bg-accent flex items-center justify-center text-background group-hover:scale-110 transition-transform">
-                          {method.icon}
-                      </div>
-                      <div>
-                          <h4 className="font-bold text-primary mb-1 uppercase tracking-wider text-sm">{method.label}</h4>
-                          <p className="text-muted">{method.value}</p>
-                      </div>
-                  </div>
-               ))}
-            </div>
-          </motion.div>
-
-          {/* Right Column - Large Image */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="w-full h-[500px] md:h-[700px]"
-          >
-            <MediaRenderer 
-              src={contact?.image} 
-              alt="Contact Portrait" 
-              className="w-full h-full object-cover rounded-[32px] grayscale hover:grayscale-0 transition-all duration-500"
-            />
-          </motion.div>
-
+    <section className="contact" id="contact" ref={root}>
+      <span className="section-label">Get in touch — open for brand campaigns, motion, UI/UX & AI</span>
+      <h2 className="contact__big">Let’s<br /><span className="accent">Talk</span></h2>
+      <div className="contact__row">
+        <div>
+          <a className="contact__email" href={`mailto:${profile.email}`}>{profile.email}</a>
+          <p className="mono muted" style={{ marginTop: 16 }}>{profile.phone} · {profile.location}</p>
         </div>
-      </section>
-
-      {/* Fiverr Style Gig List Section */}
-      <GigList />
-    </>
-  );
-};
-
-export default Contact;
+        <a className="magnetic" ref={mag} href={`mailto:${profile.email}`}>
+          <span>Start a<br />project ↗</span>
+        </a>
+      </div>
+      <footer className="footer mono">
+        <span>©2026 {profile.first} {profile.last}</span>
+        <span>
+          <a href={profile.behance} target="_blank" rel="noreferrer">Behance ↗</a>
+          <span className="muted"> · </span>
+          <a href={profile.github} target="_blank" rel="noreferrer">GitHub ↗</a>
+        </span>
+        <a href="/Aditya_Chitoshiya_CV.pdf" target="_blank" rel="noreferrer">Download CV ↗</a>
+        <a href="#top" onClick={toTop}>Back to top ↑</a>
+      </footer>
+    </section>
+  )
+}

@@ -1,7 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /api/
 
-# Expose an AI-friendly endpoint for LLMs
-# Specifically formatted for ChatGPT, Claude, and Gemini
-Sitemap: https://adityachitoshiya.in/llms.txt
-Sitemap: https://adityachitoshiya.in/ai.txt
+Sitemap: https://www.adityachitoshiya.in/sitemap.xml
