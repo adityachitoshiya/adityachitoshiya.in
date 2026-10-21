@@ -11,6 +11,7 @@ export const defaultContent = {
   projects: defaults.projects,
   experience: defaults.experience,
   services: defaults.services,
+  skills: defaults.skills,
   snapshot: defaults.snapshot,
   reels: defaults.reels,
   caseStudy: defaults.caseStudy,

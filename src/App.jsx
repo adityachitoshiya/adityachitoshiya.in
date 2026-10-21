@@ -11,6 +11,7 @@ import Work from './components/Work'
 import Experience from './components/Experience'
 import Services from './components/Services'
 import Contact from './components/Contact'
+import Skills from './components/Skills'
 import Snapshot from './components/Snapshot'
 import Showreel from './components/Showreel'
 import CaseStudy from './components/CaseStudy'
@@ -72,6 +73,7 @@ export default function App() {
           <CaseStudy />
           <Experience />
           <Services />
+          <Skills />
           <Contact />
         </main>
       </ContentProvider>

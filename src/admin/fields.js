@@ -82,6 +82,11 @@ export const sections = [
     title: 'Services',
     list: list('Services', { title: t('Title'), body: area('Description'), tags: list('Tags', t('Tag')) }, { titleKey: 'title' }),
   },
+  {
+    key: 'skills',
+    title: 'Skills',
+    list: list('Skill groups', { title: t('Group name'), items: list('Skills in this group', t('Skill')) }, { titleKey: 'title' }),
+  },
 ]
 
 // A field descriptor has a string `type` ('text', 'list', ...). A list item

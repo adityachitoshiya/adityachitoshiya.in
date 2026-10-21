@@ -139,3 +139,35 @@ export const caseStudy = {
     { img: cld('v1786693174/portfolio_uploads/hvilh4beukl6bovsyetm.png'), cap: 'DigiFest booth activation' },
   ],
 }
+
+export const skills = [
+  {
+    title: 'Marketing & Growth',
+    items: [
+      'Instagram & Social Media Management', 'Campaign Planning & Execution', 'Marketing Strategy',
+      'Growth Strategy', 'Content Strategy', 'Meta Ads Management', 'Performance Marketing',
+      'Lead Generation', 'Audience Research', 'Campaign Analytics & Reporting',
+    ],
+  },
+  {
+    title: 'AI & Automation',
+    items: [
+      'AI Workflow Management', 'AI-Powered Process Automation', 'AI Tools Integration',
+      'Prompt Engineering', 'Workflow Optimization', 'AI Agent Concepts', 'API Integration',
+    ],
+  },
+  {
+    title: 'Product & Business',
+    items: [
+      'Product Design', 'Product Strategy', 'Product Marketing', 'User Research', 'User Journey Mapping',
+      'Product Growth', 'Customer Acquisition', 'Conversion Rate Optimization', 'Competitor Research',
+    ],
+  },
+  {
+    title: 'Project & Operations',
+    items: [
+      'Campaign Management', 'Project Coordination', 'Cross-Functional Collaboration',
+      'Performance Tracking', 'Stakeholder Management', 'Process Documentation',
+    ],
+  },
+]

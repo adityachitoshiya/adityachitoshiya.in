@@ -1,6 +1,6 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
-import { experience, profile, projects, snapshot } from './src/data.js'
+import { experience, profile, projects, skills, snapshot } from './src/data.js'
 
 // The site renders client-side, so the raw HTML would be an empty <div>.
 // Write the key content into <noscript> from src/data.js so crawlers and
@@ -21,6 +21,8 @@ function seoFallback() {
         <ul>${li(projects.map((p) => `${esc(p.name)} — ${esc(p.type)}: ${esc(p.desc)}`))}</ul>
         <h2>Experience</h2>
         <ul>${li(experience.map((e) => `${esc(e.company)} — ${esc(e.role)} (${esc(e.year)}): ${esc(e.desc)}`))}</ul>
+        <h2>Skills</h2>
+        ${skills.map((g) => `<h3>${esc(g.title)}</h3><ul>${li(g.items.map(esc))}</ul>`).join('')}
         <h2>Contact</h2>
         <p><a href="mailto:${esc(profile.email)}">${esc(profile.email)}</a> · ${esc(profile.location)}</p>
         <p><a href="${esc(profile.behance)}">Behance</a> · <a href="${esc(profile.github)}">GitHub</a> · <a href="/Aditya_Chitoshiya_CV.pdf">CV (PDF)</a></p>

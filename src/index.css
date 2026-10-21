@@ -452,3 +452,25 @@ p, li, dd { text-wrap: pretty; }
   .card { width: clamp(260px, 28vw, 420px); }
   .reel { height: auto; padding: 12vh var(--gutter); }
 }
+
+/* ---------- Skills ---------- */
+.skills { padding: 14vh var(--gutter) 12vh; }
+.skills__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 8vh; }
+.skills__title { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(56px, 10vw, 180px); line-height: 0.85; margin: 0; }
+.skills__row { position: relative; display: grid; grid-template-columns: 1fr 4fr 8fr; gap: 24px; padding: 32px 0; align-items: start; }
+.skills__row::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--line); transform-origin: left; transform: scaleX(var(--line-s, 0)); }
+.skills__row:last-child::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line); }
+.skills__group { margin: 0; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(28px, 3.2vw, 56px); line-height: 1; }
+.skills__chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
+.skills__chips li {
+  padding: 8px 16px; border: 1px solid var(--line); border-radius: 99px; font-size: 15px; line-height: 1.3;
+  transition: color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .skills__chips li:hover { color: var(--accent); border-color: var(--accent); }
+}
+@media (max-width: 900px) {
+  .skills__row { grid-template-columns: 1fr; gap: 14px; }
+  .skills__head { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) { .skills__row::before { transform: none; } }

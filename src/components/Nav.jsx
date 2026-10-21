@@ -5,6 +5,7 @@ const links = [
   ['Work', '#work'],
   ['Experience', '#experience'],
   ['Services', '#services'],
+  ['Skills', '#skills'],
   ['Contact', '#contact'],
 ]
 
