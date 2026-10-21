@@ -14,7 +14,7 @@ export const shape = {
     intro: S, mission: S,
   },
   brands: list(S),
-  projects: list({ name: S, type: S, desc: S, img: URL }),
+  projects: list({ name: S, type: S, desc: S, company: S, year: S, link: URL, img: URL }),
   experience: list({ year: S, company: S, place: S, role: S, desc: S, img: URL }),
   services: list({ title: S, body: S, tags: list(S, 12) }, 12),
   skills: list({ title: S, items: list(S, 40) }, 12),

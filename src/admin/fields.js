@@ -53,7 +53,11 @@ export const sections = [
   {
     key: 'projects',
     title: 'Selected work',
-    list: list('Projects', { name: t('Name'), type: t('Type'), desc: t('Short description'), img: image('Image') }, { titleKey: 'name' }),
+    list: list('Projects', {
+      name: t('Name'), type: t('Type'), desc: t('Short description'),
+      company: t('Done at (company, same spelling as in Experience)'), year: t('Year (optional)'),
+      link: url('Link to the real work (Behance, Instagram, YouTube…, optional)'), img: image('Image or cover'),
+    }, { titleKey: 'name' }),
   },
   {
     key: 'caseStudy',

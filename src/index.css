@@ -207,7 +207,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .work__pin { height: 100vh; height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-top: 64px; }
 .work__track { display: flex; gap: 2.5vw; padding: 0 var(--gutter); width: max-content; will-change: transform; }
 .card { width: clamp(220px, min(30vw, calc((100svh - 330px) * 0.8)), 460px); flex: none; }
-.card__media { aspect-ratio: 4 / 5; overflow: hidden; border-radius: 6px; background: var(--bg-2); }
+.card__media { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 6px; background: var(--bg-2); }
 .card__media img { width: 120%; max-width: none; height: 100%; object-fit: cover; margin-left: -10%; transition: scale 0.7s var(--ease-out); }
 @media (hover: hover) and (pointer: fine) { .card:hover .card__media img { scale: 1.06; } }
 .card__info { display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px; gap: 12px; }
@@ -474,3 +474,26 @@ p, li, dd { text-wrap: pretty; }
   .skills__head { flex-direction: column; align-items: flex-start; }
 }
 @media (prefers-reduced-motion: reduce) { .skills__row::before { transform: none; } }
+
+/* ---------- Work: company chapters ---------- */
+.card { color: inherit; text-decoration: none; }
+.card__badge {
+  position: absolute; left: 12px; top: 12px; max-width: calc(100% - 24px);
+  padding: 6px 12px; border-radius: 99px; font-size: 11px;
+  background: rgba(11, 10, 9, 0.72); backdrop-filter: blur(8px); color: var(--fg);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.card__open { display: inline-block; margin-top: 8px; color: var(--accent); }
+.card--chapter {
+  aspect-ratio: 4 / 5; align-self: flex-start;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 16px;
+  padding: clamp(20px, 2vw, 32px); border-radius: 6px;
+  background: var(--bg-2); border: 1px solid var(--line); border-top: 3px solid var(--accent);
+}
+.chapter__name { font-family: var(--display); text-transform: uppercase; font-size: clamp(40px, 4.2vw, 76px); line-height: 0.92; overflow-wrap: anywhere; }
+.chapter__meta { display: grid; gap: 6px; }
+.chapter__role { font-size: clamp(16px, 1.3vw, 20px); line-height: 1.3; }
+@media (max-width: 760px) {
+  .card--chapter { aspect-ratio: auto; min-height: 220px; }
+  .work__head { flex-direction: column; align-items: flex-start; }
+}

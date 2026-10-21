@@ -1,10 +1,54 @@
-import { useRef } from 'react'
+import { Fragment, useRef } from 'react'
 import { gsap, SplitText, useGSAP, reducedMotion } from '../lib/gsap'
 import { useContent } from '../content'
 
+const norm = (s) => (s || '').trim().toLowerCase()
+
+// Chapters of work: one per company ("done at"), in the order of the
+// Experience list, then anything without a company as "Other projects".
+function groupByCompany(projects, experience) {
+  const groups = new Map()
+  projects.forEach((p, i) => {
+    const key = norm(p.company)
+    if (!groups.has(key)) groups.set(key, { company: (p.company || '').trim(), items: [] })
+    groups.get(key).items.push({ ...p, n: 0, key: `${p.name}-${i}` })
+  })
+  const order = experience.map((e) => norm(e.company))
+  const rank = (k) => (k === '' ? Infinity : order.includes(k) ? order.indexOf(k) : order.length)
+  let n = 0
+  return [...groups.entries()]
+    .sort((a, b) => rank(a[0]) - rank(b[0]))
+    .map(([k, g]) => ({
+      ...g,
+      job: experience.find((e) => norm(e.company) === k),
+      items: g.items.map((p) => ({ ...p, n: ++n })),
+    }))
+}
+
+function ProjectCard({ p }) {
+  const Tag = p.link ? 'a' : 'article'
+  const linkProps = p.link ? { href: p.link, target: '_blank', rel: 'noreferrer', 'data-cursor': 'Open' } : {}
+  return (
+    <Tag className="card" {...linkProps}>
+      <div className="card__media">
+        <img src={p.img} alt={`${p.name} — ${p.type}`} loading="lazy" />
+        {p.company && <span className="card__badge mono">@ {p.company}</span>}
+      </div>
+      <div className="card__info">
+        <span className="card__name">{p.name}</span>
+        <span className="mono muted">{String(p.n).padStart(2, '0')}</span>
+      </div>
+      <div className="mono muted">{p.type}{p.year ? ` · ${p.year}` : ''} — {p.desc}</div>
+      {p.link && <span className="card__open mono">View project ↗</span>}
+    </Tag>
+  )
+}
+
 export default function Work() {
-  const { projects } = useContent()
+  const { projects, experience } = useContent()
   const root = useRef(null)
+  const groups = groupByCompany(projects, experience)
+  const companies = groups.filter((g) => g.company).length
 
   useGSAP(
     () => {
@@ -41,11 +85,14 @@ export default function Work() {
           scrollTrigger: { trigger: '.work__pin', start: 'top top', end: () => '+=' + distance(), scrub: true },
         })
         gsap.utils.toArray('.card').forEach((card) => {
-          gsap.fromTo(card.querySelector('img'), { xPercent: 8 }, {
-            xPercent: -8,
-            ease: 'none',
-            scrollTrigger: { trigger: card, containerAnimation: tween, start: 'left right', end: 'right left', scrub: true },
-          })
+          const img = card.querySelector('.card__media img')
+          if (img) {
+            gsap.fromTo(img, { xPercent: 8 }, {
+              xPercent: -8,
+              ease: 'none',
+              scrollTrigger: { trigger: card, containerAnimation: tween, start: 'left right', end: 'right left', scrub: true },
+            })
+          }
           gsap.from(card, {
             rotate: 4, y: 60, opacity: 0.3,
             ease: 'power2.out',
@@ -54,16 +101,16 @@ export default function Work() {
         })
       })
       mm.add('(max-width: 760px)', () => {
-        gsap.utils.toArray('.card').forEach((card) => {
-          gsap.from(card.querySelector('.card__media'), {
+        gsap.utils.toArray('.card__media').forEach((media) => {
+          gsap.from(media, {
             clipPath: 'inset(20% 10% 20% 10%)',
             ease: 'none',
-            scrollTrigger: { trigger: card, start: 'top 95%', end: 'top 45%', scrub: true },
+            scrollTrigger: { trigger: media, start: 'top 95%', end: 'top 45%', scrub: true },
           })
         })
       })
     },
-    { scope: root },
+    { scope: root, dependencies: [projects], revertOnUpdate: true },
   )
 
   return (
@@ -71,20 +118,23 @@ export default function Work() {
       <div className="work__pin">
         <div className="work__head">
           <h2 className="work__title">Selected Work</h2>
-          <span className="section-label">({String(projects.length).padStart(2, '0')}) Projects</span>
+          <span className="section-label">
+            ({String(projects.length).padStart(2, '0')}) projects{companies ? ` · ${companies} ${companies === 1 ? 'company' : 'companies'}` : ''}
+          </span>
         </div>
         <div className="work__track">
-          {projects.map((p, i) => (
-            <article className="card" key={p.name} data-cursor="View">
-              <div className="card__media">
-                <img src={p.img} alt={`${p.name} — ${p.type}`} loading="lazy" />
+          {groups.map((g) => (
+            <Fragment key={g.company || 'other'}>
+              <div className="card card--chapter">
+                <span className="mono muted">{g.company ? 'Work done at' : 'Also'}</span>
+                <span className="chapter__name">{g.company || 'Other projects'}</span>
+                <span className="chapter__meta">
+                  {g.job && <><span className="chapter__role">{g.job.role}</span><span className="mono muted">{g.job.year}</span></>}
+                  <span className="mono accent">({g.items.length}) {g.items.length === 1 ? 'project' : 'projects'} →</span>
+                </span>
               </div>
-              <div className="card__info">
-                <span className="card__name">{p.name}</span>
-                <span className="mono muted">{String(i + 1).padStart(2, '0')}</span>
-              </div>
-              <div className="mono muted">{p.type} — {p.desc}</div>
-            </article>
+              {g.items.map((p) => <ProjectCard p={p} key={p.key} />)}
+            </Fragment>
           ))}
         </div>
         <div className="work__progress"><i /></div>

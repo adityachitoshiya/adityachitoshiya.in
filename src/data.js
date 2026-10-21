@@ -25,16 +25,16 @@ export const brands = [
 ]
 
 export const projects = [
-  { name: 'Regrip', type: 'Brand Campaign', desc: 'Advertising, founder stories, influencer content.', img: '/img/gallery_1.jpg' },
-  { name: 'Biedx', type: 'EdTech Media', desc: 'Event capture, course design, visual education.', img: '/img/gallery_2.jpg' },
-  { name: 'Mittsure', type: 'Publishing Design', desc: 'Book covers, magazines, brand identity.', img: '/img/gallery_3.jpg' },
-  { name: 'Suniel Shetty', type: 'Celebrity Branding', desc: 'Face-of-brand creative coordination.', img: '/img/latest_main.jpg' },
-  { name: 'Dhruv Rathee', type: 'Creator Content', desc: 'High-quality visual content creation.', img: '/img/latest_1.jpg' },
-  { name: 'GetSetFly', type: 'Digital Campaigns', desc: 'Creative production & storytelling.', img: '/img/latest_2.jpg' },
-  { name: 'Think Trail', type: 'Logo Design', desc: 'Educational book company branding.', img: '/img/welcome_1.jpg' },
-  { name: 'Lumalearn', type: 'EdTech Branding', desc: 'Plantation-themed logo design.', img: '/img/welcome_2.jpg' },
-  { name: 'Luma', type: 'Product Design', desc: 'Stationery brand identity.', img: '/img/intro_tall.jpg' },
-  { name: 'Pinaka', type: 'Education Platform', desc: 'Visual identity & branding.', img: '/img/intro_short.jpg' },
+  { name: 'Regrip', type: 'Brand Campaign', desc: 'Advertising, founder stories, influencer content.', company: 'Regrip India', img: '/img/gallery_1.jpg' },
+  { name: 'Biedx', type: 'EdTech Media', desc: 'Event capture, course design, visual education.', company: 'Biedx', img: '/img/gallery_2.jpg' },
+  { name: 'Mittsure', type: 'Publishing Design', desc: 'Book covers, magazines, brand identity.', company: 'Mittsure Technology', img: '/img/gallery_3.jpg' },
+  { name: 'Suniel Shetty', type: 'Celebrity Branding', desc: 'Face-of-brand creative coordination.', company: 'Regrip India', img: '/img/latest_main.jpg' },
+  { name: 'Dhruv Rathee', type: 'Creator Content', desc: 'High-quality visual content creation.', company: '', img: '/img/latest_1.jpg' },
+  { name: 'GetSetFly', type: 'Digital Campaigns', desc: 'Creative production & storytelling.', company: '', img: '/img/latest_2.jpg' },
+  { name: 'Think Trail', type: 'Logo Design', desc: 'Educational book company branding.', company: '', img: '/img/welcome_1.jpg' },
+  { name: 'Lumalearn', type: 'EdTech Branding', desc: 'Plantation-themed logo design.', company: '', img: '/img/welcome_2.jpg' },
+  { name: 'Luma', type: 'Product Design', desc: 'Stationery brand identity.', company: '', img: '/img/intro_tall.jpg' },
+  { name: 'Pinaka', type: 'Education Platform', desc: 'Visual identity & branding.', company: '', img: '/img/intro_short.jpg' },
 ]
 
 export const experience = [

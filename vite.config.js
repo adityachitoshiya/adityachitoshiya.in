@@ -18,7 +18,7 @@ function seoFallback() {
         <h2>Worked with</h2>
         <ul>${li(snapshot.names.map(esc))}</ul>
         <h2>Selected work</h2>
-        <ul>${li(projects.map((p) => `${esc(p.name)} — ${esc(p.type)}: ${esc(p.desc)}`))}</ul>
+        <ul>${li(projects.map((p) => `${esc(p.name)} — ${esc(p.type)}${p.company ? ` (done at ${esc(p.company)})` : ''}: ${esc(p.desc)}`))}</ul>
         <h2>Experience</h2>
         <ul>${li(experience.map((e) => `${esc(e.company)} — ${esc(e.role)} (${esc(e.year)}): ${esc(e.desc)}`))}</ul>
         <h2>Skills</h2>
