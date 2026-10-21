@@ -30,12 +30,14 @@ export default function Experience() {
       const yTo = gsap.quickTo(el, 'y', { duration: 0.6, ease: 'power3' })
       const rTo = gsap.quickTo(el, 'rotation', { duration: 0.8, ease: 'power3' })
       let lastX = 0
+      let lastY = 0
       const list = root.current.querySelector('.exp__list')
 
       const move = (e) => {
         xTo(e.clientX - 150); yTo(e.clientY - 112)
         rTo(gsap.utils.clamp(-12, 12, (e.clientX - lastX) * 0.6))
         lastX = e.clientX
+        lastY = e.clientY
       }
       const enterRow = (i) => {
         imgs.forEach((img, j) => gsap.to(img, { opacity: j === i ? 1 : 0, scale: j === i ? 1 : 1.15, duration: 0.5 }))
@@ -48,10 +50,18 @@ export default function Experience() {
       })
       const show = () => gsap.to(el, { opacity: 1, scale: 1, duration: 0.5, ease: 'expo.out' })
       const hide = () => gsap.to(el, { opacity: 0, scale: 0.9, duration: 0.25, ease: 'power3.out' })
+      // Scrolling moves the list away without moving the mouse, and browsers
+      // don't fire pointerleave for that, so the preview would stay stuck on
+      // screen. Re-check what is under the pointer on every scroll.
+      const onScroll = () => {
+        if (!list.contains(document.elementFromPoint(lastX, lastY))) hide()
+      }
       list.addEventListener('pointermove', move)
       list.addEventListener('pointerenter', show)
       list.addEventListener('pointerleave', hide)
+      window.addEventListener('scroll', onScroll, { passive: true })
       return () => {
+        window.removeEventListener('scroll', onScroll)
         rows.forEach((row, i) => row.removeEventListener('pointerenter', handlers[i]))
         list.removeEventListener('pointermove', move)
         list.removeEventListener('pointerenter', show)
