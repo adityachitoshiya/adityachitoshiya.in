@@ -8,26 +8,25 @@ export const profile = {
   location: 'Jaipur, India',
   behance: 'https://www.behance.net/adityachitosh',
   github: 'https://github.com/adityachitoshiya',
-  tagline: 'Multidisciplinary Creator',
-  disciplines: 'Design × Technology × AI',
+  tagline: 'Creative & Digital Marketing Specialist',
+  disciplines: 'Campaigns · Motion · Content',
   heroImage:
     'https://res.cloudinary.com/dd5zrsmok/image/upload/f_auto,q_auto,w_1800/v1786686336/portfolio_uploads/htlmqiglvtbglcyey0oh.webp',
   intro:
-    "I'm a multidisciplinary creator working across motion graphics, product design, UI/UX and AI-driven development. My work bridges bold brand storytelling with functional, technology-first execution — for founders, creators and EdTech brands alike.",
+    "I'm a creative and digital marketing professional with 4+ years across brand communication, campaign creatives, social media content, motion graphics, video production and digital experiences — for consumer brands, education, media and events.",
   mission:
     "My mission is to turn ideas into powerful digital experiences. I'm building a future-ready studio where designers, developers and AI systems work as one.",
 }
 
 export const brands = [
-  'Suniel Shetty', 'boAt', 'Aman Dhattarwal', 'Regrip', 'SleepyOwl', 'Dhruv Rathee',
-  'Biedx', 'Abhi & Niyu', 'Vande Bharat / Adani TV', 'Bharat Ke Super Founders',
-  'Mittsure', 'EA Jaipur', 'GetSetFly', 'Think Trail', 'Lumalearn', 'Pinaka',
+  'Suniel Shetty', 'Aman Dhattarwal', 'Regrip India', 'SleepyOwl', 'Abhi & Niyu',
+  'Vande Bharat / Adani TV', 'Bharat Ke Super Founders', 'EA Jaipur', 'Mittsure',
+  'Jaipur Comic Con', 'The Prime Walk', 'Varaha Jewels', 'Think Trail', 'Lumalearn', 'Luma', 'Pinaka',
 ]
 
 export const projects = [
   { name: 'Regrip', type: 'Brand Campaign', desc: 'Advertising, founder stories, influencer content.', company: 'Regrip India', img: '/img/gallery_1.jpg' },
-  { name: 'Biedx', type: 'EdTech Media', desc: 'Event capture, course design, visual education.', company: 'Biedx', img: '/img/gallery_2.jpg' },
-  { name: 'Mittsure', type: 'Publishing Design', desc: 'Book covers, magazines, brand identity.', company: 'Mittsure Technology', img: '/img/gallery_3.jpg' },
+  { name: 'Mittsure', type: 'Publishing Design', desc: 'Book covers, magazines, brand identity.', company: 'Mittsure', img: '/img/gallery_3.jpg' },
   { name: 'Suniel Shetty', type: 'Celebrity Branding', desc: 'Face-of-brand creative coordination.', company: 'Regrip India', img: '/img/latest_main.jpg' },
   { name: 'Dhruv Rathee', type: 'Creator Content', desc: 'High-quality visual content creation.', company: '', img: '/img/latest_1.jpg' },
   { name: 'GetSetFly', type: 'Digital Campaigns', desc: 'Creative production & storytelling.', company: '', img: '/img/latest_2.jpg' },
@@ -41,26 +40,50 @@ export const experience = [
   {
     year: 'Sep 2025 — Now',
     company: 'Regrip India',
-    place: 'Brand',
-    role: 'Brand Transformation Lead',
-    desc: 'Advertising campaigns, founder-focused storytelling, TED Talk-style influencer videos, celebrity coordination with Suniel Shetty.',
+    place: 'Brand & marketing',
+    role: 'Creative Visual Designer',
+    desc: 'Visual communication for brand campaigns and product storytelling; founder-focused narratives, influencer films and short-form video; social media and ad creatives; celebrity-led campaign content with Suniel Shetty.',
     img: '/img/latest_main.jpg',
   },
   {
-    year: '— 2025',
-    company: 'Biedx',
-    place: 'Singapore EdTech',
-    role: 'Media & Visual Education Specialist',
-    desc: 'Event documentation, visual storytelling, understanding-friendly course design, marketing & media production.',
-    img: '/img/work_1.jpg',
+    year: '2022',
+    company: 'Mittsure',
+    place: 'Education & publishing',
+    role: 'Motion Graphic Designer',
+    desc: 'Motion graphics, animated explainers, titles and visual assets for educational and publishing content and marketing deliverables.',
+    img: '/img/work_2.jpg',
   },
   {
-    year: '2022',
-    company: 'Mittsure Technology',
-    place: 'Publishing',
-    role: 'Brand Identity Designer',
-    desc: 'International & national book covers, magazine design & layout, premium brand identity upgrades for publishing and education.',
-    img: '/img/work_2.jpg',
+    year: '',
+    company: 'The Prime Walk',
+    place: 'Event',
+    role: 'Media & Content Strategy Planner',
+    desc: 'Planned media and content direction for event communication and audience engagement, aligned with event messaging and promotional channels.',
+    img: '',
+  },
+  {
+    year: '',
+    company: 'Jaipur Comic Con',
+    place: 'Event',
+    role: 'Social Media',
+    desc: 'Social media content and promotional communication for the event.',
+    img: '',
+  },
+  {
+    year: '',
+    company: 'Adharshila by Regrip',
+    place: 'Event',
+    role: 'Event Management',
+    desc: 'Event management support, coordination and execution.',
+    img: '',
+  },
+  {
+    year: '',
+    company: 'Varaha Jewels',
+    place: 'Online jewellery brand',
+    role: 'E-commerce & Brand Project',
+    desc: 'Product listings, pricing and online merchandising, plus advertising to support product visibility, organic orders and online sales.',
+    img: '',
   },
   {
     year: '2018 — 2022',
@@ -74,24 +97,24 @@ export const experience = [
 
 export const services = [
   {
-    title: 'Motion Graphics',
-    body: 'Ad films, founder stories and TED-style creator videos — motion that carries a brand’s voice.',
-    tags: ['After Effects', 'Storyboards', 'Ad Films', 'Reels'],
+    title: 'Creative & Design',
+    body: 'Campaign creatives, brand identity and product storytelling that stay consistent across every format.',
+    tags: ['Photoshop', 'Illustrator', 'Brand Identity', 'Campaigns'],
   },
   {
-    title: 'Product & UI/UX',
-    body: 'Interfaces and product experiences designed to be understood at a glance and used with ease.',
-    tags: ['Figma', 'Design Systems', 'Prototyping', 'Web'],
+    title: 'Motion & Video',
+    body: 'Motion graphics, animated explainers, founder stories and short-form video built for social feeds.',
+    tags: ['After Effects', 'Premiere Pro', 'Explainers', 'Reels'],
   },
   {
-    title: 'Brand Identity',
-    body: 'Logos, book covers, editorial layouts and identity upgrades for publishing, education and D2C brands.',
-    tags: ['Logo', 'Editorial', 'Packaging', 'Campaigns'],
+    title: 'Marketing & Content',
+    body: 'Social media content, content strategy and campaign-led communication that keeps audiences engaged.',
+    tags: ['Social Media', 'Content Strategy', 'Campaigns', 'Engagement'],
   },
   {
-    title: 'AI Development',
-    body: 'Python-driven automation and AI workflows that let design and engineering ship faster, together.',
-    tags: ['Python', 'Automation', 'Gen AI', 'Tooling'],
+    title: 'Events & Digital',
+    body: 'Event communication and coordination, plus UI/UX and AI-assisted workflows for digital brand experiences.',
+    tags: ['Events', 'Figma', 'UI/UX', 'AI tools'],
   },
 ]
 
@@ -101,11 +124,11 @@ const vid = (path) =>
   `https://res.cloudinary.com/dd5zrsmok/video/upload/q_auto,w_1280/${path}.mp4`
 
 export const snapshot = {
-  role: 'Brand · Motion · Product designer who also codes',
+  role: 'Creative & digital marketing specialist: campaigns, motion and content',
   years: `${new Date().getFullYear() - 2022}+ yrs`,
-  companies: ['Regrip India (now)', 'Biedx (Singapore)', 'Mittsure'],
-  names: ['Suniel Shetty', 'Aman Dhattarwal', 'Dhruv Rathee', 'boAt'],
-  tools: ['Photoshop', 'Illustrator', 'After Effects', 'Premiere Pro', 'Figma', 'AI tools'],
+  companies: ['Regrip India (now)', 'Mittsure', 'Varaha Jewels'],
+  names: ['Suniel Shetty', 'Aman Dhattarwal', 'Abhi & Niyu', 'SleepyOwl'],
+  tools: ['Photoshop', 'Illustrator', 'After Effects', 'Premiere Pro', 'Figma', 'Canva', 'AI tools'],
   people: [
     { name: 'Suniel Shetty', note: 'Face of Regrip — campaign shoot', img: cld('v1786704749/portfolio_uploads/dmj8q2us6vvlicbuayas.webp') },
     { name: 'Prahlad Modi', note: 'Regrip brand storytelling', img: cld('v1786704728/portfolio_uploads/y6k1qu2mrsodo88u9f89.webp') },
@@ -123,7 +146,7 @@ export const reels = [
 export const caseStudy = {
   client: 'Regrip',
   title: 'Regrip × Suniel Shetty',
-  role: 'Brand Transformation Lead',
+  role: 'Creative Visual Designer',
   years: 'Sep 2025 — Now',
   brief:
     'Transform how Regrip shows up — advertising campaigns, founder-led stories, influencer films and a Bollywood face of the brand.',

@@ -13,7 +13,7 @@ function seoFallback() {
     transformIndexHtml(html) {
       const body = `<noscript>
       <main>
-        <h1>${esc(profile.first)} ${esc(profile.last)} — Visual &amp; Product Designer</h1>
+        <h1>${esc(profile.first)} ${esc(profile.last)} — Creative &amp; Digital Marketing Specialist</h1>
         <p>${esc(profile.intro)}</p>
         <h2>Worked with</h2>
         <ul>${li(snapshot.names.map(esc))}</ul>

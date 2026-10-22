@@ -44,7 +44,7 @@ export default function Hero({ loaded }) {
     <section className="hero" id="top" ref={root}>
       <div className="hero__copy">
         <p className="hero__label mono">
-          {profile.first} {profile.last}<span className="muted"> / Brand, motion &amp; product designer</span>
+          {profile.first} {profile.last}<span className="muted"> / Creative &amp; digital marketing specialist</span>
         </p>
         <h1 className="hero__title" aria-label="I turn ideas into brand campaigns, motion and products people remember.">
           <span className="hero__line hero__line--sans" aria-hidden="true"><span>I turn ideas into</span></span>
@@ -67,7 +67,7 @@ export default function Hero({ loaded }) {
       <figure className="hero__photo">
         <img src={profile.heroImage} alt="Portrait of Aditya Chitoshiya" fetchPriority="high" width="900" height="1200" />
         <figcaption className="hero__badge mono">
-          <i />Now: Brand Transformation Lead at Regrip India
+          <i />Now: Creative Visual Designer at Regrip India
         </figcaption>
       </figure>
     </section>

@@ -91,7 +91,7 @@ export default function Experience() {
         ))}
       </div>
       <div className="exp__float" ref={float} aria-hidden="true">
-        {experience.map((x) => <img key={x.company} src={x.img} alt="" loading="lazy" style={{ opacity: 0 }} />)}
+        {experience.map((x) => <img key={x.company} src={x.img || undefined} alt="" loading="lazy" style={{ opacity: 0 }} />)}
       </div>
     </section>
   )
