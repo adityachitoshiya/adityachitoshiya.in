@@ -12,6 +12,7 @@ export const defaultContent = {
   experience: defaults.experience,
   services: defaults.services,
   skills: defaults.skills,
+  viral: defaults.viral,
   snapshot: defaults.snapshot,
   reels: defaults.reels,
   caseStudy: defaults.caseStudy,

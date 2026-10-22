@@ -87,6 +87,17 @@ export const sections = [
     list: list('Services', { title: t('Title'), body: area('Description'), tags: list('Tags', t('Tag')) }, { titleKey: 'title' }),
   },
   {
+    key: 'viral',
+    title: 'Went viral',
+    list: list('Viral videos & posts', {
+      title: t('Title'),
+      link: url('Link (YouTube, Instagram, LinkedIn…)'),
+      views: t('Views (e.g. 1.2M or 850K)'),
+      company: t('Made for / at'),
+      thumb: image('Thumbnail (optional for YouTube; needed for Instagram)'),
+    }, { titleKey: 'title' }),
+  },
+  {
     key: 'skills',
     title: 'Skills',
     list: list('Skill groups', { title: t('Group name'), items: list('Skills in this group', t('Skill')) }, { titleKey: 'title' }),

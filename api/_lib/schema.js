@@ -18,6 +18,7 @@ export const shape = {
   experience: list({ year: S, company: S, place: S, role: S, desc: S, img: URL }),
   services: list({ title: S, body: S, tags: list(S, 12) }, 12),
   skills: list({ title: S, items: list(S, 40) }, 12),
+  viral: list({ title: S, link: URL, views: S, company: S, thumb: URL }, 30),
   snapshot: {
     role: S, years: S,
     companies: list(S, 12), names: list(S, 12), tools: list(S, 20),

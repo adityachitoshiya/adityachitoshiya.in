@@ -12,6 +12,7 @@ import Experience from './components/Experience'
 import Services from './components/Services'
 import Contact from './components/Contact'
 import Skills from './components/Skills'
+import Viral from './components/Viral'
 import Snapshot from './components/Snapshot'
 import Showreel from './components/Showreel'
 import CaseStudy from './components/CaseStudy'
@@ -68,6 +69,7 @@ export default function App() {
           <Snapshot />
           <Marquee />
           <Showreel />
+          <Viral />
           <About />
           <Work />
           <CaseStudy />
