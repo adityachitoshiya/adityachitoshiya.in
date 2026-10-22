@@ -27,7 +27,7 @@ function safeEqual(a, b) {
 
 export function configError() {
   const pw = process.env.ADMIN_PASSWORD
-  if (!pw || pw.length < 12) return 'ADMIN_PASSWORD must be set (12+ characters).'
+  if (!pw || pw.length < 8) return 'ADMIN_PASSWORD must be set (8+ characters).'
   if (!secret()) return 'ADMIN_SECRET must be set (32+ random characters).'
   return null
 }

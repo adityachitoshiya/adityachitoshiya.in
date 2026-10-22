@@ -29,7 +29,7 @@ Add these in Vercel → Project → Settings → Environment Variables:
 
 | Variable | Value |
 | --- | --- |
-| `ADMIN_PASSWORD` | A new password, 12+ characters |
+| `ADMIN_PASSWORD` | Admin password, 8+ characters |
 | `ADMIN_SECRET` | 32+ random characters (`openssl rand -hex 32`) |
 | `MONGODB_URI` | Same as the current adityachitoshiya.in project |
 | `CLOUDINARY_CLOUD_NAME` / `_API_KEY` / `_API_SECRET` | Same as the current project |
