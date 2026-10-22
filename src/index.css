@@ -541,3 +541,16 @@ p, li, dd { text-wrap: pretty; }
   .vcard:not(.vcard--tall) { grid-column: 1 / -1; }
   .vcard__views { font-size: 26px; }
 }
+
+/* Viral: proof screenshots */
+.viral__proof { margin-top: 9vh; display: grid; gap: 18px; }
+.viral__shots { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+.vshot { flex: none; margin: 0; scroll-snap-align: start; display: grid; gap: 10px; width: clamp(180px, 22vw, 280px); }
+.vshot__img { display: block; width: 100%; padding: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--bg-2); cursor: zoom-in; }
+.vshot__img img { display: block; width: 100%; aspect-ratio: 9 / 16; object-fit: cover; object-position: top; transition: scale 0.6s var(--ease-out); }
+@media (hover: hover) and (pointer: fine) { .vshot__img:hover img { scale: 1.03; } }
+.vshot figcaption { font-size: 11px; color: var(--muted); }
+.vplayer__shot { margin: 0; display: grid; gap: 12px; justify-items: center; }
+.vplayer__shot img { max-width: min(92vw, 900px); max-height: 82vh; width: auto; height: auto; border-radius: 12px; object-fit: contain; }
+.vplayer__shot figcaption { font-size: 12px; color: var(--muted); }
+.vplayer__shot a { color: var(--accent); }

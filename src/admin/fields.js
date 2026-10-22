@@ -98,6 +98,15 @@ export const sections = [
     }, { titleKey: 'title' }),
   },
   {
+    key: 'viralShots',
+    title: 'Viral screenshots',
+    list: list('Screenshots (Instagram insights, YouTube analytics, profile)', {
+      img: image('Screenshot'),
+      caption: t('Caption, e.g. "Reel insights: 2.1M views"'),
+      link: url('Link (optional)'),
+    }, { titleKey: 'caption' }),
+  },
+  {
     key: 'skills',
     title: 'Skills',
     list: list('Skill groups', { title: t('Group name'), items: list('Skills in this group', t('Skill')) }, { titleKey: 'title' }),

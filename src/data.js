@@ -175,3 +175,6 @@ export const skills = [
 // Work that went viral on social media. Fill with real links and view
 // counts (e.g. "1.2M"); the section stays hidden while this is empty.
 export const viral = []
+
+// Proof screenshots (Instagram insights, YouTube analytics, profile stats).
+export const viralShots = []

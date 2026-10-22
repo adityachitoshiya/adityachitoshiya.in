@@ -46,8 +46,8 @@ function formatViews(n) {
   return String(Math.round(n))
 }
 
-// --- player ----------------------------------------------------------------
-function Player({ id, title, onClose }) {
+// --- pop-up (video player or full-size screenshot) ---------------------
+function Modal({ label, onClose, children }) {
   const closeRef = useRef(null)
   useEffect(() => {
     const prev = document.activeElement
@@ -63,32 +63,52 @@ function Player({ id, title, onClose }) {
   }, [onClose])
 
   return (
-    <div className="vplayer" role="dialog" aria-modal="true" aria-label={title} onClick={onClose}>
-      <div className="vplayer__box" onClick={(e) => e.stopPropagation()}>
-        <iframe
-          src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`}
-          title={title}
-          allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-          allowFullScreen
-        />
-      </div>
+    <div className="vplayer" role="dialog" aria-modal="true" aria-label={label} onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()}>{children}</div>
       <button ref={closeRef} className="vplayer__close mono" onClick={onClose}>Close ✕</button>
     </div>
   )
 }
 
+function OpenItem({ item }) {
+  if (item.type === 'video') {
+    return (
+      <div className="vplayer__box">
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${item.id}?autoplay=1&rel=0`}
+          title={item.title}
+          allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+          allowFullScreen
+        />
+      </div>
+    )
+  }
+  return (
+    <figure className="vplayer__shot">
+      <img src={item.img} alt={item.caption || 'Screenshot'} />
+      {(item.caption || item.link) && (
+        <figcaption className="mono">
+          {item.caption}
+          {item.link && <> · <a href={item.link} target="_blank" rel="noreferrer">Open ↗</a></>}
+        </figcaption>
+      )}
+    </figure>
+  )
+}
+
 // --- section ---------------------------------------------------------------
 export default function Viral() {
-  const { viral = [] } = useContent()
+  const { viral = [], viralShots = [] } = useContent()
   const items = viral.filter((v) => v.link)
+  const shots = viralShots.filter((s) => s.img)
   const root = useRef(null)
-  const [playing, setPlaying] = useState(null)
+  const [open, setOpen] = useState(null)
   const total = items.reduce((n, v) => n + parseViews(v.views), 0)
   const platforms = [...new Set(items.map((v) => platformOf(v.link)))]
 
   useGSAP(
     () => {
-      if (reducedMotion || !items.length) return
+      if (reducedMotion || (!items.length && !shots.length)) return
       const split = SplitText.create('.viral__title', { type: 'lines,chars', mask: 'lines', linesClass: 'ln' })
       gsap.from(split.chars, {
         yPercent: 110, stagger: 0.02, duration: 1.2, ease: 'expo.out',
@@ -103,27 +123,37 @@ export default function Viral() {
           onUpdate: () => { out.textContent = `${formatViews(n.v)}+` },
         })
       }
-      gsap.from('.vcard', {
-        y: 60, opacity: 0, duration: 1, stagger: 0.08, ease: 'expo.out',
-        scrollTrigger: { trigger: '.viral__grid', start: 'top 85%' },
-      })
+      if (items.length) {
+        gsap.from('.vcard', {
+          y: 60, opacity: 0, duration: 1, stagger: 0.08, ease: 'expo.out',
+          scrollTrigger: { trigger: '.viral__grid', start: 'top 85%' },
+        })
+      }
+      if (shots.length) {
+        gsap.from('.vshot', {
+          y: 50, opacity: 0, duration: 0.9, stagger: 0.06, ease: 'expo.out',
+          scrollTrigger: { trigger: '.viral__shots', start: 'top 90%' },
+        })
+      }
     },
-    { scope: root, dependencies: [viral], revertOnUpdate: true },
+    { scope: root, dependencies: [viral, viralShots], revertOnUpdate: true },
   )
 
-  if (!items.length) return null
+  if (!items.length && !shots.length) return null
   return (
     <section className="viral" id="viral" ref={root}>
       <div className="viral__head">
         <span className="section-label">Went viral</span>
         <h2 className="viral__title">Work that went viral</h2>
-        <p className="viral__total">
-          <b>{formatViews(total)}+</b>
-          <span className="mono muted">total views · {items.length} {items.length === 1 ? 'piece' : 'pieces'} · {platforms.join(', ')}</span>
-        </p>
+        {total > 0 && (
+          <p className="viral__total">
+            <b>{formatViews(total)}+</b>
+            <span className="mono muted">total views · {items.length} {items.length === 1 ? 'piece' : 'pieces'} · {platforms.join(', ')}</span>
+          </p>
+        )}
       </div>
 
-      <div className="viral__grid">
+      {items.length > 0 && <div className="viral__grid">
         {items.map((v, i) => {
           const id = youtubeId(v.link)
           const platform = platformOf(v.link)
@@ -139,7 +169,7 @@ export default function Viral() {
           return (
             <article className={`vcard${isVertical(v.link) ? ' vcard--tall' : ''}`} key={`${v.link}-${i}`}>
               {id ? (
-                <button className="vcard__media" onClick={() => setPlaying({ id, title: v.title })} data-cursor="Play" aria-label={`Play ${v.title}`}>
+                <button className="vcard__media" onClick={() => setOpen({ type: 'video', id, title: v.title })} data-cursor="Play" aria-label={`Play ${v.title}`}>
                   {inner}
                 </button>
               ) : (
@@ -154,9 +184,29 @@ export default function Viral() {
             </article>
           )
         })}
-      </div>
+      </div>}
 
-      {playing && <Player {...playing} onClose={() => setPlaying(null)} />}
+      {shots.length > 0 && (
+        <div className="viral__proof">
+          <span className="section-label">Proof, straight from the apps</span>
+          <div className="viral__shots">
+            {shots.map((sh, i) => (
+              <figure className="vshot" key={`${sh.img}-${i}`}>
+                <button className="vshot__img" onClick={() => setOpen({ type: 'shot', ...sh })} data-cursor="View" aria-label={`View screenshot: ${sh.caption || 'proof'}`}>
+                  <img src={sh.img} alt={sh.caption || 'Screenshot'} loading="lazy" />
+                </button>
+                {sh.caption && <figcaption className="mono">{sh.caption}</figcaption>}
+              </figure>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {open && (
+        <Modal label={open.title || open.caption || 'Preview'} onClose={() => setOpen(null)}>
+          <OpenItem item={open} />
+        </Modal>
+      )}
     </section>
   )
 }

@@ -13,6 +13,7 @@ export const defaultContent = {
   services: defaults.services,
   skills: defaults.skills,
   viral: defaults.viral,
+  viralShots: defaults.viralShots,
   snapshot: defaults.snapshot,
   reels: defaults.reels,
   caseStudy: defaults.caseStudy,
