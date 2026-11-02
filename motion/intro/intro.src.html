@@ -1,0 +1,354 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Aditya intro</title>
+<style>
+/*FONTS*/
+html,body{margin:0;background:#000;overflow:hidden}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+canvas{display:block}
+#ui{position:fixed;left:12px;bottom:12px;right:12px;display:flex;gap:12px;font:14px monospace;color:#fff}
+#ui input{flex:1}
+</style></head>
+<body>
+<div id="stage"><canvas id="c" width="1920" height="1080"></canvas></div>
+<script>
+/* Beat sheet: 128 BPM, B = 0.46875 s, 8 bars = 15 s
+   b0      0.00  dark grid, accent dot pops                       blip
+   b1.5    0.70  dot stretches into a line, label types           riser starts b2
+   b3      1.41  line wobbles
+   b3.5    1.64  line floods the screen orange                    impact b4
+   b4      1.88  SCENE 2 ADITYA letters rise on 1/4 beats          kick in, blips
+   b5      2.34  CHITOSHIYA letters on 1/8 beats
+   b6.25   2.93  serif line word by word; ink dot pops b6.5
+   b7      3.28  dot detaches to centre, grows into black b7.25   whoosh, impact b8
+   b8      3.75  SCENE 3 CAMPAIGNS accent on black, outline rows
+   b10     4.69  MOTION ink on cream, stretch + skew               whoosh
+   b12     5.63  CONTENT cream on deep orange, viewfinder          whoosh
+   b14     6.56  "video" writes itself on, accent full stop        whoosh
+   b15.5   7.27  full stop travels to centre
+   b16     7.50  SCENE 4 dot bursts into particles, ring forms     impact
+   b17.75  8.32  "ideas that move" in the ring
+   b19.25  9.02  particles burst, orange disc floods               impact b20
+   b20     9.38  SCENE 5 WORKED WITH + 4 names on half beats
+   b22.75 10.66  list squashes to a bar, bar to a dot, dot floods black   riser, impact b24
+   b24    11.25  SCENE 6 name, dot + ring pulse b25.5, rule, serif, URL types   ring-out
+   b32    15.00  end */
+const SQ = /sq/.test(location.search);                 // ?sq = 1080 x 1080 for the site's square showreel frame
+const W = SQ ? 1080 : 1920, H = 1080, DUR = 15, B = 60 / 128, b = n => n * B;
+const C = { ink: '#0b0a09', acc: '#ff5a1f', cream: '#efe9df', deep: '#3a1307' };
+
+function spring(t, w = 14, z = 0.82) {
+  if (t <= 0) return 0;
+  if (z >= 1) return 1 - Math.exp(-w * t) * (1 + w * t);
+  const wd = w * Math.sqrt(1 - z * z);
+  return 1 - Math.exp(-z * w * t) * (Math.cos(wd * t) + (z * w / wd) * Math.sin(wd * t));
+}
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = x => (x = clamp(x), x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const easeIn = x => Math.pow(clamp(x), 3);
+const easeOut = x => 1 - Math.pow(1 - clamp(x), 3);
+const expoOut = x => (x = clamp(x), x === 1 ? 1 : 1 - Math.pow(2, -10 * x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const rng = s => () => (s = (s + 0x6D2B79F5) | 0, s = Math.imul(s ^ (s >>> 15), 1 | s), s ^= s + Math.imul(s ^ (s >>> 7), 61 | s), ((s ^ (s >>> 14)) >>> 0) / 4294967296);
+
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+cv.width = W; document.getElementById('stage').style.width = W + 'px';
+const F = { anton: 'Anton', mono: 'JBMono', serif: 'ISerif' };
+
+// --- load-time assets -------------------------------------------------------
+const grain = [];
+{ const r = rng(11);
+  for (let k = 0; k < 4; k++) { const g = document.createElement('canvas'); g.width = g.height = 256; const x = g.getContext('2d'), im = x.createImageData(256, 256);
+    for (let i = 0; i < im.data.length; i += 4) { const v = r() * 255; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; }
+    x.putImageData(im, 0, 0); grain.push(ctx.createPattern(g, 'repeat')); } }
+const vig = document.createElement('canvas'); vig.width = W; vig.height = H;
+{ const x = vig.getContext('2d'), g = x.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, H * 1.05);
+  g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,0.42)'); x.fillStyle = g; x.fillRect(0, 0, W, H); }
+const P = []; { const r = rng(42); for (let i = 0; i < 760; i++) P.push({ a: r() * Math.PI * 2, r0: 260 + r() * 900, j: (r() - .5) * 46, s: 1.2 + r() * 2.6, sp: .6 + r() * .9, ph: r() * 6.28, cream: r() < .12 }); }
+
+// --- drawing helpers -------------------------------------------------------
+const font = (size, f) => (ctx.font = `${size}px ${f}`);
+function fitSize(str, f, max, maxW) { font(max, f); const w = ctx.measureText(str).width; return w > maxW ? max * maxW / w : max; }
+function bg(c) { ctx.fillStyle = c; ctx.fillRect(-40, -40, W + 80, H + 80); }
+function camera(s = 1, r = 0, dx = 0, dy = 0) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.translate(W / 2 + dx, H / 2 + dy); ctx.rotate(r); ctx.scale(s, s); ctx.translate(-W / 2, -H / 2); }
+function circle(x, y, r, c) { if (r <= 0) return; ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
+function grid(alpha, drift) { ctx.strokeStyle = `rgba(239,233,223,${alpha})`; ctx.lineWidth = 1; ctx.beginPath();
+  for (let x = -80 + (drift % 80); x < W + 80; x += 80) { ctx.moveTo(x, -40); ctx.lineTo(x, H + 40); }
+  for (let y = -80 + ((drift * .5) % 80); y < H + 80; y += 80) { ctx.moveTo(-40, y); ctx.lineTo(W + 40, y); } ctx.stroke(); }
+// letters rise into place from behind a mask, one by one
+function riseRow(str, cx, base, size, f, color, t, t0, step, w = 20, z = .62) {
+  font(size, f); const total = ctx.measureText(str).width, x0 = cx - total / 2;
+  ctx.save(); ctx.beginPath(); ctx.rect(-40, base - size * 1.05, W + 80, size * 1.2); ctx.clip(); ctx.fillStyle = color; ctx.textAlign = 'left';
+  for (let i = 0; i < str.length; i++) { const p = spring(t - (t0 + i * step), w, z); if (p <= 0) continue;
+    ctx.fillText(str[i], x0 + ctx.measureText(str.slice(0, i)).width, base + (1 - p) * size * 1.15); }
+  ctx.restore(); return { l: x0, r: x0 + total };
+}
+// words appear one by one with a small lift
+function words(str, cx, base, size, f, color, t, t0, step, align = 'center', alpha = 1) {
+  font(size, f); const ws = str.split(' '), total = ctx.measureText(str).width, sp = ctx.measureText(' ').width;
+  let x = align === 'center' ? cx - total / 2 : cx; ctx.textAlign = 'left'; ctx.fillStyle = color;
+  ws.forEach((wd, i) => { const p = spring(t - (t0 + i * step), 18, .75); if (p > 0) { ctx.globalAlpha = alpha * clamp(p); ctx.fillText(wd, x, base + (1 - p) * 30); } x += ctx.measureText(wd).width + sp; });
+  ctx.globalAlpha = 1;
+}
+function typed(str, x, y, size, color, t, t0, t1, caret = true, spacing = 0, align = 'left') {
+  font(size, F.mono); ctx.fillStyle = color; ctx.textAlign = align; if ('letterSpacing' in ctx) ctx.letterSpacing = spacing + 'px';
+  const n = Math.floor(seg(t, t0, t1) * str.length + 1e-6), s = t < t0 ? '' : str.slice(0, n);
+  const blink = caret && t >= t0 && (Math.floor(t / (B / 2)) % 2 === 0 || n < str.length);
+  ctx.fillText(s + (blink ? '▌' : ''), x, y); if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+}
+
+// --- scenes ----------------------------------------------------------------
+function s1(t) {
+  camera(lerp(1.04, 1, easeOut(seg(t, 0, b(4)))));
+  bg(C.ink); grid(.055, t * 30);
+  const cy = H / 2, L = W - 360, x0 = (W - L) / 2;
+  const pop = spring(t - b(.25), 18, .5), pulse = t < b(1.5) ? 1 + .35 * Math.pow(Math.max(0, Math.sin((t / B) * Math.PI * 2)), 8) : 1;
+  const k = spring(t - b(1.5), 11, .78);                 // stretch
+  const fl = easeIn(seg(t, b(3.5), b(4)));               // flood
+  const r = 11 * pop * pulse;
+  const w = Math.max(2 * r, lerp(2 * r, L, k)) + fl * (W + 200 - L), h = lerp(lerp(2 * r, 4, clamp(k * 3)), H + 200, fl);
+  ctx.fillStyle = C.acc;
+  const wob = t > b(3) && t < b(3.6) ? 26 * Math.exp(-(t - b(3)) * 7) * Math.sin((t - b(3)) * 34) : 0;
+  if (wob && fl === 0) { ctx.beginPath(); for (let i = 0; i <= 80; i++) { const x = W / 2 - w / 2 + w * i / 80, y = cy + wob * Math.sin(i / 80 * Math.PI * 3) * Math.sin(i / 80 * Math.PI); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.lineWidth = h; ctx.strokeStyle = C.acc; ctx.stroke(); }
+  else { const rr = Math.min(h / 2, w / 2); ctx.beginPath(); ctx.roundRect(W / 2 - w / 2, cy - h / 2, w, h, rr * (1 - fl)); ctx.fill(); }
+  ctx.globalAlpha = 1 - fl;
+  typed('aditya chitoshiya / showreel — 2026', x0, cy - 34, 22, 'rgba(239,233,223,.75)', t, b(2), b(3), true);
+  typed('creative & digital marketing', x0 + L, cy + 50, 22, 'rgba(239,233,223,.45)', t, b(2.4), b(3.3), false, 0, 'right');
+  ctx.globalAlpha = 1;
+}
+
+function s2(t) {
+  const imp = spring(t - b(4), 9, .55);
+  camera(lerp(1.12, 1, imp) + .03 * seg(t, b(4), b(8)));
+  bg(C.acc);
+  typed('SHOWREEL — 2026', W / 2, 168, 24, C.ink, t, b(4.5), b(5.5), false, 4, 'center');
+  const s1z = fitSize('ADITYA', F.anton, 330, W - 280), s2z = fitSize('CHITOSHIYA', F.anton, 330, W - 280);
+  riseRow('ADITYA', W / 2, 500, s1z, F.anton, C.ink, t, b(4), b(.25));
+  const r2y = SQ ? 500 + s2z * .95 + 34 : 835;          // square: the smaller second row sits closer
+  const row2 = riseRow('CHITOSHIYA', W / 2 - 26, r2y, s2z, F.anton, C.ink, t, b(5), b(.125), 22, .6);
+  words('creative & digital marketing specialist', W / 2, r2y + 100, fitSize('creative & digital marketing specialist', F.serif, 62, W - 180), F.serif, C.ink, t, b(6.25), b(.125));
+  // the full stop: pops, travels to centre, floods black
+  const pop = spring(t - b(6.5), 20, .5), mv = ease(seg(t, b(7), b(7.3))), gr = easeIn(seg(t, b(7.25), b(8)));
+  const dx = row2.r + 36, dy = r2y - 26;
+  circle(lerp(dx, W / 2, mv), lerp(dy, H / 2, mv), 26 * pop + gr * 1200, C.ink);
+}
+
+function s3(t) {
+  camera(1);
+  if (t < b(10)) {                                             // CAMPAIGNS
+    bg(C.ink);
+    font(210, F.anton); ctx.lineWidth = 2; ctx.textAlign = 'left';
+    const row = 'CAMPAIGNS  CAMPAIGNS  CAMPAIGNS  CAMPAIGNS  ', rw = ctx.measureText(row).width / 2;
+    for (let i = 0; i < 6; i++) { const a = clamp(spring(t - b(8) - i * .03, 16, 1)) * .32; ctx.strokeStyle = `rgba(255,90,31,${a})`;
+      const dir = i % 2 ? 1 : -1, off = ((t - b(8)) * 260 * dir + i * 170) % rw; ctx.strokeText(row, -rw + off - (dir < 0 ? 0 : 0), 120 + i * 196); }
+    const sz = fitSize('CAMPAIGNS', F.anton, 420, W - 360), p = spring(t - b(8), 16, .62);
+    ctx.fillStyle = C.ink; ctx.fillRect(0, H / 2 - sz * .52, W, sz * .92 * clamp(p * 1.4));
+    ctx.save(); ctx.translate(lerp(520, 0, p), 0); ctx.textAlign = 'center'; ctx.fillStyle = C.acc; font(sz, F.anton);
+    for (let g = 3; g >= 1; g--) { ctx.globalAlpha = .12 * (1 - p) * 3 / g; ctx.fillText('CAMPAIGNS', W / 2 + g * 60 * (1 - p), H / 2 + sz * .36); }
+    ctx.globalAlpha = 1; ctx.fillText('CAMPAIGNS', W / 2, H / 2 + sz * .36); ctx.restore();
+  } else if (t < b(12)) {                                      // MOTION
+    bg(C.cream);
+    const p = spring(t - b(10), 15, .58), sz = fitSize('MOTION', F.anton, 560, W - 300);
+    ctx.fillStyle = C.ink;
+    for (let i = 0; i < 7; i++) { const y = 230 + i * 100, len = 300 + (i * 137) % 400, x = W - ((t - b(10)) * 2600 + i * 410) % (W + 900); ctx.globalAlpha = .9 * (1 - p * .7); ctx.fillRect(x, y, len, 6); }
+    ctx.globalAlpha = 1;
+    ctx.save(); ctx.translate(W / 2, H / 2 + sz * .36); ctx.transform(lerp(1.9, 1, p), 0, lerp(-.45, 0, p), 1, lerp(-700, 0, p), 0);
+    font(sz, F.anton); ctx.textAlign = 'center'; ctx.fillText('MOTION', 0, 0); ctx.restore();
+  } else if (t < b(14)) {                                      // CONTENT
+    bg(C.deep);
+    const p = spring(t - b(12), 16, .62), br = spring(t - b(12), 12, .7);
+    const sz = fitSize('CONTENT', F.anton, 400, W - 340), bwE = Math.min(1180, W - 160), bw = lerp(bwE * 1.27, bwE, br), bh = lerp(800, 560, br), arm = 70;
+    ctx.strokeStyle = C.cream; ctx.lineWidth = 4; ctx.beginPath();
+    for (const [sx, sy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) { const x = W / 2 + sx * bw / 2, y = H / 2 + sy * bh / 2; ctx.moveTo(x - sx * arm * -1 * 0 + 0, y - sy * -arm * 0); ctx.moveTo(x, y - sy * -arm); ctx.lineTo(x, y); ctx.lineTo(x - sx * arm, y); }
+    ctx.stroke();
+    typed('1920 × 1080', W / 2 - bw / 2 + 4, H / 2 - bh / 2 - 22, 20, 'rgba(239,233,223,.7)', t, b(12.1), b(12.6), false);
+    if (Math.floor((t - b(12)) / (B / 2)) % 2 === 0) circle(W / 2 + bw / 2 - 74, H / 2 - bh / 2 - 29, 8, C.acc);
+    typed('REC', W / 2 + bw / 2 - 56, H / 2 - bh / 2 - 22, 20, 'rgba(239,233,223,.7)', t, b(12), b(12.01), false);
+    ctx.save(); ctx.beginPath(); ctx.rect(0, H / 2 - sz * .6, W, sz * 1.1); ctx.clip();
+    font(sz, F.anton); ctx.textAlign = 'center'; ctx.fillStyle = C.cream; ctx.fillText('CONTENT', W / 2, H / 2 + sz * .36 + (1 - p) * sz); ctx.restore();
+  } else {                                                     // video.
+    bg(C.ink);
+    const sz = fitSize('video', F.serif, 430, W - 320); font(sz, F.serif); ctx.textAlign = 'left';
+    const tw = ctx.measureText('video').width, x0 = W / 2 - tw / 2 - 40, base = H / 2 + 120;
+    const wr = ease(seg(t, b(14), b(15.2))), fade = 1 - seg(t, b(15.5), b(16));
+    ctx.save(); ctx.beginPath(); ctx.rect(x0 - 60, 0, (tw + 80) * wr, H); ctx.clip();
+    ctx.globalAlpha = fade; ctx.fillStyle = C.acc; ctx.fillText('video', x0, base); ctx.restore(); ctx.globalAlpha = 1;
+    if (wr > 0 && wr < 1) circle(x0 - 20 + (tw + 40) * wr, base - 150 + Math.sin(wr * 22) * 90, 7, C.cream);
+    const pop = spring(t - b(15.2), 20, .5), mv = ease(seg(t, b(15.5), b(16)));
+    circle(lerp(x0 + tw + 34, W / 2, mv), lerp(base - 16, H / 2, mv), lerp(22 * pop, 22, mv), C.acc);
+  }
+}
+
+function s4(t) {
+  const u = t - b(16), tilt = .78 + .06 * Math.sin(u * 1.2), rot = -.12 + u * .05;
+  camera(1 + u * .02);
+  bg(C.ink); grid(.03, t * 20);
+  const k1 = expoOut(seg(t, b(16), b(16.9))), k2 = ease(seg(t, b(17), b(18.5))), k3 = easeIn(seg(t, b(19.25), b(20)));
+  const R = 300;
+  ctx.save(); ctx.translate(W / 2, H / 2); ctx.rotate(rot);
+  for (const q of P) {
+    const sw = Math.sin(u * 1.3 + q.ph) * .6 * (1 - k2);
+    const a = q.a + u * .55 * q.sp + sw;
+    let r = lerp(lerp(0, q.r0, k1), R + q.j, k2) + k3 * 1700 * q.sp;
+    const x = Math.cos(a) * r, y = Math.sin(a) * r * tilt;
+    ctx.fillStyle = q.cream ? C.cream : C.acc; ctx.globalAlpha = .55 + .45 * k2;
+    ctx.fillRect(x - q.s / 2, y - q.s / 2, q.s * (1 + k3 * 6), q.s);
+  }
+  ctx.restore(); ctx.globalAlpha = 1;
+  circle(W / 2, H / 2, 22 * (1 - k1), C.acc);
+  ctx.globalAlpha = 1 - seg(t, b(19.1), b(19.4));
+  words('ideas that move', W / 2, H / 2 + 30, 104, F.serif, C.cream, t, b(17.75), b(.25));
+  ctx.globalAlpha = 1;
+  circle(W / 2, H / 2, easeIn(seg(t, b(19.4), b(20))) * 1200, C.acc);
+}
+
+const NAMES = ['SUNIEL SHETTY', 'AMAN DHATTARWAL', 'REGRIP INDIA', 'BHARAT KE SUPER FOUNDERS'];
+function s5(t) {
+  camera(lerp(1.1, 1, spring(t - b(20), 9, .55)));
+  bg(C.acc);
+  const sq = easeIn(seg(t, b(22.75), b(23.2))), sh = ease(seg(t, b(23.2), b(23.6))), fl = easeIn(seg(t, b(23.6), b(24)));
+  const midY = 575;
+  ctx.save(); ctx.translate(0, midY); ctx.scale(1, 1 - sq * .985); ctx.translate(0, -midY);
+  if (sq < 1) {
+    typed('WORKED WITH', 160, 215, 26, C.ink, t, b(20), b(20.5), false, 6);
+    // square frame: the long name wraps, everything shares one size
+    const sz = SQ ? fitSize('AMAN DHATTARWAL', F.anton, 132, W - 330) : 132, gap = SQ ? sz * 1.12 : 150;
+    let line = 0;
+    NAMES.forEach((n, i) => {
+      const lines = SQ && n.length > 16 ? ['BHARAT KE SUPER', 'FOUNDERS'] : [n];
+      const t0 = b(20.25 + .5 * i), p = spring(t - t0, 20, .66), first = (SQ ? 340 : 375) + line * gap;
+      const old = i < 3 ? seg(t, b(20.25 + .5 * (i + 1)), b(20.25 + .5 * (i + 1)) + .15) : 0;
+      lines.forEach((ln, k) => {
+        const base = first + k * gap;
+        ctx.save(); ctx.beginPath(); ctx.rect(0, base - sz * 1.02, W, sz * 1.14); ctx.clip();
+        ctx.globalAlpha = 1 - old * .58; font(sz, F.anton); ctx.textAlign = 'left'; ctx.fillStyle = C.ink;
+        ctx.fillText(ln, 160, base + (1 - p) * sz * 1.15); ctx.restore();
+      });
+      const last = first + (lines.length - 1) * gap; line += lines.length;
+      ctx.globalAlpha = SQ ? 0 : (1 - old * .58) * clamp(p);
+      typed(String(i + 1).padStart(2, '0') + ' / 04', W - 160, first - 12, SQ ? 18 : 22, C.ink, t, t0, t0 + .01, false, 2, 'right');
+      ctx.globalAlpha = 1;
+      if (i === Math.min(3, Math.floor((t - b(20.25)) / b(.5)))) { ctx.fillStyle = C.ink; ctx.fillRect(160, last + 16, (W - 320) * easeOut(seg(t, t0, t0 + b(.5))), 4); }
+    });
+  }
+  ctx.restore();
+  if (sq >= 1) { const w = lerp(W - 320, 40, sh), h = lerp(10, 40, sh); ctx.fillStyle = C.ink; ctx.beginPath(); ctx.roundRect(W / 2 - w / 2, midY - h / 2, w, h, h / 2); ctx.fill(); }
+  if (sh >= 1) circle(W / 2, midY, 20 + fl * 1250, C.ink);
+}
+
+function s6(t) {
+  const u = t - b(24);
+  camera(1 + .045 * ease(seg(t, b(24), b(32))));
+  bg(C.ink); grid(.03, t * 12);
+  let row, base, y0 = 0;
+  if (SQ) {                                                    // square: two rows, block shifted down
+    const sz = fitSize('CHITOSHIYA', F.anton, 220, W - 300); base = 575; y0 = 40;
+    riseRow('ADITYA', W / 2 - 22, base - sz * 1.0, sz, F.anton, C.cream, t, b(24.1), b(.0625), 22, .64);
+    row = riseRow('CHITOSHIYA', W / 2 - 22, base, sz, F.anton, C.cream, t, b(24.1 + 6 * .0625), b(.0625), 22, .64);
+  } else {
+    const sz = fitSize('ADITYA CHITOSHIYA', F.anton, 210, 1460); base = 575;
+    row = riseRow('ADITYA CHITOSHIYA', W / 2 - 22, base, sz, F.anton, C.cream, t, b(24.1), b(.0625), 22, .64);
+  }
+  ctx.translate(0, y0);
+  const dx = row.r + 32, dy = base - 22 - y0, pop = spring(t - b(25.5), 20, .45);
+  const ring = seg(t, b(25.5), b(27));
+  if (ring > 0 && ring < 1) { ctx.strokeStyle = `rgba(255,90,31,${1 - ring})`; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(dx, dy, 22 + easeOut(ring) * 300, 0, Math.PI * 2); ctx.stroke(); }
+  circle(dx, dy, 22 * pop, C.acc);
+  const rl = easeOut(seg(t, b(26), b(27.2))) * Math.min(920, W - 240); ctx.fillStyle = 'rgba(239,233,223,.28)'; ctx.fillRect(W / 2 - rl / 2, 640, rl, 2);
+  words('Creative & Digital Marketing Specialist', W / 2, 740, fitSize('Creative & Digital Marketing Specialist', F.serif, 66, W - 200), F.serif, 'rgba(239,233,223,.9)', t, b(26.25), b(.125));
+  typed('ADITYACHITOSHIYA.IN', W / 2, 830, 28, C.acc, t, b(27.25), b(28.75), true, 8, 'center');
+}
+
+// --- HUD -------------------------------------------------------------------
+const SCENES = [[0, 'SIGNAL'], [b(4), 'IDENTITY'], [b(8), 'KINETIC TYPE'], [b(16), 'MOTION'], [b(20), 'CLIENTS'], [b(24), 'CONTACT']];
+function light(t) { return (t > b(3.8) && t < b(7.55)) || (t >= b(10) && t < b(12)) || (t > b(19.85) && t < b(23.75)); }
+function hud(t) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  let si = 0; SCENES.forEach(([s], i) => { if (t >= s) si = i; });
+  const col = light(t) ? '11,10,9' : '239,233,223', A = .55;
+  ctx.strokeStyle = `rgba(${col},${A})`; ctx.lineWidth = 2; const m = 48, a = 34; ctx.beginPath();
+  for (const [x, y, sx, sy] of [[m, m, 1, 1], [W - m, m, -1, 1], [m, H - m, 1, -1], [W - m, H - m, -1, -1]]) { ctx.moveTo(x, y + sy * a); ctx.lineTo(x, y); ctx.lineTo(x + sx * a, y); }
+  ctx.stroke();
+  font(14, F.mono); ctx.fillStyle = `rgba(${col},${A})`; if ('letterSpacing' in ctx) ctx.letterSpacing = '2px';
+  ctx.textAlign = 'left'; ctx.fillText('ADITYA CHITOSHIYA — SHOWREEL 26', m + 18, m + 26); ctx.fillText(SCENES[si][1], m + 18, H - m - 16);
+  ctx.textAlign = 'right'; ctx.fillText(`SCENE ${String(si + 1).padStart(2, '0')} / 06`, W - m - 18, m + 26);
+  const s = Math.floor(t), f = Math.floor((t - s) * 30);
+  ctx.fillText(`00:00:${String(s).padStart(2, '0')}:${String(f).padStart(2, '0')}`, W - m - 18, H - m - 16);
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+  ctx.globalAlpha = Math.floor(t / B) % 2 ? .35 : .9; circle(W - m - 205, H - m - 21, 5, C.acc); ctx.globalAlpha = 1;
+}
+
+function seek(t) {
+  t = clamp(t, 0, DUR - 1e-4);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.textBaseline = 'alphabetic';
+  if (t < b(4)) s1(t); else if (t < b(8)) s2(t); else if (t < b(16)) s3(t); else if (t < b(20)) s4(t); else if (t < b(24)) s5(t); else s6(t);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.drawImage(vig, 0, 0);
+  ctx.globalAlpha = .05; ctx.fillStyle = grain[Math.floor(t * 24) % 4]; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
+  hud(t);
+}
+
+// --- sound -----------------------------------------------------------------
+window.buildAudio = async (ac) => {
+  const sr = ac.sampleRate, r = rng(7), nb = ac.createBuffer(1, sr * 2, sr), d = nb.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = r() * 2 - 1;
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4; comp.connect(ac.destination);
+  const out = ac.createGain(); out.gain.value = .7; out.connect(comp);
+  const g = (v = 1) => { const n = ac.createGain(); n.gain.value = v; n.connect(out); return n; };
+  const env = (n, t, a, peak, dec) => { n.gain.setValueAtTime(0.0001, t); n.gain.linearRampToValueAtTime(peak, t + a); n.gain.exponentialRampToValueAtTime(0.0001, t + a + dec); };
+  const osc = (type, f, t, dur, dest) => { const o = ac.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, t); o.connect(dest); o.start(t); o.stop(t + dur + .05); return o; };
+  const noise = (t, dur, type, f, q, dest, f2) => { const s = ac.createBufferSource(); s.buffer = nb; s.loop = true; const bq = ac.createBiquadFilter(); bq.type = type; bq.frequency.setValueAtTime(f, t); bq.Q.value = q; if (f2) bq.frequency.exponentialRampToValueAtTime(f2, t + dur); s.connect(bq); bq.connect(dest); s.start(t, r()); s.stop(t + dur + .05); };
+  const kick = (t, v = .9) => { const n = g(0); env(n, t, .002, v, .38); const o = osc('sine', 150, t, .45, n); o.frequency.exponentialRampToValueAtTime(42, t + .13); };
+  const clap = t => { const n = g(0); env(n, t, .002, .38, .16); noise(t, .2, 'bandpass', 1600, 1.2, n); };
+  const hat = t => { const n = g(0); env(n, t, .001, .12, .04); noise(t, .06, 'highpass', 8000, .7, n); };
+  const blip = (t, f, v = .14) => { const n = g(0); env(n, t, .002, v, .07); osc('sine', f, t, .1, n); };
+  const whoosh = (t, dur = .35) => { const n = g(0); n.gain.setValueAtTime(.0001, t - dur * .6); n.gain.linearRampToValueAtTime(.32, t); n.gain.exponentialRampToValueAtTime(.0001, t + dur * .5); noise(t - dur * .6, dur * 1.1, 'bandpass', 400, 2, n, 3500); };
+  const impact = t => { kick(t, 1.1); const n = g(0); env(n, t, .003, .45, .7); noise(t, .8, 'lowpass', 900, .7, n, 120); const s = g(0); env(s, t, .005, .5, 1.1); const o = osc('sine', 70, t, 1.2, s); o.frequency.exponentialRampToValueAtTime(30, t + 1); };
+  const riser = (t0, t1) => { const n = g(0); n.gain.setValueAtTime(.0001, t0); n.gain.exponentialRampToValueAtTime(.3, t1 - .02); n.gain.linearRampToValueAtTime(.0001, t1); noise(t0, t1 - t0, 'bandpass', 300, 3, n, 7000); };
+  const bass = (t, f, dur) => { const n = ac.createGain(); const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 280; n.connect(lp); lp.connect(out); env(n, t, .005, .26, dur); osc('sawtooth', f, t, dur + .05, n); osc('sine', f / 2, t, dur + .05, n); };
+  // intro: drone + dot
+  { const n = g(0); n.gain.setValueAtTime(.0001, 0); n.gain.linearRampToValueAtTime(.12, b(2)); n.gain.linearRampToValueAtTime(.0001, b(4)); osc('sine', 110, 0, b(4), n); osc('sine', 164.8, 0, b(4), n); }
+  blip(b(.25), 1320, .2); blip(b(1), 1320, .1); blip(b(1.5), 1760, .12);
+  riser(b(2), b(4));
+  for (let i = 0; i < 12; i++) blip(b(2) + i * b(1) / 12, 1500 + (i % 3) * 120, .04);
+  // groove b4..b23.5
+  const roots = [55, 55, 43.65, 43.65, 65.41, 49];
+  for (let k = 4; k < 23.5; k++) {
+    const t = b(k), bar = Math.floor((k - 4) / 4);
+    if (!(k >= 16 && k < 17)) kick(t);
+    if (k % 2 === 1) clap(t);
+    hat(t + B / 2); if (k >= 8) hat(t + B / 4 * 3);
+    bass(t, roots[bar % roots.length], B * .42); bass(t + B / 2, roots[bar % roots.length], B * .3);
+  }
+  impact(b(4)); impact(b(8)); impact(b(16)); impact(b(20)); impact(b(24));
+  'ADITYA'.split('').forEach((_, i) => blip(b(4 + .25 * i), 880 + i * 40, .12));
+  for (let i = 0; i < 10; i++) blip(b(5 + .125 * i), 1180, .06);
+  blip(b(6.5), 1760, .18);
+  whoosh(b(7.25)); whoosh(b(10)); whoosh(b(12)); whoosh(b(14)); whoosh(b(15.75)); whoosh(b(19.6), .5);
+  [8, 10, 12].forEach(k => { const n = g(0); env(n, b(k), .002, .3, .25); noise(b(k), .3, 'bandpass', 2400, 4, n); });
+  riser(b(22), b(23.75));
+  for (let i = 0; i < 4; i++) blip(b(20.25 + .5 * i), 990, .1);
+  // end: ring-out on the dot, typing ticks
+  { const n = g(0); env(n, b(25.5), .01, .2, 4.5); [220, 261.63, 329.63, 440].forEach(f => osc('triangle', f, b(25.5), 5, n)); }
+  blip(b(25.5), 1760, .22);
+  for (let i = 0; i < 19; i++) blip(b(27.25) + i * (b(28.75) - b(27.25)) / 19, 2000, .035);
+};
+
+// --- boot ------------------------------------------------------------------
+document.fonts.ready.then(async () => {
+  await Promise.all([...document.fonts].map(f => f.load()));
+  window.VIDEO = { w: W, h: H, duration: DUR }; window.seek = seek; seek(0);
+  if (location.search.includes('render')) return;
+  const st = document.getElementById('stage'), fit = () => st.style.transform = `scale(${Math.min(innerWidth / W, (innerHeight - 50) / H)})`; fit(); addEventListener('resize', fit);
+  const ui = document.createElement('div'); ui.id = 'ui'; ui.innerHTML = '<button id=pp>play</button><input id=sc type=range min=0 max=15 step=0.001 value=0><span id=tc></span>'; document.body.appendChild(ui);
+  let buf, ac, src, startAt = 0, offset = 0, playing = false;
+  async function play() { ac ??= new AudioContext(); if (!buf) { const off = new OfflineAudioContext(2, Math.ceil(48000 * DUR), 48000); await buildAudio(off); buf = await off.startRendering(); }
+    src = ac.createBufferSource(); src.buffer = buf; src.connect(ac.destination); src.start(0, offset % DUR); startAt = ac.currentTime; playing = true; pp.textContent = 'pause'; }
+  function pause() { if (!playing) return; offset += ac.currentTime - startAt; src.stop(); playing = false; pp.textContent = 'play'; }
+  const now = () => playing ? (offset + ac.currentTime - startAt) % DUR : offset;
+  pp.onclick = () => playing ? pause() : play();
+  sc.oninput = () => { const was = playing; pause(); offset = +sc.value; if (was) play(); };
+  (function loop() { const t = now(); seek(t); sc.value = t; tc.textContent = t.toFixed(2); requestAnimationFrame(loop); })();
+});
+</script>
+</body></html>

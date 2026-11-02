@@ -144,6 +144,7 @@ export const snapshot = {
 }
 
 export const reels = [
+  { title: 'Intro — original motion', src: '/reel/intro.mp4' },
   { title: 'Nike — Just Do It', src: vid('v1786646812/portfolio_uploads/ucximqvfwmrzfcglwopz') },
   { title: 'Ferrari SF90', src: vid('v1786647302/portfolio_uploads/lqkm6n5gfhfch83jtco9') },
   { title: 'Storytelling', src: vid('v1786702939/portfolio_uploads/dbtzab1ulvmjtigjtjj5') },
