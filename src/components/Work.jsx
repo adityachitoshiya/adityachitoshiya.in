@@ -1,4 +1,4 @@
-import { Fragment, useRef } from 'react'
+import { Fragment, useEffect, useRef } from 'react'
 import { gsap, SplitText, useGSAP, reducedMotion } from '../lib/gsap'
 import { useContent } from '../content'
 
@@ -25,13 +25,31 @@ function groupByCompany(projects, experience) {
     }))
 }
 
+// Silent looping preview; plays only while on screen to save battery/data.
+function Preview({ src, poster, alt }) {
+  const ref = useRef(null)
+  useEffect(() => {
+    const v = ref.current
+    if (!v) return
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) v.play().catch(() => {})
+      else v.pause()
+    }, { threshold: 0.25 })
+    io.observe(v)
+    return () => io.disconnect()
+  }, [src])
+  return <video ref={ref} src={src} poster={poster} muted loop playsInline preload="none" aria-label={alt} />
+}
+
 function ProjectCard({ p }) {
   const Tag = p.link ? 'a' : 'article'
   const linkProps = p.link ? { href: p.link, target: '_blank', rel: 'noreferrer', 'data-cursor': 'Open' } : {}
   return (
     <Tag className="card" {...linkProps}>
       <div className="card__media">
-        <img src={p.img} alt={`${p.name} — ${p.type}`} loading="lazy" />
+        {p.video
+          ? <Preview src={p.video} poster={p.img} alt={`${p.name} — ${p.type}`} />
+          : <img src={p.img} alt={`${p.name} — ${p.type}`} loading="lazy" />}
         {p.company && <span className="card__badge mono">@ {p.company}</span>}
       </div>
       <div className="card__info">
@@ -85,7 +103,7 @@ export default function Work() {
           scrollTrigger: { trigger: '.work__pin', start: 'top top', end: () => '+=' + distance(), scrub: true },
         })
         gsap.utils.toArray('.card').forEach((card) => {
-          const img = card.querySelector('.card__media img')
+          const img = card.querySelector('.card__media img, .card__media video')
           if (img) {
             gsap.fromTo(img, { xPercent: 8 }, {
               xPercent: -8,

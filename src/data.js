@@ -25,9 +25,17 @@ export const brands = [
 ]
 
 export const projects = [
-  { name: 'Regrip', type: 'Brand Campaign', desc: 'Advertising, founder stories, influencer content.', company: 'Regrip India', img: '/img/gallery_1.jpg' },
+  { name: 'Tyre Ka Kaala Sach', type: 'Documentary explainer', desc: 'The dark side of scrap tyres, told in an editorial collage style.', company: 'Regrip India', img: '/work/tyre-kaala-sach.jpg', video: '/work/tyre-kaala-sach.mp4' },
+  { name: 'Tyre Journey', type: 'Data explainer', desc: 'From factory to Regrip: data-led motion graphics on what happens to tyres.', company: 'Regrip India', img: '/work/tyre-journey.jpg', video: '/work/tyre-journey.mp4' },
+  { name: 'Regrip Brand Film', type: 'Brand film', desc: 'A 55-second film on why recycled tyres matter.', company: 'Regrip India', img: '/work/regrip-brand-film.jpg', video: '/work/regrip-brand-film.mp4' },
+  { name: 'Tyre Mitra', type: 'Product explainer', desc: 'Motion-graphics explainer for the Tyre Mitra service.', company: 'Regrip India', img: '/work/tyre-mitra.jpg', video: '/work/tyre-mitra.mp4' },
+  { name: 'Tyrebook Intro', type: 'Product film', desc: 'Cinematic 30-second intro for the Tyrebook app.', company: 'Regrip India', img: '/work/tyrebook-intro.jpg', video: '/work/tyrebook-intro.mp4' },
+  { name: 'MNCs vs Startups', type: 'Founder story', desc: 'Founder-led storytelling with archival B-roll, shot in 4K.', company: 'Regrip India', img: '/work/mncs-vs-startups.jpg', video: '/work/mncs-vs-startups.mp4' },
+  { name: 'Crumb Rubber Explainer', type: 'Short-form video', desc: 'Presenter-led explainer with motion titles on Regrip\'s 3 products.', company: 'Regrip India', img: '/work/crumb-rubber.jpg', video: '/work/crumb-rubber.mp4' },
+  { name: 'Influencer Film', type: 'Influencer content', desc: 'Studio-shot creator film for Regrip.', company: 'Regrip India', img: '/work/anisha-film.jpg', video: '/work/anisha-film.mp4' },
+  { name: 'Bharat Ke Super Founders', type: 'Logo animation', desc: 'Title and logo animation for the show.', company: 'Bharat Ke Super Founders', img: '/work/super-founders-logo.jpg', video: '/work/super-founders-logo.mp4' },
   { name: 'Mittsure', type: 'Publishing Design', desc: 'Book covers, magazines, brand identity.', company: 'Mittsure', img: '/img/gallery_3.jpg' },
-  { name: 'Suniel Shetty', type: 'Celebrity Branding', desc: 'Face-of-brand creative coordination.', company: 'Regrip India', img: '/img/latest_main.jpg' },
+  { name: 'Suniel Shetty', type: 'Celebrity Branding', desc: 'Face-of-brand creative coordination.', company: 'Regrip India', img: 'https://res.cloudinary.com/dd5zrsmok/image/upload/f_auto,q_auto,w_900/v1786689143/portfolio_uploads/uychg4fvwnk6tuhw5stn.webp' },
   { name: 'Dhruv Rathee', type: 'Creator Content', desc: 'High-quality visual content creation.', company: '', img: '/img/latest_1.jpg' },
   { name: 'GetSetFly', type: 'Digital Campaigns', desc: 'Creative production & storytelling.', company: '', img: '/img/latest_2.jpg' },
   { name: 'Think Trail', type: 'Logo Design', desc: 'Educational book company branding.', company: '', img: '/img/welcome_1.jpg' },

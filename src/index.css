@@ -208,8 +208,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .work__track { display: flex; gap: 2.5vw; padding: 0 var(--gutter); width: max-content; will-change: transform; }
 .card { width: clamp(220px, min(30vw, calc((100svh - 330px) * 0.8)), 460px); flex: none; }
 .card__media { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 6px; background: var(--bg-2); }
-.card__media img { width: 120%; max-width: none; height: 100%; object-fit: cover; margin-left: -10%; transition: scale 0.7s var(--ease-out); }
-@media (hover: hover) and (pointer: fine) { .card:hover .card__media img { scale: 1.06; } }
+.card__media img, .card__media video { display: block; width: 120%; max-width: none; height: 100%; object-fit: cover; margin-left: -10%; transition: scale 0.7s var(--ease-out); }
+@media (hover: hover) and (pointer: fine) { .card:hover .card__media img, .card:hover .card__media video { scale: 1.06; } }
 .card__info { display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px; gap: 12px; }
 .card__name { font-family: var(--display); font-size: clamp(26px, 2.4vw, 40px); text-transform: uppercase; line-height: 1; }
 .work__progress { margin: 3vh var(--gutter) 0; height: 1px; background: var(--line); position: relative; }
