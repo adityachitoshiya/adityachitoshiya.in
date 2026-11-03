@@ -55,6 +55,7 @@ export const sections = [
     title: 'Selected work',
     list: list('Projects', {
       name: t('Name'), type: t('Type'), desc: t('Short description'),
+      category: t('Category tab: youtube, saas, product, viral, strategy (comma-separate for several)'),
       company: t('Done at (company, same spelling as in Experience)'), year: t('Year (optional)'),
       link: url('Link to the real work (Behance, Instagram, YouTube…, optional)'), img: image('Image or cover'),
       video: video('Preview video (short, silent loop, optional)'),

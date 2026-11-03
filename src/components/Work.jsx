@@ -1,8 +1,21 @@
-import { Fragment, useEffect, useRef } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { gsap, SplitText, useGSAP, reducedMotion } from '../lib/gsap'
 import { useContent } from '../content'
 
 const norm = (s) => (s || '').trim().toLowerCase()
+
+// Filter tabs. A project's `category` text may name several, e.g. "viral, strategy".
+const CATEGORIES = [
+  { key: 'youtube', label: 'YouTube work', match: 'youtube' },
+  { key: 'saas', label: 'SaaS work', match: 'saas' },
+  { key: 'product', label: 'Product designing', match: 'product' },
+  { key: 'viral', label: 'Viral marketing', match: 'viral' },
+  { key: 'strategy', label: 'Strategy planning', match: 'strateg' },
+]
+const inCategory = (p, key) => {
+  const m = CATEGORIES.find((c) => c.key === key)?.match
+  return !!m && norm(p.category).includes(m)
+}
 
 // Chapters of work: one per company ("done at"), in the order of the
 // Experience list, then anything without a company as "Other projects".
@@ -63,8 +76,10 @@ function ProjectCard({ p }) {
 }
 
 export default function Work() {
-  const { projects, experience } = useContent()
+  const { projects: all, experience } = useContent()
   const root = useRef(null)
+  const [cat, setCat] = useState('all')
+  const projects = cat === 'all' ? all : all.filter((p) => inCategory(p, cat))
   const groups = groupByCompany(projects, experience)
   const companies = groups.filter((g) => g.company).length
 
@@ -128,7 +143,7 @@ export default function Work() {
         })
       })
     },
-    { scope: root, dependencies: [projects], revertOnUpdate: true },
+    { scope: root, dependencies: [all, cat], revertOnUpdate: true },
   )
 
   return (
@@ -139,6 +154,17 @@ export default function Work() {
           <span className="section-label">
             ({String(projects.length).padStart(2, '0')}) projects{companies ? ` · ${companies} ${companies === 1 ? 'company' : 'companies'}` : ''}
           </span>
+        </div>
+        <div className="work__tabs mono" role="tablist" aria-label="Filter work by category">
+          {[{ key: 'all', label: 'All work' }, ...CATEGORIES].map((c) => {
+            const count = c.key === 'all' ? all.length : all.filter((p) => inCategory(p, c.key)).length
+            if (c.key !== 'all' && !count) return null
+            return (
+              <button key={c.key} role="tab" aria-selected={cat === c.key} className={cat === c.key ? 'is-active' : ''} onClick={() => setCat(c.key)}>
+                {c.label} <sup>{String(count).padStart(2, '0')}</sup>
+              </button>
+            )
+          })}
         </div>
         <div className="work__track">
           {groups.map((g) => (
