@@ -47,7 +47,6 @@ export default function Snapshot() {
 
       <div className="snap__grid">
         <article className="snap__card snap__card--main">
-          <span className="nav__status mono"><i />Available for work</span>
           <p className="snap__role">{snapshot.role}</p>
           <div className="snap__actions">
             <a className="btn btn--solid" href={waLink(profile.phone, `Hi ${profile.first}, I saw your portfolio and want to talk about a project.`)} target="_blank" rel="noreferrer">WhatsApp me ↗</a>

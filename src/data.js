@@ -8,7 +8,7 @@ export const profile = {
   location: 'Jaipur, India',
   behance: 'https://www.behance.net/adityachitosh',
   github: 'https://github.com/adityachitoshiya',
-  tagline: 'Creative & Digital Marketing Specialist',
+  tagline: 'Visual Creative Director',
   disciplines: 'Campaigns · Motion · Content',
   heroImage:
     'https://res.cloudinary.com/dd5zrsmok/image/upload/f_auto,q_auto,w_1800/v1786686336/portfolio_uploads/htlmqiglvtbglcyey0oh.webp',
@@ -27,7 +27,7 @@ export const brands = [
 // `ratio` is the shape of the cover/preview ("16:9", "9:16", "4:5", "1:1"…);
 // the card takes that shape so nothing is cropped. Without it a card is 4:5.
 export const projects = [
-  { name: 'The Prime Walk', ratio: '9:16', category: 'product,strategy', type: 'Logo design + logo reveal', desc: 'Brand mark for The Prime Walk event, and a gold luxury reveal for its launch and social media posts.', company: 'The Prime Walk', img: '/work/prime-walk-logo.jpg', video: '/work/prime-walk-logo.mp4' },
+  { name: 'The Prime Walk', ratio: '16:9', category: 'product,strategy', type: 'Logo design + logo reveal', desc: 'Brand mark for The Prime Walk pageant, and a 3D logo reveal in After Effects for its launch and social media posts.', company: 'The Prime Walk', img: '/work/prime-walk-logo-ae.jpg', video: '/work/prime-walk-logo-ae.mp4' },
   { name: 'Pincode', ratio: '16:9', category: 'youtube', type: 'Visual design', desc: 'Visual design for "Pincode" by Catharsis x Reyy, a Rajasthan desi hip-hop track on Spit Kulture.', company: 'Spit Kulture', link: 'https://www.youtube.com/watch?v=CFOdyeqKkuM', img: '/work/pincode-music-video.jpg' },
   { name: 'Why Is Vulgar Content Trending?', ratio: '16:9', category: 'youtube,viral', type: 'Motion graphics', desc: 'Motion graphics for an Abhi and Niyu explainer on why vulgar content trends in India. 1.3M views.', company: 'Abhi and Niyu', link: 'https://www.youtube.com/watch?v=qeS2Sfvrd5Y', img: '/work/abhi-niyu-vulgar-content.jpg' },
   { name: 'How Blinkit Makes Money', ratio: '16:9', category: 'youtube,strategy', type: 'Content writing', desc: 'Script for a Paisa Decode explainer on the economics of a ₹518 Blinkit order and dark stores. 129K views.', company: 'Paisa Decode', link: 'https://www.youtube.com/watch?v=mjpT-dwFNuA', img: '/work/paisa-decode-blinkit.jpg' },
@@ -130,7 +130,7 @@ const vid = (path) =>
   `https://res.cloudinary.com/dd5zrsmok/video/upload/q_auto,w_1280/${path}.mp4`
 
 export const snapshot = {
-  role: 'Freelance video editor & motion designer: reels, explainers and 3D product ads',
+  role: 'Visual creative director: brand campaigns, motion, reels and social media',
   years: `${new Date().getFullYear() - 2022}+ yrs`,
   companies: ['Regrip India (now)', 'Mittsure', 'Varaha Jewels'],
   names: ['Suniel Shetty', 'Aman Dhattarwal', 'Abhi & Niyu', 'SleepyOwl'],
@@ -226,7 +226,6 @@ export const viralShots = []
 // with sound, `poster` its cover frame.
 export const shorts = [
   { title: "D'una Perfume", note: '3D product ad · Blender · concept brand', company: '', src: '/shorts/duna-perfume.mp4', poster: '/shorts/duna-perfume.jpg' },
-  { title: 'The Prime Walk', note: 'Logo reveal for an event brand', company: 'The Prime Walk', src: '/shorts/prime-walk-logo.mp4', poster: '/shorts/prime-walk-logo.jpg' },
   { title: 'Phone Teardown', note: '3D exploded view with labels · spec', company: '', src: '/shorts/phone-breakdown.mp4', poster: '/shorts/phone-breakdown.jpg' },
   { title: 'Jaipur Delivery Route', note: '3D map route animation · spec', company: '', src: '/shorts/jaipur-route.mp4', poster: '/shorts/jaipur-route.jpg' },
   { title: 'Compounding Graph', note: 'Finance graph with a live count · spec', company: '', src: '/shorts/sip-graph.mp4', poster: '/shorts/sip-graph.jpg' },

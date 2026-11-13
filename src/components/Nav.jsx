@@ -42,7 +42,7 @@ export default function Nav() {
           </a>
         ))}
       </nav>
-      <span className="nav__status mono"><i />Available for work</span>
+      <span className="nav__logo" aria-hidden="true" style={{ visibility: 'hidden' }}>AC®</span>
     </header>
   )
 }

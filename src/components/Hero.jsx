@@ -45,7 +45,7 @@ export default function Hero({ loaded }) {
     <section className="hero" id="top" ref={root}>
       <div className="hero__copy">
         <p className="hero__label mono">
-          {profile.first} {profile.last}<span className="muted"> / Video editor &amp; motion designer</span>
+          {profile.first} {profile.last}<span className="muted"> / Visual creative director</span>
         </p>
         <h1 className="hero__title" aria-label="I turn ideas into brand campaigns, motion and products people remember.">
           <span className="hero__line hero__line--sans" aria-hidden="true"><span>I turn ideas into</span></span>
