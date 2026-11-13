@@ -24,24 +24,18 @@ export const brands = [
   'Jaipur Comic Con', 'The Prime Walk', 'Varaha Jewels', 'Think Trail', 'Lumalearn', 'Luma', 'Pinaka',
 ]
 
+// `ratio` is the shape of the cover/preview ("16:9", "9:16", "4:5", "1:1"…);
+// the card takes that shape so nothing is cropped. Without it a card is 4:5.
 export const projects = [
-  { name: 'Tyre Ka Kaala Sach', category: 'youtube', type: 'Documentary explainer', desc: 'The dark side of scrap tyres, told in an editorial collage style.', company: 'Regrip India', img: '/work/tyre-kaala-sach.jpg', video: '/work/tyre-kaala-sach.mp4' },
-  { name: 'Tyre Journey', category: 'youtube', type: 'Data explainer', desc: 'From factory to Regrip: data-led motion graphics on what happens to tyres.', company: 'Regrip India', img: '/work/tyre-journey.jpg', video: '/work/tyre-journey.mp4' },
-  { name: 'Regrip Brand Film', category: 'strategy', type: 'Brand film', desc: 'A 55-second film on why recycled tyres matter.', company: 'Regrip India', img: '/work/regrip-brand-film.jpg', video: '/work/regrip-brand-film.mp4' },
-  { name: 'Tyre Mitra', category: 'saas', type: 'Product explainer', desc: 'Motion-graphics explainer for the Tyre Mitra service.', company: 'Regrip India', img: '/work/tyre-mitra.jpg', video: '/work/tyre-mitra.mp4' },
-  { name: 'Tyrebook Intro', category: 'saas', type: 'Product film', desc: 'Cinematic 30-second intro for the Tyrebook app.', company: 'Regrip India', img: '/work/tyrebook-intro.jpg', video: '/work/tyrebook-intro.mp4' },
-  { name: 'MNCs vs Startups', category: 'youtube', type: 'Founder story', desc: 'Founder-led storytelling with archival B-roll, shot in 4K.', company: 'Regrip India', img: '/work/mncs-vs-startups.jpg', video: '/work/mncs-vs-startups.mp4' },
-  { name: 'Crumb Rubber Explainer', category: 'viral', type: 'Short-form video', desc: 'Presenter-led explainer with motion titles on Regrip\'s 3 products.', company: 'Regrip India', img: '/work/crumb-rubber.jpg', video: '/work/crumb-rubber.mp4' },
-  { name: 'Influencer Film', category: 'viral', type: 'Influencer content', desc: 'Studio-shot creator film for Regrip.', company: 'Regrip India', img: '/work/anisha-film.jpg', video: '/work/anisha-film.mp4' },
-  { name: 'Bharat Ke Super Founders', category: 'youtube', type: 'Logo animation', desc: 'Title and logo animation for the show.', company: 'Bharat Ke Super Founders', img: '/work/super-founders-logo.jpg', video: '/work/super-founders-logo.mp4' },
-  { name: 'Mittsure', category: 'product', type: 'Publishing Design', desc: 'Book covers, magazines, brand identity.', company: 'Mittsure', img: '/img/gallery_3.jpg' },
-  { name: 'Suniel Shetty', category: 'viral,strategy', type: 'Celebrity Branding', desc: 'Face-of-brand creative coordination.', company: 'Regrip India', img: 'https://res.cloudinary.com/dd5zrsmok/image/upload/f_auto,q_auto,w_900/v1786689143/portfolio_uploads/uychg4fvwnk6tuhw5stn.webp' },
-  { name: 'Dhruv Rathee', category: 'youtube', type: 'Creator Content', desc: 'High-quality visual content creation.', company: '', img: '/img/latest_1.jpg' },
-  { name: 'GetSetFly', category: 'strategy', type: 'Digital Campaigns', desc: 'Creative production & storytelling.', company: '', img: '/img/latest_2.jpg' },
-  { name: 'Think Trail', category: 'product', type: 'Logo Design', desc: 'Educational book company branding.', company: '', img: '/img/welcome_1.jpg' },
-  { name: 'Lumalearn', category: 'product', type: 'EdTech Branding', desc: 'Plantation-themed logo design.', company: '', img: '/img/welcome_2.jpg' },
-  { name: 'Luma', category: 'product', type: 'Product Design', desc: 'Stationery brand identity.', company: '', img: '/img/intro_tall.jpg' },
-  { name: 'Pinaka', category: 'saas', type: 'Education Platform', desc: 'Visual identity & branding.', company: '', img: '/img/intro_short.jpg' },
+  { name: 'Bharat Ke Super Founders', ratio: '16:9', category: 'youtube', type: 'Logo animation', desc: 'Title and logo animation for the show.', company: 'Bharat Ke Super Founders', img: '/work/super-founders-logo.jpg', video: '/work/super-founders-logo.mp4' },
+  { name: "D'una Perfume", ratio: '9:16', category: 'product', type: '3D product ad', desc: 'Concept perfume brand: three bottles modelled, lit and animated in Blender, cut into a 15-second reel with sound design.', company: '', img: '/work/duna-perfume.jpg', video: '/work/duna-perfume.mp4' },
+  { name: 'Compounding Graph', ratio: '9:16', category: 'youtube,viral', type: 'Finance explainer graphic', desc: 'Spec reel made for this portfolio: ₹5,000 a month for 20 years at an assumed 12% a year, drawn as one line while the total counts up. Real compound maths, animated in code.', company: '', img: '/work/sip-graph.jpg', video: '/work/sip-graph.mp4' },
+  { name: 'Jaipur Delivery Route', ratio: '9:16', category: 'saas', type: '3D map animation', desc: 'Spec ad for a delivery app: a 3D city, the route to Hawa Mahal draws itself, the pin drops and the ETA counts down to "Arrived".', company: '', img: '/work/jaipur-route.jpg', video: '/work/jaipur-route.mp4' },
+  { name: 'Phone Teardown', ratio: '9:16', category: 'product', type: '3D exploded view', desc: 'Spec product reel: a phone turns and comes apart layer by layer, and each part gets a leader line and a label.', company: '', img: '/work/phone-breakdown.jpg', video: '/work/phone-breakdown.mp4' },
+  { name: 'One Post a Day', ratio: '9:16', category: 'viral', type: 'Minimal line animation', desc: 'Spec social reel: a dot climbs five steps under one quiet line, then an orbit draws round it at the top and the line turns.', company: '', img: '/work/one-post-minimal.jpg', video: '/work/one-post-minimal.mp4' },
+  { name: 'Jhatpat App Banner', ratio: '4:5', category: 'product', type: 'Motion banner', desc: 'Spec app banner in a quick-commerce style: products drop in, a 10-minute promise counts down. After Effects, 5.6 s loop.', company: '', img: '/work/banner-blinkit-style.jpg', video: '/work/banner-blinkit-style.mp4' },
+  { name: 'Turant Diwali Deal', ratio: '4:5', category: 'product', type: 'Festive sale banner', desc: 'Spec Diwali sale banner: lights, flickering diyas, a 60% off count-up. After Effects, 5.6 s loop.', company: '', img: '/work/banner-zepto-festive.jpg', video: '/work/banner-zepto-festive.mp4' },
+  { name: 'Big Bachat Days', ratio: '4:5', category: 'product', type: 'Mega-sale banner', desc: 'Spec mega-sale banner: gadgets on a sunburst stage, rupee coins, an 80% off count-up. After Effects, 5.6 s loop.', company: '', img: '/work/banner-bbd-sale.jpg', video: '/work/banner-bbd-sale.mp4' },
 ]
 
 export const experience = [
@@ -132,11 +126,11 @@ const vid = (path) =>
   `https://res.cloudinary.com/dd5zrsmok/video/upload/q_auto,w_1280/${path}.mp4`
 
 export const snapshot = {
-  role: 'Creative & digital marketing specialist: campaigns, motion and content',
+  role: 'Freelance video editor & motion designer: reels, explainers and 3D product ads',
   years: `${new Date().getFullYear() - 2022}+ yrs`,
   companies: ['Regrip India (now)', 'Mittsure', 'Varaha Jewels'],
   names: ['Suniel Shetty', 'Aman Dhattarwal', 'Abhi & Niyu', 'SleepyOwl'],
-  tools: ['Photoshop', 'Illustrator', 'After Effects', 'Premiere Pro', 'Figma', 'Canva', 'AI tools'],
+  tools: ['Premiere Pro', 'After Effects', 'Blender', 'CapCut', 'Photoshop', 'Illustrator', 'Figma', 'Canva', 'AI tools'],
   people: [
     { name: 'Suniel Shetty', note: 'Face of Regrip — campaign shoot', img: cld('v1786704749/portfolio_uploads/dmj8q2us6vvlicbuayas.webp') },
     { name: 'Prahlad Modi', note: 'Regrip brand storytelling', img: cld('v1786704728/portfolio_uploads/y6k1qu2mrsodo88u9f89.webp') },
@@ -174,6 +168,14 @@ export const caseStudy = {
 
 export const skills = [
   {
+    title: 'Video & Motion',
+    items: [
+      'Video Editing (Premiere Pro)', 'Short-form Reels & Shorts', 'Motion Graphics (After Effects)',
+      'Kinetic Type & Captions', 'Explainer & Launch Videos', '3D Product Animation (Blender)',
+      'Sound Design & Mixing', 'Colour Grading', 'Storyboarding & Scripting', 'YouTube Long-form Editing',
+    ],
+  },
+  {
     title: 'Marketing & Growth',
     items: [
       'Instagram & Social Media Management', 'Campaign Planning & Execution', 'Marketing Strategy',
@@ -204,9 +206,21 @@ export const skills = [
   },
 ]
 
-// Work that went viral on social media. Fill with real links and view
-// counts (e.g. "1.2M"); the section stays hidden while this is empty.
-export const viral = []
+// Work that went viral on social media, with real links and view counts
+// (e.g. "1.2M"). The section hides itself when this is empty.
+export const viral = [
+  { title: 'How Dictatorship made China RICH', link: 'https://www.youtube.com/watch?v=lTvcPU19eRE', views: '1.4M', company: 'Abhi and Niyu', thumb: '' },
+]
 
 // Proof screenshots (Instagram insights, YouTube analytics, profile stats).
 export const viralShots = []
+
+// Vertical (9:16) reels, shown in the Reels section. `src` is a short MP4
+// with sound, `poster` its cover frame.
+export const shorts = [
+  { title: "D'una Perfume", note: '3D product ad · Blender · concept brand', company: '', src: '/shorts/duna-perfume.mp4', poster: '/shorts/duna-perfume.jpg' },
+  { title: 'Phone Teardown', note: '3D exploded view with labels · spec', company: '', src: '/shorts/phone-breakdown.mp4', poster: '/shorts/phone-breakdown.jpg' },
+  { title: 'Jaipur Delivery Route', note: '3D map route animation · spec', company: '', src: '/shorts/jaipur-route.mp4', poster: '/shorts/jaipur-route.jpg' },
+  { title: 'Compounding Graph', note: 'Finance graph with a live count · spec', company: '', src: '/shorts/sip-graph.mp4', poster: '/shorts/sip-graph.jpg' },
+  { title: 'One Post a Day', note: 'Minimal line animation · spec', company: '', src: '/shorts/one-post-minimal.mp4', poster: '/shorts/one-post-minimal.jpg' },
+]

@@ -2,10 +2,10 @@ import { useRef } from 'react'
 import { gsap, ScrollTrigger, useGSAP } from '../lib/gsap'
 
 const links = [
+  ['Reels', '#reels'],
   ['Work', '#work'],
   ['Experience', '#experience'],
   ['Services', '#services'],
-  ['Skills', '#skills'],
   ['Contact', '#contact'],
 ]
 

@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { gsap, SplitText, useGSAP, reducedMotion } from '../lib/gsap'
 import { useContent } from '../content'
+import { waLink } from '../lib/whatsapp'
 
 function toTop(e) {
   e.preventDefault()
@@ -12,6 +13,7 @@ export default function Contact() {
   const { profile } = useContent()
   const root = useRef(null)
   const mag = useRef(null)
+  const whatsapp = waLink(profile.phone, `Hi ${profile.first}, I saw your portfolio and want to talk about a project.`)
 
   useGSAP(
     () => {
@@ -57,14 +59,16 @@ export default function Contact() {
 
   return (
     <section className="contact" id="contact" ref={root}>
-      <span className="section-label">Get in touch — open for brand campaigns, motion, UI/UX & AI</span>
+      <span className="section-label">Get in touch — open for reels, launch videos, 3D product ads &amp; motion</span>
       <h2 className="contact__big">Let’s<br /><span className="accent">Talk</span></h2>
       <div className="contact__row">
         <div>
           <a className="contact__email" href={`mailto:${profile.email}`}>{profile.email}</a>
-          <p className="mono muted" style={{ marginTop: 16 }}>{profile.phone} · {profile.location}</p>
+          <p className="mono muted" style={{ marginTop: 16 }}>
+            <a className="contact__wa" href={whatsapp} target="_blank" rel="noreferrer">WhatsApp {profile.phone} ↗</a> · {profile.location}
+          </p>
         </div>
-        <a className="magnetic" ref={mag} href={`mailto:${profile.email}`}>
+        <a className="magnetic" ref={mag} href={whatsapp} target="_blank" rel="noreferrer">
           <span>Start a<br />project ↗</span>
         </a>
       </div>

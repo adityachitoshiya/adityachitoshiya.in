@@ -51,12 +51,21 @@ export const sections = [
     list: list('Reels', { title: t('Title'), src: video('Video (MP4 or upload)') }, { titleKey: 'title' }),
   },
   {
+    key: 'shorts',
+    title: 'Reels (9:16)',
+    list: list('Vertical reels', {
+      title: t('Title'), note: t('One line: what it is'), company: t('Done at (optional)'),
+      src: video('Video (9:16 MP4, with sound)'), poster: image('Cover frame'),
+    }, { titleKey: 'title' }),
+  },
+  {
     key: 'projects',
     title: 'Selected work',
     list: list('Projects', {
       name: t('Name'), type: t('Type'), desc: t('Short description'),
       category: t('Category tab: youtube, saas, product, viral, strategy (comma-separate for several)'),
       company: t('Done at (company, same spelling as in Experience)'), year: t('Year (optional)'),
+      ratio: t('Shape of the cover/video: 16:9, 9:16, 4:5, 1:1 (empty = 4:5)'),
       link: url('Link to the real work (Behance, Instagram, YouTube…, optional)'), img: image('Image or cover'),
       video: video('Preview video (short, silent loop, optional)'),
     }, { titleKey: 'name' }),

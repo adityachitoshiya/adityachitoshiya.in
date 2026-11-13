@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react'
 import { gsap, SplitText, useGSAP, reducedMotion } from '../lib/gsap'
 import { useContent } from '../content'
+import { waLink } from '../lib/whatsapp'
 
-// Recruiter TL;DR: everything worth knowing, readable in ten seconds.
+// Client TL;DR: everything worth knowing, readable in ten seconds.
 export default function Snapshot() {
   const { profile, snapshot } = useContent()
   const root = useRef(null)
@@ -49,7 +50,8 @@ export default function Snapshot() {
           <span className="nav__status mono"><i />Available for work</span>
           <p className="snap__role">{snapshot.role}</p>
           <div className="snap__actions">
-            <a className="btn btn--solid" href="/Aditya_Chitoshiya_CV.pdf" target="_blank" rel="noreferrer">Download CV ↓</a>
+            <a className="btn btn--solid" href={waLink(profile.phone, `Hi ${profile.first}, I saw your portfolio and want to talk about a project.`)} target="_blank" rel="noreferrer">WhatsApp me ↗</a>
+            <a className="btn" href="/Aditya_Chitoshiya_CV.pdf" target="_blank" rel="noreferrer">Download CV ↓</a>
             <button className="btn" onClick={copy} data-cursor={copied ? 'Copied' : 'Copy'}>
               {copied ? 'Email copied ✓' : 'Copy email'}
             </button>

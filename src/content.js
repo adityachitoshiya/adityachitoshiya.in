@@ -16,6 +16,7 @@ export const defaultContent = {
   viralShots: defaults.viralShots,
   snapshot: defaults.snapshot,
   reels: defaults.reels,
+  shorts: defaults.shorts,
   caseStudy: defaults.caseStudy,
 }
 

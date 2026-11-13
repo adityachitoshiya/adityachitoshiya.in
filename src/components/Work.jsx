@@ -17,6 +17,14 @@ const inCategory = (p, key) => {
   return !!m && norm(p.category).includes(m)
 }
 
+// "16:9" / "9 / 16" / "1.78" -> [w, h]. Anything unreadable falls back to 4:5.
+function parseRatio(r) {
+  const m = String(r || '').match(/^\s*([\d.]+)\s*(?:[:/x]\s*([\d.]+))?\s*$/)
+  const w = m ? parseFloat(m[1]) : 0
+  const h = m ? parseFloat(m[2] || 1) : 0
+  return w > 0 && h > 0 && w / h > 0.3 && w / h < 3 ? [w, h] : [4, 5]
+}
+
 // Chapters of work: one per company ("done at"), in the order of the
 // Experience list, then anything without a company as "Other projects".
 function groupByCompany(projects, experience) {
@@ -57,8 +65,9 @@ function Preview({ src, poster, alt }) {
 function ProjectCard({ p }) {
   const Tag = p.link ? 'a' : 'article'
   const linkProps = p.link ? { href: p.link, target: '_blank', rel: 'noreferrer', 'data-cursor': 'Open' } : {}
+  const [w, h] = parseRatio(p.ratio)
   return (
-    <Tag className="card" {...linkProps}>
+    <Tag className="card" style={{ '--r': w / h, '--ar': `${w} / ${h}` }} {...linkProps}>
       <div className="card__media">
         {p.video
           ? <Preview src={p.video} poster={p.img} alt={`${p.name} — ${p.type}`} />
@@ -97,7 +106,7 @@ export default function Work() {
 
       const mm = gsap.matchMedia()
       mm.add('(min-width: 761px)', () => {
-        // Pin and translate the track sideways; images drift against it.
+        // Pin and translate the track sideways.
         const track = root.current.querySelector('.work__track')
         const distance = () => track.scrollWidth - window.innerWidth
         const tween = gsap.to(track, {
@@ -118,14 +127,6 @@ export default function Work() {
           scrollTrigger: { trigger: '.work__pin', start: 'top top', end: () => '+=' + distance(), scrub: true },
         })
         gsap.utils.toArray('.card').forEach((card) => {
-          const img = card.querySelector('.card__media img, .card__media video')
-          if (img) {
-            gsap.fromTo(img, { xPercent: 8 }, {
-              xPercent: -8,
-              ease: 'none',
-              scrollTrigger: { trigger: card, containerAnimation: tween, start: 'left right', end: 'right left', scrub: true },
-            })
-          }
           gsap.from(card, {
             rotate: 4, y: 60, opacity: 0.3,
             ease: 'power2.out',

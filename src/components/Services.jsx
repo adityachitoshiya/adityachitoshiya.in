@@ -20,11 +20,13 @@ export default function Services() {
       cards.forEach((card, i) => {
         const next = cards[i + 1]
         if (!next) return
-        gsap.to(card, {
+        // Explicit start values: tweening from `filter: none` reads as
+        // brightness(0) and blacks the card out while it is being read.
+        gsap.fromTo(card, { scale: 1, filter: 'brightness(1)' }, {
           scale: 0.9,
           filter: 'brightness(0.5)',
           ease: 'none',
-          scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 12%', scrub: true },
+          scrollTrigger: { trigger: next, start: 'top 85%', end: 'top 12%', scrub: true },
         })
       })
     },

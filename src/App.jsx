@@ -15,6 +15,7 @@ import Skills from './components/Skills'
 import Viral from './components/Viral'
 import Snapshot from './components/Snapshot'
 import Showreel from './components/Showreel'
+import Shorts from './components/Shorts'
 import CaseStudy from './components/CaseStudy'
 import HireMe from './components/HireMe'
 import ContentProvider from './ContentProvider'
@@ -69,6 +70,7 @@ export default function App() {
           <Snapshot />
           <Marquee />
           <Showreel />
+          <Shorts />
           <Viral />
           <About />
           <Work />

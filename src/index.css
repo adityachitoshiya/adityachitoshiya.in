@@ -206,9 +206,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .work__title { font-family: var(--display); text-transform: uppercase; font-size: clamp(48px, 7vw, 120px); line-height: 0.9; margin: 0; }
 .work__pin { height: 100vh; height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-top: 64px; }
 .work__track { display: flex; gap: 2.5vw; padding: 0 var(--gutter); width: max-content; will-change: transform; }
-.card { width: clamp(220px, min(30vw, calc((100svh - 390px) * 0.8)), 460px); flex: none; }
-.card__media { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 6px; background: var(--bg-2); }
-.card__media img, .card__media video { display: block; width: 120%; max-width: none; height: 100%; object-fit: cover; margin-left: -10%; transition: scale 0.7s var(--ease-out); }
+/* Every card has the same media height; its width follows the piece's own
+   ratio (--r = width / height, set per card), so the whole frame shows. */
+.work { --card-h: clamp(275px, min(37.5vw, calc(100svh - 390px)), 575px); }
+.card { width: calc(var(--card-h) * var(--r, 0.8)); flex: none; }
+.card__media { position: relative; height: var(--card-h); overflow: hidden; border-radius: 6px; background: var(--bg-2); }
+.card__media img, .card__media video { display: block; width: 100%; height: 100%; object-fit: cover; transition: scale 0.7s var(--ease-out); }
 @media (hover: hover) and (pointer: fine) { .card:hover .card__media img, .card:hover .card__media video { scale: 1.06; } }
 .card__info { display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px; gap: 12px; }
 .card__name { font-family: var(--display); font-size: clamp(26px, 2.4vw, 40px); text-transform: uppercase; line-height: 1; }
@@ -220,6 +223,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .work__pin { height: auto; }
   .work__track { flex-direction: column; width: auto; gap: 48px; }
   .card { width: 100%; }
+  .card__media { height: auto; aspect-ratio: var(--ar, 4 / 5); }
   .work__progress { display: none; }
 }
 
@@ -449,7 +453,6 @@ p, li, dd { text-wrap: pretty; }
   .about__text .word { opacity: 1; }
   .exp__row::before { transform: none; }
   .work__track { flex-wrap: wrap; width: auto; }
-  .card { width: clamp(260px, 28vw, 420px); }
   .reel { height: auto; padding: 12vh var(--gutter); }
 }
 
@@ -485,7 +488,7 @@ p, li, dd { text-wrap: pretty; }
 }
 .card__open { display: inline-block; margin-top: 8px; color: var(--accent); }
 .card--chapter {
-  aspect-ratio: 4 / 5; align-self: flex-start;
+  height: var(--card-h); align-self: flex-start;
   display: flex; flex-direction: column; justify-content: space-between; gap: 16px;
   padding: clamp(20px, 2vw, 32px); border-radius: 6px;
   background: var(--bg-2); border: 1px solid var(--line); border-top: 3px solid var(--accent);
@@ -494,7 +497,7 @@ p, li, dd { text-wrap: pretty; }
 .chapter__meta { display: grid; gap: 6px; }
 .chapter__role { font-size: clamp(16px, 1.3vw, 20px); line-height: 1.3; }
 @media (max-width: 760px) {
-  .card--chapter { aspect-ratio: auto; min-height: 220px; }
+  .card--chapter { height: auto; min-height: 220px; }
   .work__head { flex-direction: column; align-items: flex-start; }
 }
 
@@ -571,3 +574,40 @@ p, li, dd { text-wrap: pretty; }
   .work__tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
   .work__tabs button { white-space: nowrap; flex: none; }
 }
+
+/* ---------- Reels (9:16) ---------- */
+.shorts { padding: 14vh var(--gutter) 10vh; }
+.shorts__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 6vh; }
+.shorts__title { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(56px, 10vw, 180px); line-height: 0.85; margin: 0; }
+.shorts__track { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; align-items: start; }
+.short { min-width: 0; }
+.short__media {
+  position: relative; display: block; width: 100%; padding: 0; overflow: hidden; cursor: pointer;
+  aspect-ratio: 9 / 16; border-radius: 12px; border: 1px solid var(--line); background: var(--bg-2); color: var(--fg);
+}
+.short__media video { display: block; width: 100%; height: 100%; object-fit: cover; transition: scale 0.7s var(--ease-out); }
+@media (hover: hover) and (pointer: fine) { .short__media:hover video { scale: 1.04; } }
+.short__sound {
+  position: absolute; left: 10px; bottom: 10px; display: flex; align-items: center; gap: 7px;
+  padding: 6px 11px; border-radius: 99px; font-size: 10px;
+  background: rgba(11, 10, 9, 0.72); backdrop-filter: blur(8px);
+}
+.short__sound i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
+.short__sound.is-on i { background: var(--accent); }
+.short__title { margin: 12px 0 4px; font-size: 16px; font-weight: 500; line-height: 1.25; }
+.short__note { margin: 0; font-size: 11px; line-height: 1.5; }
+@media (max-width: 1100px) { .shorts__track { grid-template-columns: repeat(3, 1fr); row-gap: 28px; } }
+@media (max-width: 760px) {
+  .shorts__head { flex-direction: column; align-items: flex-start; }
+  /* Swipe sideways through the reels, edge to edge. */
+  .shorts__track {
+    display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    margin: 0 calc(var(--gutter) * -1); padding: 0 var(--gutter); scroll-padding-left: var(--gutter);
+  }
+  .shorts__track::-webkit-scrollbar { display: none; }
+  .short { flex: none; width: 62vw; scroll-snap-align: start; }
+}
+
+/* Contact: WhatsApp link */
+.contact__wa { color: var(--fg); transition: color 0.2s; }
+.contact__wa:hover { color: var(--accent); }

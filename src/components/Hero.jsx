@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { gsap, useGSAP, reducedMotion } from '../lib/gsap'
 import { useContent } from '../content'
+import { waLink } from '../lib/whatsapp'
 
 function scrollToId(e, id) {
   e.preventDefault()
@@ -44,12 +45,12 @@ export default function Hero({ loaded }) {
     <section className="hero" id="top" ref={root}>
       <div className="hero__copy">
         <p className="hero__label mono">
-          {profile.first} {profile.last}<span className="muted"> / Creative &amp; digital marketing specialist</span>
+          {profile.first} {profile.last}<span className="muted"> / Video editor &amp; motion designer</span>
         </p>
-        <h1 className="hero__title" aria-label="I turn ideas into brand campaigns, motion and products people remember.">
+        <h1 className="hero__title" aria-label="I turn ideas into reels, explainers and 3D product ads people remember.">
           <span className="hero__line hero__line--sans" aria-hidden="true"><span>I turn ideas into</span></span>
-          <span className="hero__line" aria-hidden="true"><span>Brand campaigns,</span></span>
-          <span className="hero__line" aria-hidden="true"><span>motion <em className="accent">&amp;</em> products</span></span>
+          <span className="hero__line" aria-hidden="true"><span>Reels, explainers</span></span>
+          <span className="hero__line" aria-hidden="true"><span><em className="accent">&amp;</em> 3D product ads</span></span>
           <span className="hero__line hero__line--sans" aria-hidden="true"><span>people remember.</span></span>
         </h1>
         <div className="hero__proof">
@@ -60,14 +61,14 @@ export default function Hero({ loaded }) {
         </div>
         <div className="hero__ctas">
           <a className="btn btn--solid" href="#work" onClick={(e) => scrollToId(e, '#work')}>View my work ↘</a>
-          <a className="btn" href="/Aditya_Chitoshiya_CV.pdf" target="_blank" rel="noreferrer">Download CV ↓</a>
+          <a className="btn" href={waLink(profile.phone, `Hi ${profile.first}, I saw your portfolio and want to talk about a project.`)} target="_blank" rel="noreferrer">WhatsApp me ↗</a>
         </div>
       </div>
 
       <figure className="hero__photo">
         <img src={profile.heroImage} alt="Portrait of Aditya Chitoshiya" fetchPriority="high" width="900" height="1200" />
         <figcaption className="hero__badge mono">
-          <i />Now: Creative Visual Designer at Regrip India
+          <i />Open for freelance projects
         </figcaption>
       </figure>
     </section>
