@@ -611,3 +611,26 @@ p, li, dd { text-wrap: pretty; }
 /* Contact: WhatsApp link */
 .contact__wa { color: var(--fg); transition: color 0.2s; }
 .contact__wa:hover { color: var(--accent); }
+
+/* ---------- Social media accounts ---------- */
+.socials { padding: 14vh var(--gutter) 10vh; }
+.socials__head { display: grid; grid-template-columns: 1fr minmax(0, 34ch); align-items: end; gap: 24px 48px; margin-bottom: 6vh; }
+.socials__title { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(56px, 10vw, 180px); line-height: 0.85; margin: 0; }
+.socials__lead { margin: 0; font-size: clamp(17px, 1.4vw, 21px); color: var(--muted); }
+.socials__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.acct {
+  display: flex; flex-direction: column; gap: 10px; min-height: 280px; padding: 22px 24px; border-radius: 14px;
+  background: var(--bg-2); border: 1px solid var(--line); color: inherit;
+  transition: border-color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) { .acct:hover { border-color: var(--accent); background: #1b1814; } }
+.acct__top { display: flex; justify-content: space-between; color: var(--muted); }
+.acct__handle { margin-top: auto; font-family: var(--display); text-transform: uppercase; font-size: clamp(22px, 1.65vw, 30px); line-height: 1; overflow-wrap: anywhere; }
+.acct__name { font-size: 15px; }
+.acct__count { display: flex; align-items: baseline; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
+.acct__count b { font-family: var(--display); font-weight: 400; font-size: clamp(36px, 3.4vw, 56px); line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+.acct__work { color: var(--fg); font-size: 11px; }
+@media (max-width: 760px) {
+  .socials__head { grid-template-columns: 1fr; }
+  .acct { min-height: 0; }
+}

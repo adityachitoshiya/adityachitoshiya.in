@@ -51,6 +51,14 @@ export const sections = [
     list: list('Reels', { title: t('Title'), src: video('Video (MP4 or upload)') }, { titleKey: 'title' }),
   },
   {
+    key: 'socials',
+    title: 'Social media accounts',
+    list: list('Instagram accounts I run', {
+      handle: t('Instagram handle (without @)'), name: t('Brand name'), category: t('One line: what the brand is'),
+      followers: t('Followers (e.g. 84.4K)'), work: t('What I do for them'), link: url('Link (optional, defaults to the profile)'),
+    }, { titleKey: 'handle' }),
+  },
+  {
     key: 'shorts',
     title: 'Reels (9:16)',
     list: list('Vertical reels', {

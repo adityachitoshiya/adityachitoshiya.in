@@ -3,6 +3,7 @@ import { gsap, ScrollTrigger, useGSAP } from '../lib/gsap'
 
 const links = [
   ['Reels', '#reels'],
+  ['Social', '#social'],
   ['Work', '#work'],
   ['Experience', '#experience'],
   ['Services', '#services'],

@@ -21,12 +21,16 @@ export const profile = {
 export const brands = [
   'Suniel Shetty', 'Aman Dhattarwal', 'Regrip India', 'SleepyOwl', 'Abhi & Niyu',
   'Vande Bharat / Adani TV', 'Bharat Ke Super Founders', 'EA Jaipur', 'Mittsure',
-  'Jaipur Comic Con', 'The Prime Walk', 'Varaha Jewels', 'Think Trail', 'Lumalearn', 'Luma', 'Pinaka',
+  'Jaipur Comic Con', 'The Prime Walk', 'Moonj Store', 'Looks Salon', 'Ekaari Jewels', 'Varaha Jewels',
 ]
 
 // `ratio` is the shape of the cover/preview ("16:9", "9:16", "4:5", "1:1"…);
 // the card takes that shape so nothing is cropped. Without it a card is 4:5.
 export const projects = [
+  { name: 'The Prime Walk', ratio: '9:16', category: 'product,strategy', type: 'Logo design + logo reveal', desc: 'Brand mark for The Prime Walk event, and a gold luxury reveal for its launch and social media posts.', company: 'The Prime Walk', img: '/work/prime-walk-logo.jpg', video: '/work/prime-walk-logo.mp4' },
+  { name: 'Pincode', ratio: '16:9', category: 'youtube', type: 'Visual design', desc: 'Visual design for "Pincode" by Catharsis x Reyy, a Rajasthan desi hip-hop track on Spit Kulture.', company: 'Spit Kulture', link: 'https://www.youtube.com/watch?v=CFOdyeqKkuM', img: '/work/pincode-music-video.jpg' },
+  { name: 'Why Is Vulgar Content Trending?', ratio: '16:9', category: 'youtube,viral', type: 'Motion graphics', desc: 'Motion graphics for an Abhi and Niyu explainer on why vulgar content trends in India. 1.3M views.', company: 'Abhi and Niyu', link: 'https://www.youtube.com/watch?v=qeS2Sfvrd5Y', img: '/work/abhi-niyu-vulgar-content.jpg' },
+  { name: 'How Blinkit Makes Money', ratio: '16:9', category: 'youtube,strategy', type: 'Content writing', desc: 'Script for a Paisa Decode explainer on the economics of a ₹518 Blinkit order and dark stores. 129K views.', company: 'Paisa Decode', link: 'https://www.youtube.com/watch?v=mjpT-dwFNuA', img: '/work/paisa-decode-blinkit.jpg' },
   { name: 'Bharat Ke Super Founders', ratio: '16:9', category: 'youtube', type: 'Logo animation', desc: 'Title and logo animation for the show.', company: 'Bharat Ke Super Founders', img: '/work/super-founders-logo.jpg', video: '/work/super-founders-logo.mp4' },
   { name: "D'una Perfume", ratio: '9:16', category: 'product', type: '3D product ad', desc: 'Concept perfume brand: three bottles modelled, lit and animated in Blender, cut into a 15-second reel with sound design.', company: '', img: '/work/duna-perfume.jpg', video: '/work/duna-perfume.mp4' },
   { name: 'Compounding Graph', ratio: '9:16', category: 'youtube,viral', type: 'Finance explainer graphic', desc: 'Spec reel made for this portfolio: ₹5,000 a month for 20 years at an assumed 12% a year, drawn as one line while the total counts up. Real compound maths, animated in code.', company: '', img: '/work/sip-graph.jpg', video: '/work/sip-graph.mp4' },
@@ -60,7 +64,7 @@ export const experience = [
     company: 'The Prime Walk',
     place: 'Event',
     role: 'Media & Content Strategy Planner',
-    desc: 'Planned media and content direction for event communication and audience engagement, aligned with event messaging and promotional channels.',
+    desc: 'Designed the logo and its launch reveal, and planned the media and social content for event communication and audience engagement across the promotional channels.',
     img: '',
   },
   {
@@ -109,9 +113,9 @@ export const services = [
     tags: ['After Effects', 'Premiere Pro', 'Explainers', 'Reels'],
   },
   {
-    title: 'Marketing & Content',
-    body: 'Social media content, content strategy and campaign-led communication that keeps audiences engaged.',
-    tags: ['Social Media', 'Content Strategy', 'Campaigns', 'Engagement'],
+    title: 'Social Media & Meta Ads',
+    body: 'Meta ad campaigns on Instagram and Facebook, influencer collaborations, and day-to-day posting and community replies that keep an audience engaged.',
+    tags: ['Meta Ads', 'Influencer Marketing', 'Instagram', 'Engagement'],
   },
   {
     title: 'Events & Digital',
@@ -178,8 +182,9 @@ export const skills = [
   {
     title: 'Marketing & Growth',
     items: [
-      'Instagram & Social Media Management', 'Campaign Planning & Execution', 'Marketing Strategy',
-      'Growth Strategy', 'Content Strategy', 'Meta Ads Management', 'Performance Marketing',
+      'Instagram & Social Media Management', 'Meta Ads Management', 'Influencer Marketing', 'Social Media Engagement',
+      'Community Management', 'Campaign Planning & Execution', 'Marketing Strategy',
+      'Growth Strategy', 'Content Strategy', 'Performance Marketing',
       'Lead Generation', 'Audience Research', 'Campaign Analytics & Reporting',
     ],
   },
@@ -210,6 +215,8 @@ export const skills = [
 // (e.g. "1.2M"). The section hides itself when this is empty.
 export const viral = [
   { title: 'How Dictatorship made China RICH', link: 'https://www.youtube.com/watch?v=lTvcPU19eRE', views: '1.4M', company: 'Abhi and Niyu', thumb: '' },
+  { title: 'Why is Vulgar Content trending in India?', link: 'https://www.youtube.com/watch?v=qeS2Sfvrd5Y', views: '1.3M', company: 'Abhi and Niyu · motion graphics', thumb: '' },
+  { title: 'How Does Blinkit Make Money on a ₹518 Order?', link: 'https://www.youtube.com/watch?v=mjpT-dwFNuA', views: '129K', company: 'Paisa Decode · content writing', thumb: '' },
 ]
 
 // Proof screenshots (Instagram insights, YouTube analytics, profile stats).
@@ -219,8 +226,19 @@ export const viralShots = []
 // with sound, `poster` its cover frame.
 export const shorts = [
   { title: "D'una Perfume", note: '3D product ad · Blender · concept brand', company: '', src: '/shorts/duna-perfume.mp4', poster: '/shorts/duna-perfume.jpg' },
+  { title: 'The Prime Walk', note: 'Logo reveal for an event brand', company: 'The Prime Walk', src: '/shorts/prime-walk-logo.mp4', poster: '/shorts/prime-walk-logo.jpg' },
   { title: 'Phone Teardown', note: '3D exploded view with labels · spec', company: '', src: '/shorts/phone-breakdown.mp4', poster: '/shorts/phone-breakdown.jpg' },
   { title: 'Jaipur Delivery Route', note: '3D map route animation · spec', company: '', src: '/shorts/jaipur-route.mp4', poster: '/shorts/jaipur-route.jpg' },
   { title: 'Compounding Graph', note: 'Finance graph with a live count · spec', company: '', src: '/shorts/sip-graph.mp4', poster: '/shorts/sip-graph.jpg' },
   { title: 'One Post a Day', note: 'Minimal line animation · spec', company: '', src: '/shorts/one-post-minimal.mp4', poster: '/shorts/one-post-minimal.jpg' },
+]
+
+// Instagram accounts Aditya runs. Follower counts as seen on 13 Nov 2026;
+// update them in the admin. `link` is optional (defaults to the profile).
+export const socials = [
+  { handle: 'theprimewalkshow', name: 'The Prime Walk', category: 'Miss India Prime pageant', followers: '1,098', work: 'Logo, launch reveal and social media', link: '' },
+  { handle: 'themoonjstore', name: 'Moonj Store', category: 'Craft fashion, Jaipur', followers: '84.4K', work: 'Social media', link: '' },
+  { handle: 'looksalonjaipur', name: 'Looks Salon', category: 'Luxury salon, Jaipur', followers: '36.6K', work: 'Social media', link: '' },
+  { handle: 'regripindia', name: 'Regrip', category: 'Tyre recycling', followers: '4,376', work: 'Brand content, reels and social media', link: '' },
+  { handle: 'ekaarijewels', name: 'Ekaari Jewels', category: 'Festive and wedding jewellery', followers: '477', work: 'Social media', link: '' },
 ]
