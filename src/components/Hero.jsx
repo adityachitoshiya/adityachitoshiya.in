@@ -47,10 +47,10 @@ export default function Hero({ loaded }) {
         <p className="hero__label mono">
           {profile.first} {profile.last}<span className="muted"> / Video editor &amp; motion designer</span>
         </p>
-        <h1 className="hero__title" aria-label="I turn ideas into reels, explainers and 3D product ads people remember.">
+        <h1 className="hero__title" aria-label="I turn ideas into brand campaigns, motion and products people remember.">
           <span className="hero__line hero__line--sans" aria-hidden="true"><span>I turn ideas into</span></span>
-          <span className="hero__line" aria-hidden="true"><span>Reels, explainers</span></span>
-          <span className="hero__line" aria-hidden="true"><span><em className="accent">&amp;</em> 3D product ads</span></span>
+          <span className="hero__line" aria-hidden="true"><span>Brand campaigns,</span></span>
+          <span className="hero__line" aria-hidden="true"><span>motion <em className="accent">&amp;</em> products</span></span>
           <span className="hero__line hero__line--sans" aria-hidden="true"><span>people remember.</span></span>
         </h1>
         <div className="hero__proof">
