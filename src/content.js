@@ -17,6 +17,8 @@ export const defaultContent = {
   snapshot: defaults.snapshot,
   reels: defaults.reels,
   shorts: defaults.shorts,
+  aiShoots: defaults.aiShoots,
+  aiPrompts: defaults.aiPrompts,
   socials: defaults.socials,
   caseStudy: defaults.caseStudy,
 }

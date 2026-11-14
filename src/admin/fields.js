@@ -67,6 +67,21 @@ export const sections = [
     }, { titleKey: 'title' }),
   },
   {
+    key: 'aiShoots',
+    title: 'AI for social media and product photo shoot',
+    list: list('AI images', {
+      title: t('Title (product or post)'), note: t('One line: what it is'), img: image('Image'),
+    }, { titleKey: 'title' }),
+  },
+  {
+    key: 'aiPrompts',
+    title: 'My AI prompts',
+    list: list('Prompts', {
+      title: t('Title'), category: t('Group (Product shoot, Instagram post, Reel & video, Brand & logo, 3D & motion, Ad concept)'),
+      prompt: t('The prompt'),
+    }, { titleKey: 'title' }),
+  },
+  {
     key: 'projects',
     title: 'Selected work',
     list: list('Projects', {

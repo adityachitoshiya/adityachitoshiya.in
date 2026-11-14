@@ -16,6 +16,8 @@ import Viral from './components/Viral'
 import Snapshot from './components/Snapshot'
 import Showreel from './components/Showreel'
 import Shorts from './components/Shorts'
+import AiShoots from './components/AiShoots'
+import AiPrompts from './components/AiPrompts'
 import Socials from './components/Socials'
 import CaseStudy from './components/CaseStudy'
 import HireMe from './components/HireMe'
@@ -72,6 +74,8 @@ export default function App() {
           <Marquee />
           <Showreel />
           <Shorts />
+          <AiShoots />
+          <AiPrompts />
           <Socials />
           <Viral />
           <About />

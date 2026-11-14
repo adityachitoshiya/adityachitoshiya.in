@@ -241,3 +241,304 @@ export const socials = [
   { handle: 'regripindia', name: 'Regrip', category: 'Tyre recycling', followers: '4,376', work: 'Brand content, reels and social media', link: '' },
   { handle: 'ekaarijewels', name: 'Ekaari Jewels', category: 'Festive and wedding jewellery', followers: '477', work: 'Social media', link: '' },
 ]
+
+// AI-made social media creatives and product photo shoots, shown in the
+// "AI for social media and product photo shoot" section. `img` is a still;
+// the section hides itself while this list is empty.
+export const aiShoots = [
+  { title: "Maggi 2-Minute Noodles", note: "Product shoot \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/maggi-masala-shoot.jpg" },
+  { title: "Fogg Body Spray", note: "Product shoot \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/fogg-royal-shoot.jpg" },
+  { title: "Dettol Antiseptic + Handwash", note: "Product shoot \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/dettol-hygiene-shoot.jpg" },
+  { title: "iPhone, titanium", note: "Product shoot \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/iphone-titanium-shoot.jpg" },
+  { title: "iPhone 18 Pro (concept)", note: "Concept render \u00b7 AI imagined, not a real product", img: "/ai/iphone-18-pro-concept.jpg" },
+  { title: "iPhone 18 (concept)", note: "Concept render \u00b7 AI imagined, not a real product", img: "/ai/iphone-18-concept.jpg" },
+  { title: "Realme phone", note: "Product shoot \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/realme-yellow-shoot.jpg" },
+  { title: "boAt earbuds", note: "Product shoot \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/boat-earbuds-shoot.jpg" },
+  { title: "Maggi: Barish + Maggi", note: "Instagram post \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/maggi-barish-post.jpg" },
+  { title: "Fogg: Own The Night", note: "Instagram post \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/fogg-own-the-night-post.jpg" },
+  { title: "boAt: Turn Up The Beat", note: "Instagram post \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/boat-turn-up-the-beat-post.jpg" },
+]
+
+// Prompts I use to make AI images for social media and product shoots.
+export const aiPrompts = [
+  {
+    "title": "Luxury perfume on stone",
+    "category": "Product shoot",
+    "prompt": "A luxury perfume bottle with a smoked-glass body and brushed gold cap on a polished dark stone plinth, warm rim light, subtle reflections, charcoal gradient background, shallow depth of field, ultra-sharp commercial quality."
+  },
+  {
+    "title": "Floating sneaker",
+    "category": "Product shoot",
+    "prompt": "A minimalist running sneaker floating above a seamless matte grey studio floor, dramatic side light, soft shadow underneath, one orange accent on the sole."
+  },
+  {
+    "title": "Skincare on wet stone",
+    "category": "Product shoot",
+    "prompt": "A frosted glass serum bottle with a sage-green dropper on a wet pale stone slab, water droplets, a leaf shadow falling across it, soft daylight, creamy beige background."
+  },
+  {
+    "title": "Watch macro on slate",
+    "category": "Product shoot",
+    "prompt": "A navy-dial steel wristwatch angled on dark slate, golden rim light, macro detail on the bezel, deep black background."
+  },
+  {
+    "title": "Splash drink can",
+    "category": "Product shoot",
+    "prompt": "A cold drink can bursting out of a splash of water and ice cubes, frozen mid-air, vivid colour backdrop, high-speed flash look."
+  },
+  {
+    "title": "Coffee pour",
+    "category": "Product shoot",
+    "prompt": "A ceramic cup of coffee with a slow pour of milk swirling in, steam rising, rustic wood table, warm morning window light."
+  },
+  {
+    "title": "Jewellery on silk",
+    "category": "Product shoot",
+    "prompt": "A gold necklace draped over folded champagne silk, soft diffused light, tiny sparkle highlights, blurred floral background."
+  },
+  {
+    "title": "Headphones on colour block",
+    "category": "Product shoot",
+    "prompt": "Over-ear headphones standing on a bold single-colour block, hard sunlight shadow, pop-art minimal composition."
+  },
+  {
+    "title": "Sunglasses in sand",
+    "category": "Product shoot",
+    "prompt": "Sunglasses half-buried in warm sand with a long golden-hour shadow and a hint of sea in the background."
+  },
+  {
+    "title": "Handbag in a gallery",
+    "category": "Product shoot",
+    "prompt": "A structured leather handbag on a white plinth in a minimal gallery room, soft top light, one dramatic shadow on the wall."
+  },
+  {
+    "title": "Food hero burger",
+    "category": "Product shoot",
+    "prompt": "A towering burger with melting cheese and crisp lettuce on a dark board, smoke curling behind, moody side light, appetite-first food ad."
+  },
+  {
+    "title": "Packaged snack explosion",
+    "category": "Product shoot",
+    "prompt": "A snack packet in the centre with the snack pieces exploding outward around it, bright flat background, playful ad energy."
+  },
+  {
+    "title": "Candle at dusk",
+    "category": "Product shoot",
+    "prompt": "A scented candle in an amber glass jar glowing on a window sill at dusk, soft bokeh city lights behind."
+  },
+  {
+    "title": "Phone in neon",
+    "category": "Product shoot",
+    "prompt": "A smartphone on a wet black surface with neon pink and cyan reflections, rain mist, night-city launch poster look."
+  },
+  {
+    "title": "Festive offer post",
+    "category": "Instagram post",
+    "prompt": "A square Instagram festive offer post for a retail brand: bold headline space at the top, product cluster in the middle, warm gold and maroon palette, diyas and marigold border."
+  },
+  {
+    "title": "Product launch teaser",
+    "category": "Instagram post",
+    "prompt": "A 4:5 launch teaser post: the product half hidden in shadow, a single beam of light, space for the words 'Coming soon', dark premium mood."
+  },
+  {
+    "title": "Before and after split",
+    "category": "Instagram post",
+    "prompt": "A clean split-screen post showing before and after, even lighting on both halves, a thin divider line, modern sans-serif label space."
+  },
+  {
+    "title": "Quote card",
+    "category": "Instagram post",
+    "prompt": "A minimal quote card on a textured off-white paper background, large serif quote space, small brand mark at the bottom, soft shadow."
+  },
+  {
+    "title": "Carousel cover",
+    "category": "Instagram post",
+    "prompt": "A carousel cover slide: strong one-line hook space, an oversized number, a tidy grid background, high contrast, scroll-stopping."
+  },
+  {
+    "title": "Customer review post",
+    "category": "Instagram post",
+    "prompt": "A review post design: five gold stars, a speech-bubble card on a soft gradient, product photo peeking from the corner."
+  },
+  {
+    "title": "Behind the scenes",
+    "category": "Instagram post",
+    "prompt": "A candid behind-the-scenes shot of a small studio set, lights and a camera visible, warm handheld feel, casual social vibe."
+  },
+  {
+    "title": "Meme-style brand post",
+    "category": "Instagram post",
+    "prompt": "A relatable meme-format post on a flat colour background, big caption space, the product placed naturally in the scene."
+  },
+  {
+    "title": "Sale countdown",
+    "category": "Instagram post",
+    "prompt": "A bold sale post with a giant percentage number, diagonal colour blocks, confetti, product pop-out shadow."
+  },
+  {
+    "title": "Founder story post",
+    "category": "Instagram post",
+    "prompt": "A portrait-led story post: the founder at work, natural window light, a short caption area on a clean strip."
+  },
+  {
+    "title": "Recipe or how-to",
+    "category": "Instagram post",
+    "prompt": "A step-by-step how-to post: four small photo tiles in a grid with numbered circles and a clean white frame."
+  },
+  {
+    "title": "Giveaway post",
+    "category": "Instagram post",
+    "prompt": "A giveaway post: gift box overflowing with the brand's products, ribbon swirls, bright celebratory colours, rules space at the bottom."
+  },
+  {
+    "title": "Hook shot",
+    "category": "Reel & video",
+    "prompt": "A 9:16 opening frame: the product slams into the screen with a flash, a huge one-word hook space, high-energy colour."
+  },
+  {
+    "title": "Unboxing POV",
+    "category": "Reel & video",
+    "prompt": "A first-person unboxing frame: hands opening a premium box on a desk, soft top light, tissue paper, ASMR calm."
+  },
+  {
+    "title": "Day in the life",
+    "category": "Reel & video",
+    "prompt": "A 9:16 day-in-the-life frame: morning routine shot by a window, warm tones, handheld movement, relatable."
+  },
+  {
+    "title": "Product reveal wipe",
+    "category": "Reel & video",
+    "prompt": "A three-frame reveal: a dark scene, a light sweep, the product fully lit with a glossy highlight."
+  },
+  {
+    "title": "Text-on-screen explainer",
+    "category": "Reel & video",
+    "prompt": "A kinetic-type explainer frame: one giant word centred on a flat colour, the rest of the line in small mono type beneath."
+  },
+  {
+    "title": "Transformation reel",
+    "category": "Reel & video",
+    "prompt": "A before/after transformation frame: the same angle twice with a fast whip transition between, matched lighting."
+  },
+  {
+    "title": "Street interview frame",
+    "category": "Reel & video",
+    "prompt": "A street interview framing: subject mid-chest, microphone in frame, shallow background, daylight."
+  },
+  {
+    "title": "Slow-motion pour",
+    "category": "Reel & video",
+    "prompt": "A slow-motion liquid pour frame, backlit, tiny bubbles and strands of light, cinematic macro."
+  },
+  {
+    "title": "Trend remix",
+    "category": "Reel & video",
+    "prompt": "A trending-format remix frame: split into two panels, creator on the left, the product demo on the right, bold captions."
+  },
+  {
+    "title": "Outro CTA",
+    "category": "Reel & video",
+    "prompt": "A closing frame: product centred, a calm gradient, space for a follow prompt, soft vignette."
+  },
+  {
+    "title": "Logo on packaging",
+    "category": "Brand & logo",
+    "prompt": "A minimalist logo mark applied to a kraft paper box, foil stamping, soft studio shadow."
+  },
+  {
+    "title": "Brand colour board",
+    "category": "Brand & logo",
+    "prompt": "A brand board: five-colour palette swatches, type specimens, a logo tile and a photo tile on a neat grid."
+  },
+  {
+    "title": "Storefront mockup",
+    "category": "Brand & logo",
+    "prompt": "A shop storefront at dusk with the new signage glowing, passers-by blurred, warm interior light."
+  },
+  {
+    "title": "Business card flat lay",
+    "category": "Brand & logo",
+    "prompt": "A flat lay of business cards, letterhead and a pen on a linen surface, soft diagonal light."
+  },
+  {
+    "title": "Packaging line-up",
+    "category": "Brand & logo",
+    "prompt": "A line-up of three packaging sizes of one product in a consistent colour system, seamless background."
+  },
+  {
+    "title": "App icon showcase",
+    "category": "Brand & logo",
+    "prompt": "A phone showing a new app icon grid with the brand icon highlighted, soft glass reflections."
+  },
+  {
+    "title": "Merch set",
+    "category": "Brand & logo",
+    "prompt": "A tote bag, cap and T-shirt with the same brand mark arranged on a pastel backdrop."
+  },
+  {
+    "title": "Brand moodboard",
+    "category": "Brand & logo",
+    "prompt": "A moodboard collage: texture swatches, product close-ups and typography clips, one accent colour throughout."
+  },
+  {
+    "title": "Glass bottle render",
+    "category": "3D & motion",
+    "prompt": "A 3D-rendered glass bottle with caustic light on a mirrored floor, studio HDRI, photoreal."
+  },
+  {
+    "title": "Exploded product view",
+    "category": "3D & motion",
+    "prompt": "An exploded view of a phone with each part floating apart and thin leader lines, dark studio backdrop."
+  },
+  {
+    "title": "Isometric workspace",
+    "category": "3D & motion",
+    "prompt": "An isometric 3D desk scene with a laptop, plants and warm lamps, soft pastel palette."
+  },
+  {
+    "title": "Liquid metal logo",
+    "category": "3D & motion",
+    "prompt": "A chrome liquid-metal 3D logo melting and re-forming on a black reflective floor."
+  },
+  {
+    "title": "Floating gadgets",
+    "category": "3D & motion",
+    "prompt": "Several small gadgets floating in a gradient void with soft shadows below, clean tech ad."
+  },
+  {
+    "title": "Abstract loop",
+    "category": "3D & motion",
+    "prompt": "A seamless abstract loop of soft coloured spheres drifting through a foggy studio, calm and satisfying."
+  },
+  {
+    "title": "Hero in the wild",
+    "category": "Ad concept",
+    "prompt": "The product in an unexpected landscape, such as a perfume on a snowy mountain ridge, epic wide shot, one hero light."
+  },
+  {
+    "title": "Giant product city",
+    "category": "Ad concept",
+    "prompt": "A giant product towering over a miniature city at sunrise, forced-perspective ad, dreamy haze."
+  },
+  {
+    "title": "Ingredient burst",
+    "category": "Ad concept",
+    "prompt": "The product surrounded by its raw ingredients flying outward, fresh and bright, high-speed look."
+  },
+  {
+    "title": "Tiny people world",
+    "category": "Ad concept",
+    "prompt": "Tiny people working around an oversized product, tilt-shift look, playful storytelling."
+  },
+  {
+    "title": "Cinematic lifestyle",
+    "category": "Ad concept",
+    "prompt": "A lifestyle scene with the product used naturally, warm film colour, shallow depth, golden hour."
+  },
+  {
+    "title": "Negative space minimal",
+    "category": "Ad concept",
+    "prompt": "A tiny product in a vast empty single-colour frame, one soft shadow, confident minimal ad."
+  }
+]
