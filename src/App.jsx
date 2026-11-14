@@ -3,6 +3,7 @@ import Lenis from 'lenis'
 import { gsap, ScrollTrigger, reducedMotion } from './lib/gsap'
 import Preloader from './components/Preloader'
 import Cursor from './components/Cursor'
+import Spotlight from './components/Spotlight'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
 import Marquee from './components/Marquee'
@@ -65,6 +66,7 @@ export default function App() {
       <a className="skip" href="#main">Skip to content</a>
       <div className="grain" aria-hidden="true" />
       <Cursor />
+      <Spotlight />
       <Nav />
       <ContentProvider onReady={onContent}>
         <HireMe />

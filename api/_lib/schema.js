@@ -28,7 +28,7 @@ export const shape = {
   reels: list({ title: S, src: URL }, 20),
   socials: list({ handle: S, name: S, category: S, followers: S, work: S, link: URL }, 30),
   shorts: list({ title: S, note: S, company: S, src: URL, poster: URL }, 20),
-  aiShoots: list({ title: S, note: S, img: URL }, 40),
+  aiShoots: list({ title: S, note: S, img: URL, slides: list(URL, 12) }, 40),
   aiPrompts: list({ title: S, category: S, prompt: S }, 100),
   caseStudy: {
     client: S, title: S, role: S, years: S, brief: S,

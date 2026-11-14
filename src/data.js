@@ -257,6 +257,11 @@ export const aiShoots = [
   { title: "Maggi: Barish + Maggi", note: "Instagram post \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/maggi-barish-post.jpg" },
   { title: "Fogg: Own The Night", note: "Instagram post \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/fogg-own-the-night-post.jpg" },
   { title: "boAt: Turn Up The Beat", note: "Instagram post \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/boat-turn-up-the-beat-post.jpg" },
+  { title: "Dettol: Germs Don't Stay", note: "Instagram post \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/dettol-germs-dont-stay-post.jpg" },
+  { title: "Nivea: Soft. Always.", note: "3D product post \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/nivea-soft-3d-post.jpg" },
+  { title: "MRF: Grip", note: "3D product post \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/mrf-grip-3d-post.jpg" },
+  { title: "CEAT: Rain Doesn't Scare", note: "Instagram post \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/ceat-rain-doesnt-scare-post.jpg" },
+  { title: "Dettol: Germs are everywhere (6-slide carousel)", note: "Instagram carousel, swipe through \u00b7 AI concept \u00b7 not affiliated with the brand", img: "/ai/dettol-carousel/slide-01.jpg", slides: ["/ai/dettol-carousel/slide-01.jpg", "/ai/dettol-carousel/slide-02.jpg", "/ai/dettol-carousel/slide-03.jpg", "/ai/dettol-carousel/slide-04.jpg", "/ai/dettol-carousel/slide-05.jpg", "/ai/dettol-carousel/slide-06.jpg"] },
 ]
 
 // Prompts I use to make AI images for social media and product shoots.

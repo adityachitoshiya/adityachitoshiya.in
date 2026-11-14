@@ -70,7 +70,8 @@ export const sections = [
     key: 'aiShoots',
     title: 'AI for social media and product photo shoot',
     list: list('AI images', {
-      title: t('Title (product or post)'), note: t('One line: what it is'), img: image('Image'),
+      title: t('Title (product or post)'), note: t('One line: what it is'), img: image('Image or carousel cover'),
+      slides: list('Carousel slides (optional: add images to make this a swipe carousel)', image('Slide')),
     }, { titleKey: 'title' }),
   },
   {

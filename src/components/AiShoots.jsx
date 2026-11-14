@@ -35,10 +35,18 @@ export default function AiShoots() {
       </p>
       <div className="aishoots__grid">
         {aiShoots.map((s) => (
-          <figure className="aishot" key={s.img}>
-            <div className="aishot__frame">
-              <img className="aishot__media" src={s.img} alt={s.title} loading="lazy" />
-            </div>
+          <figure className={`aishot${s.slides?.length ? ' aishot--carousel' : ''}`} key={s.img}>
+            {s.slides?.length ? (
+              <div className="aishot__slides" role="group" aria-label={`${s.title}, ${s.slides.length} slides, swipe`} tabIndex={0}>
+                {s.slides.map((u, n) => (
+                  <img key={u} className="aishot__slide" src={u} alt={`${s.title}, slide ${n + 1} of ${s.slides.length}`} loading="lazy" />
+                ))}
+              </div>
+            ) : (
+              <div className="aishot__frame">
+                <img className="aishot__media" src={s.img} alt={s.title} loading="lazy" />
+              </div>
+            )}
             <figcaption>
               <h3 className="aishot__title">{s.title}</h3>
               <p className="aishot__note mono muted">{s.note}</p>
